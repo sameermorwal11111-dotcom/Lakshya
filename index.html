@@ -264,13 +264,14 @@
     }
 
     .footer-links a {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
 
-    .footer-links a:hover {
-      color: var(--accent);
-    }
+.footer-links a:hover {
+  color: var(--accent);
+}
+
 
     /* Antigravity Animation Styles */
     .floating-bg {
@@ -366,8 +367,6 @@
 </head>
 
 <body>
-  <!-- Removed #header-placeholder to fix double header issue -->
-
   <!-- Main Header -->
   <header>
     <div class="container header-inner">
@@ -388,7 +387,6 @@
 
   <!-- Hero Section -->
   <section class="hero-section floating-bg">
-    <!-- Floating Elements for Antigravity Animation -->
     <div class="floating-element"></div>
     <div class="floating-element"></div>
     <div class="floating-element"></div>
@@ -510,7 +508,7 @@
             <input id="password" class="input" type="password" placeholder="Enter your password" required />
           </div>
 
-          <div class="form-group" id="fieldConfirmPassword" style="display:none;">
+          <div class="form-group" id="fieldConfirmPassword" style="display:none%;">
             <label class="form-label" for="confirmPassword">Confirm Password</label>
             <input id="confirmPassword" class="input" type="password" placeholder="Confirm your password" />
           </div>
@@ -574,8 +572,39 @@
     </div>
   </footer>
 
-  <script>
-    // Theme toggle logic
+  <!-- 🔥 Firebase + App Logic -->
+  <script type="module">
+    // ==== Firebase imports ====
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    // ==== TODO: apna config yaha daalo (Firebase console -> Project settings -> Web app -> Config) ====
+   const firebaseConfig = {
+  apiKey: "AIzaSyDvDvbSz8jyiygz8i_PLXBaeHJXeoI1CXg",
+  authDomain: "sameermorwal-560f4.firebaseapp.com",
+  projectId: "sameermorwal-560f4",
+  storageBucket: "sameermorwal-560f4.firebasestorage.app",
+  messagingSenderId: "935385594990",
+  appId: "1:935385594990:web:5ffa3c3f95a890e4253a7f",
+  measurementId: "G-S9PQZK5DLL"
+};
+
+    // ==== Firebase init ====
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ==== Theme toggle logic ====
     const themeToggle = document.getElementById("themeToggle");
     const themeIcon = document.getElementById("themeIcon");
 
@@ -593,12 +622,14 @@
     const initialTheme = localStorage.getItem("vc_home_theme") || "light";
     setTheme(initialTheme);
 
-    themeToggle.addEventListener("click", () => {
-      const isDark = document.documentElement.classList.contains("dark");
-      setTheme(isDark ? "light" : "dark");
-    });
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.contains("dark");
+        setTheme(isDark ? "light" : "dark");
+      });
+    }
 
-    // Scroll to auth
+    // ==== Scroll to auth ====
     const scrollBtn = document.getElementById("scrollGetStarted");
     const heroGetStarted = document.getElementById("heroGetStarted");
 
@@ -607,10 +638,10 @@
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
 
-    scrollBtn.addEventListener("click", scrollToAuth);
-    heroGetStarted.addEventListener("click", scrollToAuth);
+    if (scrollBtn) scrollBtn.addEventListener("click", scrollToAuth);
+    if (heroGetStarted) heroGetStarted.addEventListener("click", scrollToAuth);
 
-    // Auth Logic
+    // ==== Auth UI Logic ====
     let authMode = "login";
     let userType = "student";
 
@@ -639,14 +670,12 @@
         authToggleLink.textContent = "Sign up";
       } else {
         authTitle.textContent = "Create Account";
-        authSubtitle.textContent = "Join EduTrack Pro today";
+        authSubtitle.textContent = "Join VIDYA-CUE today";
         fieldName.style.display = "block";
         fieldConfirmPassword.style.display = "block";
-
         fieldStudentId.style.display = userType === "student" ? "block" : "none";
         fieldTeacherId.style.display = userType === "teacher" ? "block" : "none";
         fieldAdminKey.style.display = userType === "admin" ? "block" : "none";
-
         authSubmitBtn.textContent = "Create Account";
         authToggleText.textContent = "Already have an account? ";
         authToggleLink.textContent = "Sign in";
@@ -658,13 +687,12 @@
       updateAuthUI();
     });
 
-    // Tabs
+    // ==== Tabs ====
     const tabButtons = document.querySelectorAll(".tab-trigger");
     tabButtons.forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        e.preventDefault(); // Prevent form submission if inside form
-        const role = btn.dataset.role;
-        userType = role;
+        e.preventDefault();
+        userType = btn.dataset.role;
 
         tabButtons.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
@@ -677,53 +705,139 @@
       });
     });
 
-    // Form Submit (Mock)
+    // ==== Auth Form Submit (Firebase) ====
     const authForm = document.getElementById("authForm");
-    authForm.addEventListener("submit", (e) => {
+
+    authForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const nameInput = document.getElementById("name");
       const emailInput = document.getElementById("email");
       const passwordInput = document.getElementById("password");
       const confirmInput = document.getElementById("confirmPassword");
+      const studentIdInput = document.getElementById("studentId");
+      const teacherIdInput = document.getElementById("teacherId");
+      const adminKeyInput = document.getElementById("adminKey");
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        alert("Please fill all required fields.");
+        return;
+      }
 
       if (authMode === "signup") {
-        if (passwordInput.value !== confirmInput.value) {
+        if (password !== confirmInput.value) {
           alert("Passwords do not match!");
           return;
         }
       }
 
-      const name = authMode === "signup" && nameInput.value.trim()
-        ? nameInput.value.trim()
-        : userType.charAt(0).toUpperCase() + userType.slice(1) + " User";
+      try {
+        let userCredential;
 
-      const payload = {
-        type: userType,
-        name,
-        email: emailInput.value.trim()
-      };
+        if (authMode === "signup") {
+          // 🔹 Sign up user
+          userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-      // Mock login success
-      alert(`Success! ${(authMode === "login" ? "Signed in as " : "Account created for ")} ${payload.name} (${payload.type})`);
+          const user = userCredential.user;
+          const name =
+            nameInput.value.trim() ||
+            userType.charAt(0).toUpperCase() + userType.slice(1) + " User";
 
-      // Save user to local storage for demo purposes
-      localStorage.setItem('vc_user', JSON.stringify(payload));
+          // Optional IDs
+          const studentId = studentIdInput?.value.trim() || null;
+          const teacherId = teacherIdInput?.value.trim() || null;
+          const adminKey = adminKeyInput?.value.trim() || null;
 
-      // Redirect based on role
-      if (payload.type === 'student') {
-        window.location.href = 'studentprofile.html';
-      } else if (payload.type === 'teacher') {
-        window.location.href = 'Teacherdashboard.html';
-      } else if (payload.type === 'admin') {
-        window.location.href = 'admin.html';
+          // 🔹 Save extra data to Firestore
+          await setDoc(doc(db, "users", user.uid), {
+            name,
+            email: user.email,
+            type: userType,
+            studentId,
+            teacherId,
+            adminKey,
+            createdAt: new Date().toISOString()
+          });
+
+          alert("Account created successfully!");
+
+          const payload = {
+            uid: user.uid,
+            type: userType,
+            name,
+            email: user.email
+          };
+          localStorage.setItem("vc_user", JSON.stringify(payload));
+
+          // Redirect based on role
+          if (payload.type === "student") {
+            window.location.href = "studentprofile.html";
+          } else if (payload.type === "teacher") {
+            window.location.href = "Teacherdashboard.html";
+          } else if (payload.type === "admin") {
+            window.location.href = "admin.html";
+          }
+
+        } else {
+          // 🔹 Login
+          userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          // Just frontend role based on selected tab for now
+          const name =
+            userType.charAt(0).toUpperCase() + userType.slice(1) + " User";
+
+          const payload = {
+            uid: user.uid,
+            type: userType,
+            name,
+            email: user.email
+          };
+          localStorage.setItem("vc_user", JSON.stringify(payload));
+
+          alert("Signed in successfully!");
+
+          // Redirect based on role
+          if (payload.type === "student") {
+            window.location.href = "studentprofile.html";
+          } else if (payload.type === "teacher") {
+            window.location.href = "Teacherdashboard.html";
+          } else if (payload.type === "admin") {
+            window.location.href = "admin.html";
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        let msg = "Authentication failed";
+
+        if (error.code === "auth/email-already-in-use") {
+          msg = "This email is already in use.";
+        } else if (error.code === "auth/invalid-email") {
+          msg = "Invalid email address.";
+        } else if (error.code === "auth/weak-password") {
+          msg = "Password should be at least 6 characters.";
+        } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+          msg = "Incorrect email or password.";
+        }
+
+        alert(msg);
       }
     });
 
-    // Initialize
+    // Optional: already logged in user
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // future: auto redirect or show different UI
+        // console.log("Already logged in:", user.email);
+      }
+    });
+
+    // Init UI
     updateAuthUI();
   </script>
-  <!-- Removed include-html.js -->
 </body>
 
 </html>
