@@ -1,0 +1,1302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Learning Roadmaps – VIDYA-CUE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing: border-box; margin:0; padding:0; }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:#f3f4f6;
+        color:#111827;
+        padding:1.5rem;
+      }
+
+      .page-root { max-width:1400px; margin:0 auto; }
+      .space-y-6 > * + * { margin-top:1.5rem; }
+
+      h1 { font-size:1.9rem; font-weight:700; }
+      h2 { font-size:1.2rem; font-weight:600; }
+      h3 { font-size:1rem; font-weight:600; }
+
+      /* Hero header */
+      .hero {
+        background:linear-gradient(135deg,#7c3aed,#6d28d9);
+        border-radius:1.5rem;
+        padding:2rem;
+        color:#ede9fe;
+        box-shadow:0 20px 40px rgba(76,29,149,0.6);
+      }
+      .hero-inner {
+        display:flex;
+        flex-direction:column;
+        gap:1.5rem;
+      }
+      @media (min-width:1024px) {
+        .hero-inner {
+          flex-direction:row;
+          align-items:center;
+          justify-content:space-between;
+        }
+      }
+      .hero-chip {
+        display:inline-flex;
+        align-items:center;
+        gap:0.35rem;
+        font-size:0.75rem;
+        padding:0.2rem 0.8rem;
+        border-radius:9999px;
+        background:rgba(255,255,255,0.2);
+        backdrop-filter:blur(6px);
+        margin-bottom:0.7rem;
+      }
+      .hero-stat-grid {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:0.75rem;
+      }
+      .hero-stat {
+        background:rgba(255,255,255,0.12);
+        padding:0.8rem;
+        border-radius:0.9rem;
+        border:1px solid rgba(255,255,255,0.3);
+        text-align:left;
+      }
+      .hero-stat-value {
+        font-size:1.4rem;
+        font-weight:600;
+        margin-bottom:0.1rem;
+      }
+      .hero-stat-label {
+        font-size:0.7rem;
+        color:#ddd6fe;
+      }
+
+      /* Card, badge, button */
+      .card {
+        background:#ffffff;
+        border-radius:1.1rem;
+        box-shadow:0 10px 25px rgba(15,23,42,0.12);
+      }
+      .card-inner { padding:1.5rem; }
+
+      .btn {
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        padding:0.4rem 0.9rem;
+        background:#ffffff;
+        cursor:pointer;
+        font-size:0.8rem;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:0.3rem;
+      }
+      .btn:hover { background:#f3f4f6; }
+      .btn-sm { padding:0.3rem 0.8rem; font-size:0.78rem; }
+      .btn-primary {
+        background:#2563eb;
+        border-color:#2563eb;
+        color:#e5e7eb;
+      }
+      .btn-primary:hover { background:#1d4ed8; }
+
+      .badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.15rem 0.55rem;
+        border-radius:9999px;
+        font-size:0.7rem;
+        border:1px solid transparent;
+      }
+      .badge-outline {
+        border-color:#e5e7eb;
+        background:transparent;
+        color:#4b5563;
+      }
+
+      /* Roadmap selection grid */
+      .roadmap-grid {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .roadmap-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+      @media (min-width:1024px) {
+        .roadmap-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      }
+
+      .roadmap-card {
+        padding:1.25rem;
+        border-radius:1rem;
+        border:2px solid transparent;
+        cursor:pointer;
+        transition:box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      }
+      .roadmap-card:hover {
+        box-shadow:0 10px 25px rgba(15,23,42,0.16);
+        transform:translateY(-1px);
+      }
+      .roadmap-card.active {
+        border-color:#4f46e5;
+        background:#eef2ff;
+      }
+
+      .text-muted { color:#6b7280; }
+      .text-xs { font-size:0.75rem; }
+      .text-sm { font-size:0.82rem; }
+
+      /* Selected roadmap */
+      .stats-strip {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:0.75rem;
+        padding:1.1rem;
+        background:#f3f4f6;
+        border-radius:1rem;
+        margin-bottom:1.2rem;
+      }
+      @media (min-width:768px) {
+        .stats-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
+      }
+      .stat-box {
+        text-align:center;
+      }
+      .stat-value {
+        font-size:1.3rem;
+        font-weight:600;
+        margin-bottom:0.1rem;
+      }
+      .stat-label {
+        font-size:0.78rem;
+        color:#6b7280;
+      }
+
+      /* Timeline */
+      .steps-list {
+        display:flex;
+        flex-direction:column;
+        gap:1.3rem;
+      }
+      .step-row {
+        position:relative;
+        display:flex;
+        gap:1rem;
+      }
+      .step-marker-col {
+        width:3.5rem;
+        position:relative;
+        display:flex;
+        justify-content:center;
+      }
+      .step-circle {
+        width:2.5rem;
+        height:2.5rem;
+        border-radius:9999px;
+        border:2px solid #e5e7eb;
+        background:#ffffff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:0.9rem;
+        z-index:1;
+      }
+      .step-circle.completed {
+        background:#22c55e;
+        border-color:#22c55e;
+        color:#ecfdf5;
+      }
+      .step-line {
+        position:absolute;
+        top:2.5rem;
+        bottom:-1.3rem;
+        width:2px;
+        background:#e5e7eb;
+        left:50%;
+        transform:translateX(-50%);
+      }
+
+      .step-card {
+        flex:1;
+        border-radius:1rem;
+        border:1px solid #e5e7eb;
+        padding:1.2rem;
+        background:#ffffff;
+        box-shadow:0 8px 20px rgba(15,23,42,0.07);
+        transition:box-shadow 0.15s ease, transform 0.15s ease;
+      }
+      .step-card:hover {
+        box-shadow:0 12px 26px rgba(15,23,42,0.12);
+        transform:translateY(-1px);
+      }
+
+      .step-meta {
+        margin-top:0.2rem;
+      }
+
+      .pill-group {
+        display:flex;
+        flex-wrap:wrap;
+        gap:0.3rem;
+      }
+
+      .badge-skill {
+        background:#f3e8ff;
+        border-color:#e9d5ff;
+        color:#6b21a8;
+      }
+
+      /* Responsive helpers */
+      .flex { display:flex; }
+      .flex-between { display:flex; justify-content:space-between; align-items:center; }
+      .flex-center { display:flex; align-items:center; }
+      .gap-4 { gap:1rem; }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <!-- Header -->
+        <section class="hero">
+          <div class="hero-inner">
+            <div>
+              <div class="hero-chip">
+                <span>🗺</span>
+                <span>Career Paths</span>
+              </div>
+              <h1 style="color:#f5f3ff;margin-bottom:0.2rem;">Learning Roadmaps</h1>
+              <p style="font-size:0.85rem;color:#ddd6fe;">
+                Step-by-step guides from beginner to advanced.
+              </p>
+            </div>
+            <div class="hero-stat-grid">
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="heroPaths">0</div>
+                <div class="hero-stat-label">Career Paths</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="heroSteps">0</div>
+                <div class="hero-stat-label">Steps in current path</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Roadmap Selection -->
+        <section class="roadmap-grid" id="roadmapGrid"></section>
+
+        <!-- Selected Roadmap Details -->
+        <section class="card">
+          <div class="card-inner">
+            <div class="flex-between" style="margin-bottom:1.2rem;flex-wrap:wrap;gap:0.8rem;">
+              <div class="flex" style="align-items:center;gap:0.8rem;">
+                <div id="selectedIcon" style="font-size:2.3rem;">🌐</div>
+                <div>
+                  <h2 id="selectedName" style="margin-bottom:0.15rem;">Roadmap</h2>
+                  <div id="selectedDesc" class="text-muted text-sm"></div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm">
+                <span>⭐</span>
+                <span>Save Roadmap</span>
+              </button>
+            </div>
+
+            <!-- Progress Overview -->
+            <div class="stats-strip">
+              <div class="stat-box">
+                <div class="stat-value" id="statSteps">0</div>
+                <div class="stat-label">Total Steps</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-value" id="statDuration">-</div>
+                <div class="stat-label">Est. Duration</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-value">0%</div>
+                <div class="stat-label">Progress</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-value" id="statLevel">-</div>
+                <div class="stat-label">Level</div>
+              </div>
+            </div>
+
+            <!-- Steps -->
+            <div class="steps-list" id="stepsList"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const roadmaps = [
+        {
+          id: "web-dev",
+          name: "Web Development",
+          icon: "🌐",
+          description: "Frontend & Backend Development",
+          totalDuration: "6-9 months",
+          difficulty: "Beginner",
+          steps: [
+            {
+              id: 1,
+              title: "HTML & CSS Fundamentals",
+              description: "Learn the building blocks of web development",
+              duration: "2-3 weeks",
+              resources: ["MDN Web Docs", "freeCodeCamp", "W3Schools", "CSS Tricks"],
+              skills: ["HTML5", "CSS3", "Flexbox", "Grid", "Responsive Design"],
+            },
+            {
+              id: 2,
+              title: "JavaScript Basics",
+              description: "Master the programming language of the web",
+              duration: "4-6 weeks",
+              resources: [
+                "JavaScript.info",
+                "Eloquent JavaScript",
+                "freeCodeCamp",
+                "Codecademy",
+              ],
+              skills: [
+                "Variables",
+                "Functions",
+                "DOM Manipulation",
+                "ES6+",
+                "Async/Await",
+              ],
+            },
+            {
+              id: 3,
+              title: "Frontend Framework - React",
+              description: "Build modern interactive user interfaces",
+              duration: "6-8 weeks",
+              resources: [
+                "React Official Docs",
+                "Scrimba React",
+                "Udemy",
+                "YouTube - Traversy Media",
+              ],
+              skills: [
+                "Components",
+                "Hooks",
+                "State Management",
+                "React Router",
+                "Context API",
+              ],
+            },
+            {
+              id: 4,
+              title: "Backend - Node.js & Express",
+              description: "Server-side JavaScript development",
+              duration: "4-6 weeks",
+              resources: [
+                "Node.js Docs",
+                "Express.js Guide",
+                "The Net Ninja",
+                "Academind",
+              ],
+              skills: [
+                "Node.js",
+                "Express.js",
+                "REST APIs",
+                "Middleware",
+                "Authentication",
+              ],
+            },
+            {
+              id: 5,
+              title: "Database - MongoDB/PostgreSQL",
+              description: "Data storage and management",
+              duration: "3-4 weeks",
+              resources: [
+                "MongoDB University",
+                "PostgreSQL Tutorial",
+                "Database Design",
+                "SQL Practice",
+              ],
+              skills: [
+                "MongoDB",
+                "Mongoose",
+                "SQL",
+                "Database Design",
+                "CRUD Operations",
+              ],
+            },
+            {
+              id: 6,
+              title: "Version Control - Git & GitHub",
+              description: "Collaborate and manage code versions",
+              duration: "1-2 weeks",
+              resources: [
+                "Git Documentation",
+                "GitHub Learning Lab",
+                "Atlassian Git Tutorial",
+              ],
+              skills: [
+                "Git Commands",
+                "Branching",
+                "Merging",
+                "Pull Requests",
+                "Collaboration",
+              ],
+            },
+            {
+              id: 7,
+              title: "Build Projects",
+              description: "Create a portfolio with real-world projects",
+              duration: "8-12 weeks",
+              resources: [
+                "Project Ideas",
+                "Frontend Mentor",
+                "DevChallenges",
+                "Build Your Own X",
+              ],
+              skills: [
+                "Portfolio Website",
+                "E-commerce App",
+                "Social Media Clone",
+                "Blog Platform",
+              ],
+            },
+          ],
+        },
+        {
+          id: "data-science",
+          name: "Data Science & ML",
+          icon: "📊",
+          description: "Analytics & Machine Learning",
+          totalDuration: "8-12 months",
+          difficulty: "Intermediate",
+          steps: [
+            {
+              id: 1,
+              title: "Python Programming",
+              description: "Master Python for data science",
+              duration: "3-4 weeks",
+              resources: [
+                "Python.org",
+                "Codecademy Python",
+                "Automate Boring Stuff",
+                "Real Python",
+              ],
+              skills: [
+                "Python Basics",
+                "Data Types",
+                "Functions",
+                "OOP",
+                "File Handling",
+              ],
+            },
+            {
+              id: 2,
+              title: "Mathematics for Data Science",
+              description: "Essential mathematical foundations",
+              duration: "6-8 weeks",
+              resources: ["Khan Academy", "3Blue1Brown", "MIT OCW", "StatQuest"],
+              skills: [
+                "Linear Algebra",
+                "Calculus",
+                "Statistics",
+                "Probability",
+                "Optimization",
+              ],
+            },
+            {
+              id: 3,
+              title: "Data Manipulation - Pandas & NumPy",
+              description: "Work with data efficiently",
+              duration: "3-4 weeks",
+              resources: ["Pandas Docs", "NumPy Docs", "Kaggle Learn", "DataCamp"],
+              skills: [
+                "Pandas",
+                "NumPy",
+                "Data Cleaning",
+                "Data Wrangling",
+                "EDA",
+              ],
+            },
+            {
+              id: 4,
+              title: "Data Visualization",
+              description: "Visualize insights from data",
+              duration: "2-3 weeks",
+              resources: [
+                "Matplotlib",
+                "Seaborn",
+                "Plotly",
+                "Tableau Public",
+              ],
+              skills: [
+                "Matplotlib",
+                "Seaborn",
+                "Plotly",
+                "Dashboard Creation",
+                "Storytelling",
+              ],
+            },
+            {
+              id: 5,
+              title: "Machine Learning Fundamentals",
+              description: "Core ML algorithms and concepts",
+              duration: "8-10 weeks",
+              resources: [
+                "Coursera ML",
+                "Fast.ai",
+                "Scikit-learn",
+                "Google ML Crash Course",
+              ],
+              skills: [
+                "Supervised Learning",
+                "Unsupervised Learning",
+                "Model Evaluation",
+                "Feature Engineering",
+              ],
+            },
+            {
+              id: 6,
+              title: "Deep Learning",
+              description: "Neural networks and advanced ML",
+              duration: "6-8 weeks",
+              resources: [
+                "Deep Learning Specialization",
+                "TensorFlow",
+                "PyTorch",
+                "Fast.ai",
+              ],
+              skills: [
+                "Neural Networks",
+                "CNN",
+                "RNN",
+                "Transfer Learning",
+                "TensorFlow/PyTorch",
+              ],
+            },
+            {
+              id: 7,
+              title: "Real-World Projects",
+              description: "Build a strong portfolio",
+              duration: "8-12 weeks",
+              resources: [
+                "Kaggle Competitions",
+                "GitHub Projects",
+                "Personal Projects",
+              ],
+              skills: [
+                "Predictive Models",
+                "NLP Projects",
+                "Computer Vision",
+                "Deployment",
+              ],
+            },
+          ],
+        },
+        {
+          id: "mobile-dev",
+          name: "Mobile Development",
+          icon: "📱",
+          description: "iOS & Android Apps",
+          totalDuration: "5-7 months",
+          difficulty: "Intermediate",
+          steps: [
+            {
+              id: 1,
+              title: "Choose Your Path",
+              description:
+                "React Native (Cross-platform) or Native Development",
+              duration: "1 week",
+              resources: [
+                "React Native Docs",
+                "Flutter Docs",
+                "Swift Docs",
+                "Kotlin Docs",
+              ],
+              skills: [
+                "Platform Decision",
+                "Development Environment Setup",
+              ],
+            },
+            {
+              id: 2,
+              title: "JavaScript/Dart Fundamentals",
+              description: "Programming language basics",
+              duration: "3-4 weeks",
+              resources: [
+                "JavaScript.info",
+                "Dart.dev",
+                "Codecademy",
+                "Udemy Courses",
+              ],
+              skills: [
+                "Language Syntax",
+                "Async Programming",
+                "OOP Concepts",
+              ],
+            },
+            {
+              id: 3,
+              title: "React Native / Flutter Basics",
+              description: "Mobile framework fundamentals",
+              duration: "6-8 weeks",
+              resources: [
+                "Official Documentation",
+                "YouTube Tutorials",
+                "Udemy",
+                "Pluralsight",
+              ],
+              skills: [
+                "Components",
+                "Navigation",
+                "State Management",
+                "Styling",
+                "APIs",
+              ],
+            },
+            {
+              id: 4,
+              title: "Mobile UI/UX Design",
+              description: "Design principles for mobile",
+              duration: "2-3 weeks",
+              resources: [
+                "Material Design",
+                "Human Interface Guidelines",
+                "Figma",
+                "Adobe XD",
+              ],
+              skills: [
+                "UI Design",
+                "UX Principles",
+                "Responsive Layouts",
+                "Animations",
+              ],
+            },
+            {
+              id: 5,
+              title: "Native Features & APIs",
+              description: "Camera, location, notifications, etc.",
+              duration: "3-4 weeks",
+              resources: [
+                "React Native APIs",
+                "Flutter Packages",
+                "Native Modules",
+              ],
+              skills: [
+                "Camera Access",
+                "Geolocation",
+                "Push Notifications",
+                "Storage",
+              ],
+            },
+            {
+              id: 6,
+              title: "Backend Integration",
+              description: "Connect to APIs and databases",
+              duration: "2-3 weeks",
+              resources: [
+                "Firebase",
+                "REST APIs",
+                "GraphQL",
+                "Authentication",
+              ],
+              skills: [
+                "API Integration",
+                "Authentication",
+                "Real-time Updates",
+                "Cloud Storage",
+              ],
+            },
+            {
+              id: 7,
+              title: "Testing & Deployment",
+              description: "Testing and publishing your app",
+              duration: "2-3 weeks",
+              resources: [
+                "Jest",
+                "Detox",
+                "App Store Guidelines",
+                "Play Store Guidelines",
+              ],
+              skills: [
+                "Unit Testing",
+                "E2E Testing",
+                "App Store Deployment",
+                "Play Store Deployment",
+              ],
+            },
+          ],
+        },
+        {
+          id: "cybersecurity",
+          name: "Cybersecurity",
+          icon: "🔒",
+          description: "Security & Ethical Hacking",
+          totalDuration: "10-12 months",
+          difficulty: "Advanced",
+          steps: [
+            {
+              id: 1,
+              title: "Networking Fundamentals",
+              description:
+                "Understanding network protocols and architecture",
+              duration: "4-6 weeks",
+              resources: [
+                "CompTIA Network+",
+                "Cisco CCNA",
+                "Professor Messer",
+                "Cybrary",
+              ],
+              skills: ["TCP/IP", "DNS", "HTTP/HTTPS", "Firewalls", "VPN"],
+            },
+            {
+              id: 2,
+              title: "Linux & Command Line",
+              description: "Master Linux for security operations",
+              duration: "3-4 weeks",
+              resources: [
+                "Linux Journey",
+                "OverTheWire",
+                "Linux Academy",
+                "Ubuntu Tutorials",
+              ],
+              skills: [
+                "Linux Commands",
+                "Shell Scripting",
+                "File Permissions",
+                "Package Management",
+              ],
+            },
+            {
+              id: 3,
+              title: "Security Fundamentals",
+              description: "Core security concepts and principles",
+              duration: "6-8 weeks",
+              resources: [
+                "CompTIA Security+",
+                "SANS",
+                "Cybrary",
+                "Professor Messer",
+              ],
+              skills: [
+                "CIA Triad",
+                "Authentication",
+                "Encryption",
+                "Security Policies",
+                "Risk Management",
+              ],
+            },
+            {
+              id: 4,
+              title: "Web Application Security",
+              description: "Securing web applications",
+              duration: "4-6 weeks",
+              resources: [
+                "OWASP",
+                "PortSwigger Academy",
+                "HackerOne",
+                "BugCrowd",
+              ],
+              skills: [
+                "OWASP Top 10",
+                "XSS",
+                "SQL Injection",
+                "CSRF",
+                "Security Headers",
+              ],
+            },
+            {
+              id: 5,
+              title: "Penetration Testing",
+              description: "Ethical hacking techniques",
+              duration: "8-10 weeks",
+              resources: [
+                "Metasploit",
+                "Kali Linux",
+                "Hack The Box",
+                "TryHackMe",
+              ],
+              skills: [
+                "Reconnaissance",
+                "Scanning",
+                "Exploitation",
+                "Post-Exploitation",
+                "Reporting",
+              ],
+            },
+            {
+              id: 6,
+              title: "Cryptography",
+              description: "Encryption and secure communications",
+              duration: "3-4 weeks",
+              resources: [
+                "Cryptography Course",
+                "Applied Cryptography",
+                "Crypto101",
+              ],
+              skills: [
+                "Symmetric Encryption",
+                "Asymmetric Encryption",
+                "Hashing",
+                "Digital Signatures",
+                "PKI",
+              ],
+            },
+            {
+              id: 7,
+              title: "Security Tools & Certifications",
+              description:
+                "Industry tools and professional certifications",
+              duration: "Ongoing",
+              resources: ["CEH", "OSCP", "CISSP", "Security Tools Documentation"],
+              skills: ["Wireshark", "Nmap", "Burp Suite", "Professional Certifications"],
+            },
+          ],
+        },
+        {
+          id: "cloud-computing",
+          name: "Cloud Computing",
+          icon: "☁️",
+          description: "AWS, Azure & DevOps",
+          totalDuration: "6-8 months",
+          difficulty: "Intermediate",
+          steps: [
+            {
+              id: 1,
+              title: "Cloud Computing Basics",
+              description: "Understanding cloud concepts",
+              duration: "2-3 weeks",
+              resources: [
+                "AWS Cloud Practitioner",
+                "Azure Fundamentals",
+                "Google Cloud Basics",
+              ],
+              skills: [
+                "IaaS, PaaS, SaaS",
+                "Cloud Models",
+                "Service Models",
+                "Pricing",
+              ],
+            },
+            {
+              id: 2,
+              title: "Linux & Networking",
+              description: "Essential infrastructure knowledge",
+              duration: "3-4 weeks",
+              resources: [
+                "Linux Academy",
+                "Networking Fundamentals",
+                "Command Line",
+              ],
+              skills: [
+                "Linux Administration",
+                "Networking",
+                "SSH",
+                "Shell Scripting",
+              ],
+            },
+            {
+              id: 3,
+              title: "AWS/Azure Core Services",
+              description: "Master cloud platform services",
+              duration: "6-8 weeks",
+              resources: [
+                "AWS Solutions Architect",
+                "Azure Administrator",
+                "A Cloud Guru",
+              ],
+              skills: [
+                "EC2/VMs",
+                "S3/Storage",
+                "VPC/Networking",
+                "IAM",
+                "Load Balancers",
+              ],
+            },
+            {
+              id: 4,
+              title: "Containers & Orchestration",
+              description: "Docker and Kubernetes",
+              duration: "4-6 weeks",
+              resources: [
+                "Docker Docs",
+                "Kubernetes Docs",
+                "Docker Mastery",
+                "KodeKloud",
+              ],
+              skills: [
+                "Docker",
+                "Docker Compose",
+                "Kubernetes",
+                "Container Registry",
+                "Microservices",
+              ],
+            },
+            {
+              id: 5,
+              title: "CI/CD & DevOps",
+              description: "Automation and deployment pipelines",
+              duration: "4-6 weeks",
+              resources: [
+                "Jenkins",
+                "GitLab CI",
+                "GitHub Actions",
+                "DevOps Roadmap",
+              ],
+              skills: [
+                "CI/CD Pipelines",
+                "Jenkins",
+                "GitLab",
+                "Automated Testing",
+                "Deployment Strategies",
+              ],
+            },
+            {
+              id: 6,
+              title: "Infrastructure as Code",
+              description: "Terraform and CloudFormation",
+              duration: "3-4 weeks",
+              resources: [
+                "Terraform Docs",
+                "CloudFormation",
+                "Pulumi",
+                "IaC Best Practices",
+              ],
+              skills: [
+                "Terraform",
+                "CloudFormation",
+                "Ansible",
+                "Configuration Management",
+              ],
+            },
+            {
+              id: 7,
+              title: "Monitoring & Security",
+              description: "Cloud security and observability",
+              duration: "3-4 weeks",
+              resources: [
+                "CloudWatch",
+                "Prometheus",
+                "Grafana",
+                "Cloud Security",
+              ],
+              skills: [
+                "Monitoring",
+                "Logging",
+                "Alerting",
+                "Security Best Practices",
+                "Cost Optimization",
+              ],
+            },
+          ],
+        },
+        {
+          id: "devops",
+          name: "DevOps Engineering",
+          icon: "⚙️",
+          description: "Automation & Infrastructure",
+          totalDuration: "7-9 months",
+          difficulty: "Advanced",
+          steps: [
+            {
+              id: 1,
+              title: "Programming Fundamentals",
+              description: "Python or Go for automation",
+              duration: "4-6 weeks",
+              resources: [
+                "Python.org",
+                "Go by Example",
+                "Automate with Python",
+              ],
+              skills: [
+                "Python/Go",
+                "Scripting",
+                "Data Structures",
+                "APIs",
+              ],
+            },
+            {
+              id: 2,
+              title: "Linux System Administration",
+              description: "Deep dive into Linux",
+              duration: "6-8 weeks",
+              resources: [
+                "Linux Academy",
+                "RHCSA",
+                "Linux Foundation",
+              ],
+              skills: [
+                "System Administration",
+                "Networking",
+                "Security",
+                "Performance Tuning",
+              ],
+            },
+            {
+              id: 3,
+              title: "Version Control & Git",
+              description: "Source code management",
+              duration: "2-3 weeks",
+              resources: [
+                "Git Documentation",
+                "Pro Git Book",
+                "GitHub Skills",
+              ],
+              skills: [
+                "Git",
+                "GitHub/GitLab",
+                "Branching Strategies",
+                "Code Review",
+              ],
+            },
+            {
+              id: 4,
+              title: "Containerization",
+              description: "Docker and container technologies",
+              duration: "4-5 weeks",
+              resources: [
+                "Docker Docs",
+                "Docker Deep Dive",
+                "Play with Docker",
+              ],
+              skills: [
+                "Docker",
+                "Docker Compose",
+                "Container Networking",
+                "Multi-stage Builds",
+              ],
+            },
+            {
+              id: 5,
+              title: "Kubernetes Orchestration",
+              description: "Container orchestration at scale",
+              duration: "6-8 weeks",
+              resources: [
+                "Kubernetes Docs",
+                "CKA Prep",
+                "KodeKloud",
+                "Kubernetes Patterns",
+              ],
+              skills: [
+                "Kubernetes Architecture",
+                "Deployments",
+                "Services",
+                "Helm",
+                "Troubleshooting",
+              ],
+            },
+            {
+              id: 6,
+              title: "CI/CD Pipelines",
+              description: "Automated build and deployment",
+              duration: "4-6 weeks",
+              resources: [
+                "Jenkins",
+                "GitLab CI/CD",
+                "GitHub Actions",
+                "ArgoCD",
+              ],
+              skills: [
+                "Pipeline Design",
+                "Automated Testing",
+                "Deployment Automation",
+                "GitOps",
+              ],
+            },
+            {
+              id: 7,
+              title: "Infrastructure as Code",
+              description: "Terraform, Ansible, and more",
+              duration: "5-6 weeks",
+              resources: [
+                "Terraform",
+                "Ansible",
+                "Pulumi",
+                "IaC Patterns",
+              ],
+              skills: [
+                "Terraform",
+                "Ansible",
+                "Configuration Management",
+                "State Management",
+              ],
+            },
+            {
+              id: 8,
+              title: "Monitoring & Observability",
+              description: "System monitoring and logging",
+              duration: "3-4 weeks",
+              resources: [
+                "Prometheus",
+                "Grafana",
+                "ELK Stack",
+                "Datadog",
+              ],
+              skills: [
+                "Prometheus",
+                "Grafana",
+                "ELK/EFK",
+                "APM",
+                "Distributed Tracing",
+              ],
+            },
+          ],
+        },
+      ];
+
+      let selectedId = "web-dev";
+
+      const roadmapGrid = document.getElementById("roadmapGrid");
+      const heroPaths = document.getElementById("heroPaths");
+      const heroSteps = document.getElementById("heroSteps");
+      const selectedIcon = document.getElementById("selectedIcon");
+      const selectedName = document.getElementById("selectedName");
+      const selectedDesc = document.getElementById("selectedDesc");
+      const statSteps = document.getElementById("statSteps");
+      const statDuration = document.getElementById("statDuration");
+      const statLevel = document.getElementById("statLevel");
+      const stepsList = document.getElementById("stepsList");
+
+      function getCurrent() {
+        return roadmaps.find((r) => r.id === selectedId) || roadmaps[0];
+      }
+
+      function renderSelectionCards() {
+        heroPaths.textContent = roadmaps.length;
+        roadmapGrid.innerHTML = "";
+        const current = getCurrent();
+        heroSteps.textContent = current.steps.length;
+
+        roadmaps.forEach((r) => {
+          const div = document.createElement("div");
+          div.className = "card roadmap-card" + (r.id === selectedId ? " active" : "");
+          div.innerHTML = `
+            <div class="flex" style="align-items:flex-start;gap:0.9rem;">
+              <div style="font-size:2rem;">${r.icon}</div>
+              <div style="flex:1;">
+                <h3 style="margin-bottom:0.15rem;">${r.name}</h3>
+                <div class="text-muted text-sm" style="margin-bottom:0.4rem;">${r.description}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+                  <span class="badge badge-outline">
+                    ⏱ ${r.totalDuration}
+                  </span>
+                  <span class="badge" style="
+                    ${
+                      r.difficulty === "Beginner"
+                        ? "background:#dcfce7;color:#166534;border-color:#bbf7d0;"
+                        : r.difficulty === "Intermediate"
+                        ? "background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe;"
+                        : "background:#fee2e2;color:#b91c1c;border-color:#fecaca;"
+                    }
+                  ">
+                    ${r.difficulty}
+                  </span>
+                </div>
+              </div>
+            </div>
+          `;
+          div.addEventListener("click", () => {
+            selectedId = r.id;
+            renderSelectionCards();
+            renderCurrentDetails();
+          });
+          roadmapGrid.appendChild(div);
+        });
+      }
+
+      function renderCurrentDetails() {
+        const current = getCurrent();
+        selectedIcon.textContent = current.icon;
+        selectedName.textContent = current.name;
+        selectedDesc.textContent = current.description;
+        statSteps.textContent = current.steps.length;
+        statDuration.textContent = current.totalDuration;
+        statLevel.textContent = current.difficulty;
+
+        stepsList.innerHTML = "";
+        current.steps.forEach((step, index) => {
+          const row = document.createElement("div");
+          row.className = "step-row";
+
+          const col = document.createElement("div");
+          col.className = "step-marker-col";
+
+          const circle = document.createElement("div");
+          circle.className = "step-circle" + (step.completed ? " completed" : "");
+          circle.textContent = step.completed ? "✓" : index + 1;
+
+          col.appendChild(circle);
+
+          if (index < current.steps.length - 1) {
+            const line = document.createElement("div");
+            line.className = "step-line";
+            col.appendChild(line);
+          }
+
+          const card = document.createElement("div");
+          card.className = "step-card";
+          card.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem;">
+              <div>
+                <h3 style="margin-bottom:0.2rem;">${step.title}</h3>
+                <div class="text-muted text-sm" style="margin-bottom:0.35rem;">
+                  ${step.description}
+                </div>
+                <span class="badge badge-outline">
+                  ⏱ ${step.duration}
+                </span>
+              </div>
+            </div>
+
+            <div style="margin-top:0.7rem;margin-bottom:0.5rem;">
+              <div class="text-muted text-sm" style="margin-bottom:0.25rem;">Skills to Learn:</div>
+              <div class="pill-group">
+                ${step.skills
+                  .map(
+                    (s) =>
+                      `<span class="badge badge-skill">${s}</span>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+
+            <div>
+              <div class="text-muted text-sm" style="margin-bottom:0.25rem;">Recommended Resources:</div>
+              <div class="pill-group">
+                ${step.resources
+                  .map(
+                    (r) =>
+                      `<span class="badge badge-outline">${r}</span>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+
+            <div style="margin-top:0.8rem;padding-top:0.7rem;border-top:1px solid #e5e7eb;">
+              <button class="btn btn-sm ${
+                step.completed ? "" : "btn-primary"
+              }">
+                <span>${step.completed ? "Review" : "Start Learning"}</span>
+                <span>➜</span>
+              </button>
+            </div>
+          `;
+
+          row.appendChild(col);
+          row.appendChild(card);
+          stepsList.appendChild(row);
+        });
+      }
+
+      // Init
+      renderSelectionCards();
+      renderCurrentDetails();
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Smart Attendance – VIDYA-CUE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background-color: #f3f4f6;
+        color: #111827;
+        padding: 1.5rem;
+      }
+      .page-root { max-width: 1200px; margin: 0 auto; }
+      h2 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.25rem; }
+      h3 { font-size: 1.05rem; font-weight: 600; }
+      p { font-size: 0.85rem; color: #6b7280; }
+
+      .space-y-6 > * + * { margin-top: 1.5rem; }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(1, minmax(0,1fr));
+        gap: 1rem;
+      }
+      @media (min-width: 768px) {
+        .grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: minmax(0,1fr);
+        gap: 1.5rem;
+      }
+      @media (min-width: 1024px) {
+        .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      }
+
+      .card {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(15,23,42,0.08);
+        padding: 1.5rem;
+      }
+      .mb-4 { margin-bottom: 1rem; }
+
+      .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .stat-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+      }
+      .stat-text-label { font-size: 0.8rem; color: #6b7280; }
+      .stat-text-value { font-size: 1.5rem; font-weight: 600; margin-top: 0.1rem; }
+
+      .text-green { color: #16a34a; }
+      .text-yellow { color: #ca8a04; }
+      .text-red { color: #dc2626; }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.15rem 0.55rem;
+        font-size: 0.7rem;
+        border-radius: 9999px;
+        font-weight: 500;
+      }
+      .badge-green { background:#dcfce7; color:#166534; }
+      .badge-red { background:#fee2e2; color:#b91c1c; }
+      .badge-yellow { background:#fef9c3; color:#854d0e; }
+
+      /* Subject list */
+      .subjects-list > * + * { margin-top: 1rem; }
+      .subject-row { display: flex; align-items: center; gap: 1rem; }
+      .subject-chart {
+        width: 3.75rem; height: 3.75rem;
+        border-radius: 9999px;
+        background: conic-gradient(#10b981 var(--attended-angle), #ef4444 0);
+        display:flex; align-items:center; justify-content:center;
+      }
+      .subject-chart-inner {
+        width: 2.4rem; height: 2.4rem;
+        border-radius:9999px;
+        background:#ffffff;
+        display:flex;align-items:center;justify-content:center;
+        font-size:0.7rem; font-weight:600; color:#4b5563;
+      }
+      .subject-info { flex: 1; }
+      .subject-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.2rem; }
+      .subject-name { font-size:0.9rem; font-weight:500; }
+      .subject-percent { font-size:0.9rem; font-weight:600; }
+      .subject-meta { display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; color:#6b7280; }
+
+      /* Calendar */
+      .calendar-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+      .calendar-nav { display:flex; align-items:center; gap:0.4rem; }
+      .btn {
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        background:#ffffff;
+        padding:0.2rem 0.55rem;
+        font-size:0.75rem;
+        cursor:pointer;
+      }
+      .btn:hover { background:#f3f4f6; }
+      .calendar-month { font-size:0.8rem; font-weight:500; min-width:110px; text-align:center; }
+
+      .calendar-grid { display:flex; flex-direction:column; gap:0.4rem; }
+      .calendar-weekdays {
+        display:grid;
+        grid-template-columns: repeat(7,minmax(0,1fr));
+        gap:0.1rem;
+        font-size:0.7rem;
+        color:#6b7280;
+        text-align:center;
+      }
+      .calendar-weekdays div { padding:0.3rem 0; }
+      .calendar-days {
+        display:grid;
+        grid-template-columns: repeat(7,minmax(0,1fr));
+        gap:0.1rem;
+      }
+      .day-cell {
+        aspect-ratio: 1 / 1;
+        border-radius:0.5rem;
+        font-size:0.8rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        cursor:pointer;
+        border:1px solid transparent;
+      }
+      .day-empty { cursor:default; }
+      .day-normal:hover { background:#e5e7eb; }
+      .day-selected { background:#2563eb; color:#ffffff; border-color:#1d4ed8; }
+      .day-today { background:#dbeafe; color:#1d4ed8; }
+      .day-all-present { background:#dcfce7; color:#166534; }
+      .day-has-absent { background:#fee2e2; color:#b91c1c; }
+      .day-partial { background:#fef9c3; color:#854d0e; }
+
+      .calendar-legend {
+        display:flex;
+        flex-wrap:wrap;
+        gap:0.75rem;
+        margin-top:1rem;
+        padding-top:0.75rem;
+        border-top:1px solid #e5e7eb;
+        font-size:0.75rem;
+      }
+      .legend-item { display:flex; align-items:center; gap:0.3rem; }
+      .legend-dot {
+        width:0.9rem; height:0.9rem; border-radius:0.25rem; border:1px solid rgba(0,0,0,0.05);
+      }
+
+      /* Selected date + recent activity */
+      .activity-grid {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .activity-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+
+      .activity-item {
+        display:flex;
+        align-items:center;
+        gap:0.75rem;
+        padding:0.75rem;
+        border-radius:0.8rem;
+        background:#f3f4f6;
+      }
+      .activity-icon {
+        width:2.25rem; height:2.25rem;
+        border-radius:0.7rem;
+        display:flex; align-items:center; justify-content:center;
+        font-size:1.1rem;
+      }
+      .activity-content { flex:1; }
+      .activity-title { font-size:0.9rem; font-weight:500; margin-bottom:0.2rem; }
+      .activity-meta { font-size:0.75rem; color:#6b7280; display:flex; align-items:center; gap:0.4rem; }
+
+      .badge-small {
+        padding:0.1rem 0.4rem;
+        font-size:0.7rem;
+        border-radius:9999px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <div>
+          <h2>Smart Attendance</h2>
+          <p>Track your attendance across all subjects and classes.</p>
+        </div>
+
+        <!-- Overall Stats -->
+        <div class="grid-4" id="overallStats"></div>
+
+        <div class="grid-2">
+          <!-- Subject-wise -->
+          <section class="card">
+            <h3 class="mb-4">Subject-wise Attendance</h3>
+            <div class="subjects-list" id="subjectsList"></div>
+          </section>
+
+          <!-- Calendar -->
+          <section class="card">
+            <div class="calendar-header">
+              <h3>Attendance Calendar</h3>
+              <div class="calendar-nav">
+                <button class="btn" id="prevMonthBtn">‹</button>
+                <span class="calendar-month" id="monthLabel"></span>
+                <button class="btn" id="nextMonthBtn">›</button>
+              </div>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-weekdays">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+                <div>Thu</div><div>Fri</div><div>Sat</div>
+              </div>
+              <div class="calendar-days" id="calendarDays"></div>
+            </div>
+            <div class="calendar-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#dcfce7;"></div>
+                <span>All Present</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#fee2e2;"></div>
+                <span>Has Absent</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#fef9c3;"></div>
+                <span>Partial / Mixed</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#dbeafe;"></div>
+                <span>Today</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Selected date details -->
+        <section class="card" id="selectedDateCard" style="display:none;">
+          <h3 class="mb-4" id="selectedDateTitle"></h3>
+          <div class="activity-grid" id="selectedDateList"></div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="card">
+          <h3 class="mb-4">Recent Activity</h3>
+          <div class="space-y-4" id="recentActivityList"></div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const attendanceData = {
+        overall: 87.5,
+        totalClasses: 120,
+        attended: 105,
+        missed: 15,
+        subjects: [
+          { name: "Mathematics", attended: 28, total: 32, percentage: 87.5 },
+          { name: "Physics", attended: 25, total: 30, percentage: 83.3 },
+          { name: "Chemistry", attended: 22, total: 25, percentage: 88.0 },
+          { name: "Programming", attended: 18, total: 20, percentage: 90.0 },
+          { name: "English", attended: 12, total: 13, percentage: 92.3 },
+        ],
+        recentActivity: [
+          { date: "2024-12-02", subject: "Mathematics", status: "present", time: "09:00 AM" },
+          { date: "2024-12-01", subject: "Physics", status: "present", time: "11:00 AM" },
+          { date: "2024-12-01", subject: "Chemistry", status: "absent", time: "02:00 PM" },
+          { date: "2024-11-30", subject: "Programming", status: "present", time: "10:00 AM" },
+          { date: "2024-11-30", subject: "English", status: "present", time: "03:00 PM" },
+        ],
+        calendarData: {
+          "2024-12-02": [
+            { subject: "Mathematics", status: "present", time: "09:00 AM" },
+            { subject: "Chemistry", status: "present", time: "02:00 PM" },
+          ],
+          "2024-12-01": [
+            { subject: "Physics", status: "present", time: "11:00 AM" },
+            { subject: "Chemistry", status: "absent", time: "02:00 PM" },
+          ],
+          "2024-11-30": [
+            { subject: "Programming", status: "present", time: "10:00 AM" },
+            { subject: "English", status: "present", time: "03:00 PM" },
+          ],
+          "2024-11-29": [
+            { subject: "Mathematics", status: "present", time: "09:00 AM" },
+          ],
+          "2024-11-28": [
+            { subject: "Physics", status: "absent", time: "11:00 AM" },
+            { subject: "Programming", status: "present", time: "01:00 PM" },
+          ],
+        },
+      };
+
+      let selectedDate = null;
+      let currentMonth = new Date(2024, 11, 1); // December 2024
+
+      function attendanceColor(percent) {
+        if (percent >= 90) return "text-green";
+        if (percent >= 75) return "text-yellow";
+        return "text-red";
+      }
+
+      function renderOverallStats() {
+        const container = document.getElementById("overallStats");
+        container.innerHTML = "";
+
+        const stats = [
+          {
+            label: "Overall Attendance",
+            value: attendanceData.overall + "%",
+            icon: "📅",
+            bg: "#dbeafe",
+            color: attendanceColor(attendanceData.overall),
+          },
+          {
+            label: "Classes Attended",
+            value: attendanceData.attended,
+            icon: "✅",
+            bg: "#dcfce7",
+            color: "",
+          },
+          {
+            label: "Classes Missed",
+            value: attendanceData.missed,
+            icon: "❌",
+            bg: "#fee2e2",
+            color: "",
+          },
+          {
+            label: "Total Classes",
+            value: attendanceData.totalClasses,
+            icon: "⏱",
+            bg: "#ede9fe",
+            color: "",
+          },
+        ];
+
+        stats.forEach((s) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          const wrap = document.createElement("div");
+          wrap.className = "stat-card";
+
+          const icon = document.createElement("div");
+          icon.className = "stat-icon";
+          icon.style.background = s.bg;
+          icon.textContent = s.icon;
+
+          const text = document.createElement("div");
+          const label = document.createElement("p");
+          label.className = "stat-text-label";
+          label.textContent = s.label;
+
+          const value = document.createElement("p");
+          value.className = "stat-text-value";
+          if (s.color) value.classList.add(s.color);
+          value.textContent = s.value;
+
+          text.appendChild(label);
+          text.appendChild(value);
+
+          wrap.appendChild(icon);
+          wrap.appendChild(text);
+          card.appendChild(wrap);
+          container.appendChild(card);
+        });
+      }
+
+      function renderSubjects() {
+        const container = document.getElementById("subjectsList");
+        container.innerHTML = "";
+
+        attendanceData.subjects.forEach((subject) => {
+          const row = document.createElement("div");
+          row.className = "subject-row";
+
+          const chart = document.createElement("div");
+          chart.className = "subject-chart";
+          const angle = (subject.attended / subject.total) * 360;
+          chart.style.setProperty("--attended-angle", angle + "deg");
+
+          const inner = document.createElement("div");
+          inner.className = "subject-chart-inner";
+          inner.textContent = Math.round(subject.percentage) + "%";
+          chart.appendChild(inner);
+
+          const info = document.createElement("div");
+          info.className = "subject-info";
+
+          const top = document.createElement("div");
+          top.className = "subject-top";
+
+          const name = document.createElement("div");
+          name.className = "subject-name";
+          name.textContent = subject.name;
+
+          const percent = document.createElement("div");
+          percent.className = "subject-percent " + attendanceColor(subject.percentage);
+          percent.textContent = subject.percentage.toFixed(1) + "%";
+
+          top.appendChild(name);
+          top.appendChild(percent);
+
+          const meta = document.createElement("div");
+          meta.className = "subject-meta";
+          meta.innerHTML = `
+            <span>${subject.attended}/${subject.total} classes</span>
+            <span>${subject.total - subject.attended} missed</span>
+          `;
+
+          info.appendChild(top);
+          info.appendChild(meta);
+
+          row.appendChild(chart);
+          row.appendChild(info);
+          container.appendChild(row);
+        });
+      }
+
+      function getDaysInMonth(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        return {
+          year,
+          month,
+          daysInMonth: lastDay.getDate(),
+          startingDayOfWeek: firstDay.getDay(),
+        };
+      }
+
+      function formatDate(year, month, day) {
+        return (
+          year +
+          "-" +
+          String(month + 1).padStart(2, "0") +
+          "-" +
+          String(day).padStart(2, "0")
+        );
+      }
+
+      function getAttendanceStatus(dateStr) {
+        const data = attendanceData.calendarData[dateStr];
+        if (!data) return null;
+        const hasAbsent = data.some((item) => item.status === "absent");
+        const allPresent = data.every((item) => item.status === "present");
+        if (allPresent) return "all-present";
+        if (hasAbsent) return "has-absent";
+        return "partial";
+      }
+
+      function renderCalendar() {
+        const { year, month, daysInMonth, startingDayOfWeek } =
+          getDaysInMonth(currentMonth);
+
+        const monthNames = [
+          "January","February","March","April","May","June",
+          "July","August","September","October","November","December"
+        ];
+
+        document.getElementById("monthLabel").textContent =
+          monthNames[month] + " " + year;
+
+        const grid = document.getElementById("calendarDays");
+        grid.innerHTML = "";
+
+        // leading blanks
+        for (let i = 0; i < startingDayOfWeek; i++) {
+          const div = document.createElement("div");
+          div.className = "day-cell day-empty";
+          grid.appendChild(div);
+        }
+
+        const todayStr = "2024-12-02"; // demo; in real app use new Date()
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateStr = formatDate(year, month, day);
+          const status = getAttendanceStatus(dateStr);
+          const isToday = dateStr === todayStr;
+          const isSelected = selectedDate === dateStr;
+
+          const btn = document.createElement("div");
+          btn.textContent = day;
+          btn.className = "day-cell";
+
+          if (!status && !isToday && !isSelected) {
+            btn.classList.add("day-normal");
+          }
+
+          if (isSelected) btn.classList.add("day-selected");
+          else if (isToday) btn.classList.add("day-today");
+          else if (status === "all-present") btn.classList.add("day-all-present");
+          else if (status === "has-absent") btn.classList.add("day-has-absent");
+          else if (status === "partial") btn.classList.add("day-partial");
+
+          btn.addEventListener("click", () => {
+            selectedDate = dateStr;
+            renderCalendar();
+            renderSelectedDate();
+          });
+
+          grid.appendChild(btn);
+        }
+      }
+
+      function statusIcon(status) {
+        if (status === "present") return "✅";
+        if (status === "absent") return "❌";
+        return "⚠️";
+      }
+
+      function statusBadge(status) {
+        const span = document.createElement("span");
+        span.className = "badge badge-small";
+        if (status === "present") {
+          span.classList.add("badge-green");
+          span.textContent = "Present";
+        } else if (status === "absent") {
+          span.classList.add("badge-red");
+          span.textContent = "Absent";
+        } else {
+          span.classList.add("badge-yellow");
+          span.textContent = "Late";
+        }
+        return span;
+      }
+
+      function renderSelectedDate() {
+        const card = document.getElementById("selectedDateCard");
+        const title = document.getElementById("selectedDateTitle");
+        const list = document.getElementById("selectedDateList");
+
+        if (!selectedDate || !attendanceData.calendarData[selectedDate]) {
+          card.style.display = "none";
+          return;
+        }
+
+        card.style.display = "";
+        title.textContent = "Attendance Details for " + selectedDate;
+        list.innerHTML = "";
+
+        attendanceData.calendarData[selectedDate].forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "activity-item";
+
+          const icon = document.createElement("div");
+          icon.className = "activity-icon";
+          if (item.status === "present") {
+            icon.style.background = "#dcfce7";
+          } else if (item.status === "absent") {
+            icon.style.background = "#fee2e2";
+          } else {
+            icon.style.background = "#fef9c3";
+          }
+          icon.textContent = statusIcon(item.status);
+
+          const content = document.createElement("div");
+          content.className = "activity-content";
+
+          const titleEl = document.createElement("div");
+          titleEl.className = "activity-title";
+          titleEl.textContent = item.subject;
+
+          const meta = document.createElement("div");
+          meta.className = "activity-meta";
+          meta.innerHTML = `<span>📅 ${selectedDate}</span><span>⏱ ${item.time}</span>`;
+
+          content.appendChild(titleEl);
+          content.appendChild(meta);
+
+          row.appendChild(icon);
+          row.appendChild(content);
+          row.appendChild(statusBadge(item.status));
+
+          list.appendChild(row);
+        });
+      }
+
+      function renderRecentActivity() {
+        const container = document.getElementById("recentActivityList");
+        container.innerHTML = "";
+
+        attendanceData.recentActivity.forEach((activity) => {
+          const row = document.createElement("div");
+          row.className = "activity-item";
+
+          const icon = document.createElement("div");
+          icon.className = "activity-icon";
+          if (activity.status === "present") icon.style.background = "#dcfce7";
+          else if (activity.status === "absent") icon.style.background = "#fee2e2";
+          else icon.style.background = "#fef9c3";
+          icon.textContent = statusIcon(activity.status);
+
+          const content = document.createElement("div");
+          content.className = "activity-content";
+
+          const title = document.createElement("div");
+          title.className = "activity-title";
+          title.textContent = activity.subject;
+
+          const meta = document.createElement("div");
+          meta.className = "activity-meta";
+          meta.innerHTML =
+            `<span>📅 ${activity.date}</span><span>⏱ ${activity.time}</span>`;
+
+          content.appendChild(title);
+          content.appendChild(meta);
+
+          row.appendChild(icon);
+          row.appendChild(content);
+          row.appendChild(statusBadge(activity.status));
+
+          container.appendChild(row);
+        });
+      }
+
+      // Month navigation
+      document.getElementById("prevMonthBtn").addEventListener("click", () => {
+        currentMonth = new Date(
+          currentMonth.getFullYear(),
+          currentMonth.getMonth() - 1,
+          1
+        );
+        renderCalendar();
+        renderSelectedDate();
+      });
+      document.getElementById("nextMonthBtn").addEventListener("click", () => {
+        currentMonth = new Date(
+          currentMonth.getFullYear(),
+          currentMonth.getMonth() + 1,
+          1
+        );
+        renderCalendar();
+        renderSelectedDate();
+      });
+
+      // Initial render
+      renderOverallStats();
+      renderSubjects();
+      renderCalendar();
+      renderSelectedDate();
+      renderRecentActivity();
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

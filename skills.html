@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Skills & Labs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing:border-box; margin:0; padding:0; }
+
+      body {
+        font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        background:#f3f4f6;
+        color:#0f172a;
+        padding:1.5rem;
+      }
+      .page-root { max-width:1100px; margin:0 auto; }
+      .space-y-6 > * + * { margin-top:1.5rem; }
+
+      h2 { font-size:1.4rem; margin-bottom:0.15rem; }
+      h3 { font-size:1rem; }
+      h4 { font-size:0.9rem; }
+
+      .text-muted { color:#6b7280; }
+      .text-sm { font-size:0.8rem; }
+
+      .card {
+        background:#ffffff;
+        border-radius:1rem;
+        padding:1.25rem;
+        box-shadow:0 10px 25px rgba(15,23,42,0.12);
+        border:1px solid transparent;
+      }
+
+      .badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.1rem 0.6rem;
+        border-radius:9999px;
+        font-size:0.7rem;
+        border:1px solid transparent;
+        white-space:nowrap;
+      }
+      .badge-green { background:#dcfce7; color:#166534; border-color:#bbf7d0; }
+      .badge-blue { background:#dbeafe; color:#1d4ed8; border-color:#bfdbfe; }
+      .badge-yellow { background:#fef9c3; color:#854d0e; border-color:#fef08a; }
+
+      .progress {
+        width:100%;
+        height:0.4rem;
+        border-radius:9999px;
+        background:#e5e7eb;
+        overflow:hidden;
+      }
+      .progress-bar {
+        height:100%;
+        border-radius:9999px;
+        background:linear-gradient(90deg,#2563eb,#22c55e);
+        width:0%;
+      }
+
+      .grid-2 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+
+      .lab-grid {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+
+      .assignment-grid {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:0.6rem;
+      }
+      @media (min-width:768px) {
+        .assignment-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+
+      .skill-card {
+        padding:0.85rem;
+        border-radius:0.9rem;
+        background:#f9fafb;
+      }
+      .skill-header {
+        display:flex;
+        align-items:center;
+        gap:0.6rem;
+        margin-bottom:0.35rem;
+      }
+      .skill-icon {
+        width:2rem;
+        height:2rem;
+        border-radius:0.6rem;
+        background:#dbeafe;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:0.95rem;
+        color:#2563eb;
+      }
+      .skill-name { font-size:0.9rem; font-weight:600; }
+      .skill-cat { font-size:0.75rem; color:#6b7280; }
+      .skill-level { font-size:0.8rem; font-weight:600; }
+
+      .level-green { color:#16a34a; }
+      .level-blue { color:#2563eb; }
+      .level-yellow { color:#ca8a04; }
+      .level-red { color:#b91c1c; }
+
+      .lab-header {
+        display:flex;
+        justify-content:space-between;
+        gap:0.7rem;
+        margin-bottom:0.9rem;
+      }
+      .lab-heading h3 { margin-bottom:0.15rem; }
+      .lab-meta { font-size:0.78rem; color:#6b7280; }
+      .lab-progress-label { font-size:0.78rem; color:#6b7280; text-align:right; }
+      .lab-progress-value { font-size:1.1rem; font-weight:600; }
+
+      .assignment-card {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:0.6rem 0.7rem;
+        border-radius:0.8rem;
+        background:#f9fafb;
+        font-size:0.8rem;
+      }
+
+      .cert-card {
+        display:flex;
+        align-items:center;
+        gap:0.8rem;
+        padding:0.7rem 0.8rem;
+        border-radius:0.9rem;
+        background:#f9fafb;
+        font-size:0.8rem;
+      }
+      .cert-icon {
+        width:2.4rem;
+        height:2.4rem;
+        border-radius:0.8rem;
+        background:#ede9fe;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#6b21a8;
+        font-size:1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <div>
+          <h2>Skills and Labs</h2>
+          <p class="text-muted text-sm">
+            Track your technical skills development and lab progress.
+          </p>
+        </div>
+
+        <!-- Technical Skills -->
+        <section class="card">
+          <h3 style="font-weight:500;margin-bottom:0.9rem;">Technical Skills Progress</h3>
+          <div id="skillsGrid" class="grid-2"></div>
+        </section>
+
+        <!-- Lab Progress -->
+        <section id="labsSection" class="lab-grid"></section>
+
+        <!-- Certifications -->
+        <section class="card">
+          <h3 style="font-weight:500;margin-bottom:0.9rem;">Certifications &amp; Achievements</h3>
+          <div id="certList" class="space-y-4"></div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const skillsData = {
+        technical: [
+          { name: "Programming (C/C++)", level: 75, category: "Programming", icon: "💻" },
+          { name: "Web Development", level: 60, category: "Programming", icon: "🌐" },
+          { name: "Database Management", level: 50, category: "Programming", icon: "🗄️" },
+          { name: "Circuit Analysis", level: 80, category: "Electronics", icon: "🔌" },
+          { name: "Digital Logic", level: 70, category: "Electronics", icon: "⚙️" },
+          { name: "Laboratory Techniques", level: 85, category: "Lab Skills", icon: "⚗️" },
+        ],
+        labs: [
+          {
+            name: "Programming Lab",
+            instructor: "Mr. Vikash Singh",
+            schedule: "Mon, Wed 2:00-4:00 PM",
+            progress: 70,
+            assignments: [
+              { title: "Array Operations", status: "completed", marks: "18/20" },
+              { title: "Sorting Algorithms", status: "completed", marks: "20/20" },
+              { title: "Data Structures", status: "in-progress", marks: "-" },
+              { title: "File Handling", status: "pending", marks: "-" },
+            ],
+          },
+          {
+            name: "Physics Lab",
+            instructor: "Prof. Sunita Sharma",
+            schedule: "Tue, Thu 10:00-12:00 PM",
+            progress: 85,
+            assignments: [
+              { title: "Vernier Caliper", status: "completed", marks: "19/20" },
+              { title: "Pendulum Experiment", status: "completed", marks: "17/20" },
+              { title: "Optics Experiment", status: "completed", marks: "20/20" },
+              { title: "Wave Motion", status: "in-progress", marks: "-" },
+            ],
+          },
+          {
+            name: "Chemistry Lab",
+            instructor: "Dr. Amit Gupta",
+            schedule: "Fri 9:00-12:00 PM",
+            progress: 60,
+            assignments: [
+              { title: "Qualitative Analysis", status: "completed", marks: "16/20" },
+              { title: "Titration Methods", status: "completed", marks: "18/20" },
+              { title: "Organic Synthesis", status: "pending", marks: "-" },
+              { title: "Spectroscopy", status: "pending", marks: "-" },
+            ],
+          },
+        ],
+        certifications: [
+          {
+            name: "C Programming Basics",
+            provider: "College Certificate",
+            date: "2024-08-15",
+            status: "completed",
+          },
+          {
+            name: "Lab Safety Training",
+            provider: "Engineering College",
+            date: "2024-08-10",
+            status: "completed",
+          },
+          {
+            name: "Digital Electronics",
+            provider: "In Progress",
+            date: "2024-10-01",
+            status: "in-progress",
+          },
+        ],
+      };
+
+      function getSkillColor(level) {
+        if (level >= 80) return "level-green";
+        if (level >= 60) return "level-blue";
+        if (level >= 40) return "level-yellow";
+        return "level-red";
+      }
+
+      function getStatusBadgeClass(status) {
+        if (status === "completed") return "badge badge-green";
+        if (status === "in-progress") return "badge badge-blue";
+        if (status === "pending") return "badge badge-yellow";
+        return "badge";
+      }
+
+      function getStatusLabel(status) {
+        if (status === "completed") return "Completed";
+        if (status === "in-progress") return "In Progress";
+        if (status === "pending") return "Pending";
+        return status;
+      }
+
+      // Render skills
+      const skillsGrid = document.getElementById("skillsGrid");
+      skillsData.technical.forEach((skill) => {
+        const card = document.createElement("div");
+        card.className = "skill-card";
+        card.innerHTML = `
+          <div class="skill-header">
+            <div class="skill-icon">${skill.icon}</div>
+            <div style="flex:1;min-width:0;">
+              <div class="skill-name">${skill.name}</div>
+              <div class="skill-cat">${skill.category}</div>
+            </div>
+            <span class="skill-level ${getSkillColor(skill.level)}">${skill.level}%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:${skill.level}%;"></div>
+          </div>
+        `;
+        skillsGrid.appendChild(card);
+      });
+
+      // Render labs
+      const labsSection = document.getElementById("labsSection");
+      skillsData.labs.forEach((lab) => {
+        const card = document.createElement("section");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="lab-header">
+            <div class="lab-heading">
+              <h3 class="font-medium">${lab.name}</h3>
+              <p class="lab-meta">Instructor: ${lab.instructor}</p>
+              <p class="lab-meta">Schedule: ${lab.schedule}</p>
+            </div>
+            <div>
+              <p class="lab-progress-label">Overall Progress</p>
+              <p class="lab-progress-value ${getSkillColor(lab.progress)}">${lab.progress}%</p>
+            </div>
+          </div>
+          <div class="progress" style="margin-bottom:0.8rem;">
+            <div class="progress-bar" style="width:${lab.progress}%;"></div>
+          </div>
+          <h4 style="font-weight:500;margin-bottom:0.5rem;">Lab Assignments</h4>
+          <div class="assignment-grid">
+            ${lab.assignments
+              .map(
+                (a) => `
+              <div class="assignment-card">
+                <div>
+                  <div style="font-weight:500;margin-bottom:0.1rem;">${a.title}</div>
+                  <div class="text-sm text-muted">Marks: ${a.marks}</div>
+                </div>
+                <span class="${getStatusBadgeClass(a.status)}">
+                  ${getStatusLabel(a.status)}
+                </span>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        `;
+        labsSection.appendChild(card);
+      });
+
+      // Render certifications
+      const certList = document.getElementById("certList");
+      skillsData.certifications.forEach((cert) => {
+        const row = document.createElement("div");
+        row.className = "cert-card";
+        row.innerHTML = `
+          <div class="cert-icon">⚗️</div>
+          <div style="flex:1;">
+            <div style="font-weight:500;margin-bottom:0.1rem;">${cert.name}</div>
+            <div class="text-sm text-muted">${cert.provider}</div>
+            <div class="text-sm text-muted">Date: ${cert.date}</div>
+          </div>
+          <span class="${getStatusBadgeClass(cert.status)}">
+            ${getStatusLabel(cert.status)}
+          </span>
+        `;
+        certList.appendChild(row);
+      });
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

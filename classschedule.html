@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Class Schedule – VIDYA-CUE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background-color: #f3f4f6;
+        color: #111827;
+        padding: 1.5rem;
+      }
+
+      .page-root {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+      }
+
+      h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      p {
+        font-size: 0.85rem;
+        color: #6b7280;
+      }
+
+      .space-y-6 > * + * {
+        margin-top: 1.5rem;
+      }
+
+      .card {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        padding: 1.5rem;
+      }
+
+      .mb-4 {
+        margin-bottom: 1rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.15rem 0.55rem;
+        font-size: 0.7rem;
+        border-radius: 9999px;
+        font-weight: 500;
+      }
+
+      .badge-green {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .badge-blue {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+      }
+
+      .badge-yellow {
+        background-color: #fef9c3;
+        color: #854d0e;
+      }
+
+      .badge-lecture {
+        background-color: #f3e8ff;
+        color: #6b21a8;
+      }
+
+      .badge-lab {
+        background-color: #ffedd5;
+        color: #9a3412;
+      }
+
+      .badge-practical {
+        background-color: #ccfbf1;
+        color: #0f766e;
+      }
+
+      .today-list > * + * {
+        margin-top: 1rem;
+      }
+
+      .today-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 0.9rem;
+        background-color: #f9fafb;
+      }
+
+      .today-icon {
+        flex-shrink: 0;
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 0.9rem;
+        background-color: #dbeafe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        color: #1d4ed8;
+      }
+
+      .today-content {
+        flex: 1;
+      }
+
+      .today-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .today-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.8rem;
+        color: #6b7280;
+      }
+
+      .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .weekly-grid-wrapper {
+        overflow-x: auto;
+      }
+
+      .weekly-grid {
+        display: grid;
+        gap: 1rem;
+        min-width: 700px;
+      }
+
+      @media (min-width: 900px) {
+        .weekly-grid {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+      }
+
+      .day-column {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .day-header {
+        text-align: center;
+        padding: 0.4rem 0.5rem;
+        border-radius: 0.7rem;
+        background-color: #e5e7eb;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .day-class-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .day-class-card {
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.7rem;
+        background-color: #f9fafb;
+        font-size: 0.8rem;
+      }
+
+      .day-class-subject {
+        color: #1d4ed8;
+        font-weight: 600;
+        margin-bottom: 0.15rem;
+      }
+
+      .day-class-line {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: #6b7280;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <div>
+          <h2>Class Schedule</h2>
+          <p>View your daily and weekly class schedule.</p>
+        </div>
+
+        <!-- Today's Schedule -->
+        <section class="card">
+          <h3 class="mb-4">Today's Classes - Friday, September 12, 2024</h3>
+          <div class="today-list" id="todayList"></div>
+        </section>
+
+        <!-- Weekly Schedule -->
+        <section class="card">
+          <h3 class="mb-4">Weekly Schedule</h3>
+          <div class="weekly-grid-wrapper">
+            <div class="weekly-grid" id="weeklyGrid"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const scheduleData = {
+        today: [
+          {
+            time: "09:00 - 10:00",
+            subject: "Mathematics",
+            instructor: "Dr. shokat ali",
+            room: "Lt 18",
+            type: "Lecture",
+            status: "completed",
+          },
+          {
+            time: "10:15 - 11:15",
+            subject: "Physics",
+            instructor: "Prof. bissa",
+            room: "Lt 18",
+            type: "Lab",
+            status: "ongoing",
+          },
+          {
+            time: "11:30 - 12:30",
+            subject: "Chemistry",
+            instructor: "Dr. Amit Gupta",
+            room: "Lt 18",
+            type: "Lecture",
+            status: "upcoming",
+          },
+          {
+            time: "14:00 - 15:00",
+            subject: "Programming",
+            instructor: "Ms. deepika ",
+            room: "Computer Lab",
+            type: "Practical",
+            status: "upcoming",
+          },
+          {
+            time: "15:15 - 16:15",
+            subject: "communication",
+            instructor: "Ms. sharadha parmar",
+            room: "Lt 18",
+            type: "Lecture",
+            status: "upcoming",
+          },
+        ],
+        weekly: {
+          Monday: [
+            { time: "09:00 - 10:00", subject: "Mathematics", room: "Room 101" },
+            { time: "10:15 - 11:15", subject: "Physics", room: "Lab 1" },
+            { time: "14:00 - 15:00", subject: "Chemistry", room: "Room 203" },
+          ],
+          Tuesday: [
+            {
+              time: "09:00 - 10:00",
+              subject: "Programming",
+              room: "Computer Lab",
+            },
+            { time: "11:30 - 12:30", subject: "Mathematics", room: "Room 101" },
+            { time: "15:15 - 16:15", subject: "English", room: "Room 105" },
+          ],
+          Wednesday: [
+            { time: "09:00 - 10:00", subject: "Physics", room: "Lab 1" },
+            { time: "10:15 - 11:15", subject: "Chemistry", room: "Room 203" },
+            {
+              time: "14:00 - 15:00",
+              subject: "Programming",
+              room: "Computer Lab",
+            },
+          ],
+          Thursday: [
+            { time: "09:00 - 10:00", subject: "Mathematics", room: "Room 101" },
+            { time: "11:30 - 12:30", subject: "English", room: "Room 105" },
+            { time: "14:00 - 15:00", subject: "Physics", room: "Lab 1" },
+          ],
+          Friday: [
+            { time: "09:00 - 10:00", subject: "Chemistry", room: "Room 203" },
+            {
+              time: "10:15 - 11:15",
+              subject: "Programming",
+              room: "Computer Lab",
+            },
+            { time: "15:15 - 16:15", subject: "Mathematics", room: "Room 101" },
+          ],
+        },
+      };
+
+      function createStatusBadge(status) {
+        const span = document.createElement("span");
+        span.classList.add("badge");
+        if (status === "completed") {
+          span.classList.add("badge-green");
+          span.textContent = "Completed";
+        } else if (status === "ongoing") {
+          span.classList.add("badge-blue");
+          span.textContent = "Ongoing";
+        } else if (status === "upcoming") {
+          span.classList.add("badge-yellow");
+          span.textContent = "Upcoming";
+        }
+        return span;
+      }
+
+      function createTypeBadge(type) {
+        const span = document.createElement("span");
+        span.classList.add("badge");
+        if (type === "Lecture") span.classList.add("badge-lecture");
+        else if (type === "Lab") span.classList.add("badge-lab");
+        else if (type === "Practical") span.classList.add("badge-practical");
+        span.textContent = type;
+        return span;
+      }
+
+      function renderToday() {
+        const container = document.getElementById("todayList");
+        container.innerHTML = "";
+
+        scheduleData.today.forEach((classItem) => {
+          const row = document.createElement("div");
+          row.className = "today-item";
+
+          const icon = document.createElement("div");
+          icon.className = "today-icon";
+          icon.textContent = "⏰";
+
+          const content = document.createElement("div");
+          content.className = "today-content";
+
+          const header = document.createElement("div");
+          header.className = "today-header";
+
+          const title = document.createElement("h4");
+          title.textContent = classItem.subject;
+
+          header.appendChild(title);
+          header.appendChild(createTypeBadge(classItem.type));
+          header.appendChild(createStatusBadge(classItem.status));
+
+          const meta = document.createElement("div");
+          meta.className = "today-meta";
+
+          const timeChip = document.createElement("div");
+          timeChip.className = "meta-chip";
+          timeChip.innerHTML = `<span>⏱</span><span>${classItem.time}</span>`;
+
+          const roomChip = document.createElement("div");
+          roomChip.className = "meta-chip";
+          roomChip.innerHTML = `<span>📍</span><span>${classItem.room}</span>`;
+
+          const teacherChip = document.createElement("div");
+          teacherChip.className = "meta-chip";
+          teacherChip.innerHTML = `<span>👤</span><span>${classItem.instructor}</span>`;
+
+          meta.appendChild(timeChip);
+          meta.appendChild(roomChip);
+          meta.appendChild(teacherChip);
+
+          content.appendChild(header);
+          content.appendChild(meta);
+
+          row.appendChild(icon);
+          row.appendChild(content);
+
+          container.appendChild(row);
+        });
+      }
+
+      function renderWeekly() {
+        const container = document.getElementById("weeklyGrid");
+        container.innerHTML = "";
+
+        Object.entries(scheduleData.weekly).forEach(([day, classes]) => {
+          const col = document.createElement("div");
+          col.className = "day-column";
+
+          const header = document.createElement("div");
+          header.className = "day-header";
+          header.textContent = day;
+
+          const list = document.createElement("div");
+          list.className = "day-class-list";
+
+          classes.forEach((classItem) => {
+            const card = document.createElement("div");
+            card.className = "day-class-card";
+
+            const subj = document.createElement("div");
+            subj.className = "day-class-subject";
+            subj.textContent = classItem.subject;
+
+            const timeLine = document.createElement("div");
+            timeLine.className = "day-class-line";
+            timeLine.innerHTML = `<span>⏱</span><span>${classItem.time}</span>`;
+
+            const roomLine = document.createElement("div");
+            roomLine.className = "day-class-line";
+            roomLine.innerHTML = `<span>📍</span><span>${classItem.room}</span>`;
+
+            card.appendChild(subj);
+            card.appendChild(timeLine);
+            card.appendChild(roomLine);
+            list.appendChild(card);
+          });
+
+          col.appendChild(header);
+          col.appendChild(list);
+          container.appendChild(col);
+        });
+      }
+
+      renderToday();
+      renderWeekly();
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

@@ -1,0 +1,174 @@
+/* styles.css — Classic Theme (Navy, Gold, Cream) */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
+:root {
+  /* Classic Theme Palette */
+  --bg-body: #FDFBF7;       /* Creamy White */
+  --bg-card: #FFFFFF;       /* Pure White */
+  --bg-secondary: #F0F4F8;  /* Light Blue-Grey */
+  --bg-border: #E2E8F0;
+  
+  --primary: #1B365D;       /* Navy Blue */
+  --primary-dark: #102A4E;
+  --accent: #C5A059;        /* Gold */
+  --accent-hover: #B08D48;
+  
+  --text-main: #333333;     /* Charcoal */
+  --text-muted: #64748B;    /* Slate Grey */
+  --text-light: #FDFBF7;    /* Cream */
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+}
+
+/* Dark Mode Overrides (Optional, keeping structure but adapting colors) */
+.dark {
+  --bg-body: #0F172A;
+  --bg-card: #1E293B;
+  --bg-secondary: #334155;
+  --bg-border: #334155;
+  
+  --primary: #3B82F6;       /* Brighter Blue for Dark Mode */
+  --primary-dark: #2563EB;
+  --accent: #F59E0B;        /* Amber */
+  
+  --text-main: #F1F5F9;
+  --text-muted: #94A3B8;
+  --text-light: #0F172A;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Lato', system-ui, sans-serif;
+  background: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+/* Layout Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section {
+  padding: 4rem 0;
+}
+
+/* Components */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--text-light);
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--bg-secondary);
+  color: var(--primary-dark);
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--bg-border);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--bg-border);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.1);
+}
+
+/* Header Placeholder */
+#header-placeholder {
+  min-height: 60px;
+}
+
+/* Footer */
+footer {
+  background: var(--primary);
+  color: var(--text-light);
+  padding: 3rem 0;
+  margin-top: auto;
+}
+
+footer a {
+  color: #E2E8F0;
+}
+
+footer a:hover {
+  color: var(--accent);
+}

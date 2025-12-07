@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>VIDYA-CUE Header</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-h+UjDgE3jlN6P2P0lUhv7Yk4C5gTzspU0u4SgGqzF4PWi0AQ1sxP8ayJQ2JqK59IwXwqzv5W9Pp4bN+9F5V1sQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<style>
+    /* Header specific styles that inherit from global styles.css variables where possible */
+    /* We assume styles.css is loaded by the parent page */
+
+    .header-root {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--bg-border);
+      padding: 0.75rem 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    /* Left: logo + search */
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex: 1;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary);
+    }
+
+    .logo-text-main {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .logo-text-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'Lato', sans-serif;
+    }
+
+    /* Side Navigation Panel */
+    .side-nav-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--bg-border);
+      background: transparent;
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+
+    .side-nav-toggle:hover {
+      background: var(--bg-secondary);
+      color: var(--primary);
+    }
+
+    .side-nav-panel {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--bg-card);
+      border-right: 1px solid var(--bg-border);
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .side-nav-panel.open {
+      transform: translateX(0);
+    }
+
+    .side-nav-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--bg-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-secondary);
+    }
+
+    .side-nav-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    .side-nav-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .side-nav-menu {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .side-nav-link {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--text-main);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .side-nav-link:hover {
+      background: var(--bg-secondary);
+      color: var(--primary);
+    }
+
+    .side-nav-link.active {
+      background: rgba(27, 54, 93, 0.05);
+      color: var(--primary);
+      font-weight: 600;
+      border-left-color: var(--primary);
+    }
+
+    .side-nav-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      z-index: 999;
+      display: none;
+    }
+
+    .side-nav-backdrop.open {
+      display: block;
+    }
+
+    /* Search */
+    .search-wrap {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .search-wrap {
+        display: block;
+        flex: 1;
+        max-width: 400px;
+      }
+    }
+
+    .search-inner {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.6rem 1rem 0.6rem 2.5rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--bg-border);
+      background: var(--bg-secondary);
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      background: var(--bg-card);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.1);
+    }
+
+    /* Right side */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .user-info {
+      display: none;
+      text-align: right;
+      margin-right: 0.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .user-info {
+        display: block;
+      }
+    }
+
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .user-year {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Buttons */
+    .btn-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1.1rem;
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-secondary);
+      color: var(--primary);
+    }
+
+    /* Notifications */
+    .notif-root {
+      position: relative;
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 0.6rem;
+      height: 0.6rem;
+      background: #EF4444;
+      border-radius: 50%;
+      border: 2px solid var(--bg-card);
+      display: none;
+    }
+
+    .notif-panel {
+      position: absolute;
+      right: 0;
+      top: 3.5rem;
+      width: 24rem;
+      max-height: 80vh;
+      background: var(--bg-card);
+      border: 1px solid var(--bg-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      z-index: 100;
+      display: none;
+    }
+
+    .notif-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--bg-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-secondary);
+    }
+
+    .notif-list {
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    .notif-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--bg-border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .notif-item:hover {
+      background: var(--bg-secondary);
+    }
+
+    .notif-item.unread {
+      background: rgba(27, 54, 93, 0.03);
+      border-left: 3px solid var(--primary);
+    }
+
+    .priority-tag {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .priority-high {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+
+    .priority-medium {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .priority-low {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header-root">
+    <div class="header-inner">
+      <!-- Left: Toggle + Logo + Search -->
+      <div class="header-left">
+        <button class="side-nav-toggle" id="sideNavToggle" aria-label="Open menu">☰</button>
+
+        <a href="homepage.html" class="logo-wrap">
+          <div class="logo-icon">🎓</div>
+          <div class="logo-text">
+            <div class="logo-text-main">VIDYA-CUE</div>
+            <div class="logo-text-sub" id="collegeNameText">Engineering College Bikaner</div>
+          </div>
+        </a>
+
+        <div class="search-wrap">
+          <div class="search-inner">
+            <span class="search-icon">🔍</span>
+            <input class="search-input" placeholder="Search courses, assignments, resources..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Theme, Notif, User, Logout -->
+      <div class="header-right">
+        <button class="btn-icon" id="themeToggleBtn" aria-label="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+
+        <div class="notif-root">
+          <button class="btn-icon" id="notifBtn" aria-label="Notifications">
+            🔔
+            <span id="notifBadge" class="notif-badge"></span>
+          </button>
+
+          <div id="notifPanel" class="notif-panel">
+            <div class="notif-header">
+              <span style="font-weight:600;">Notifications</span>
+              <button id="notifCloseBtn" style="background:none; border:none; cursor:pointer;">✕</button>
+            </div>
+            <div class="notif-list" id="notifList">
+              <!-- Items injected via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="user-info">
+          <div class="user-name" id="studentNameText">Student Name</div>
+          <div class="user-year" id="yearText">Year</div>
+        </div>
+
+        <button class="btn-icon" id="logoutBtn" aria-label="Logout" title="Logout">
+<i class="fa-solid fa-arrow-right-from-bracket" style="color: #74C0FC;"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Side Navigation Panel -->
+  <div class="side-nav-backdrop" id="sideNavBackdrop"></div>
+  <nav class="side-nav-panel" id="sideNavPanel">
+    <div class="side-nav-header">
+      <div class="side-nav-title">Menu</div>
+      <button class="side-nav-close" id="sideNavClose">✕</button>
+    </div>
+    <div class="side-nav-menu">
+      <a href="studentdashboard.html" class="side-nav-link">Dashboard</a>
+      <a href="studentprofile.html" class="side-nav-link">Profile</a>
+      <a href="smartattendance.html" class="side-nav-link">Attendance</a>
+      <a href="assignment.html" class="side-nav-link">Assignments</a>
+      <a href="classschedule.html" class="side-nav-link">Schedule</a>
+      <a href="studentexammschedule.html" class="side-nav-link">Exams</a>
+      <a href="skills.html" class="side-nav-link">Skills</a>
+      <a href="studentnotes.html" class="side-nav-link">Notes</a>
+      <a href="studentPYQ.html" class="side-nav-link">PYQ</a>
+      <a href="studentfeerecipt.html" class="side-nav-link">Fee Receipt</a>
+      <a href="aichatbot.html" class="side-nav-link">AI Chatbot</a>
+      <a href="studentroadmape.html" class="side-nav-link">Roadmap</a>
+      <a href="studentsports.html" class="side-nav-link">Sports</a>
+      <a href="careerguidence.html" class="side-nav-link">Career Guidance</a>
+      <a href="studentcounclor.html" class="side-nav-link">Counselor</a>
+      <a href="aboutus.html" class="side-nav-link">About Us</a>
+    </div>
+  </nav>
+
+  <script>
+    // Header Data
+    const headerProps = JSON.parse(localStorage.getItem('vc_user')) || {
+      name: "Guest Student",
+      year: "1st Year"
+    };
+
+    document.getElementById("studentNameText").textContent = headerProps.name;
+    document.getElementById("yearText").textContent = headerProps.year;
+
+    // Theme Toggle
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    const themeIcon = document.getElementById("themeIcon");
+
+    function setTheme(theme) {
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+        themeIcon.textContent = "☀️";
+      } else {
+        document.documentElement.classList.remove("dark");
+        themeIcon.textContent = "🌙";
+      }
+      localStorage.setItem("vc_theme", theme);
+    }
+
+    const savedTheme = localStorage.getItem("vc_theme") || "light";
+    setTheme(savedTheme);
+
+    themeToggleBtn.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setTheme(isDark ? "light" : "dark");
+    });
+
+    // Side Nav Logic
+    const sideNavToggle = document.getElementById('sideNavToggle');
+    const sideNavPanel = document.getElementById('sideNavPanel');
+    const sideNavBackdrop = document.getElementById('sideNavBackdrop');
+    const sideNavClose = document.getElementById('sideNavClose');
+
+    function openSideNav() {
+      sideNavPanel.classList.add('open');
+      sideNavBackdrop.classList.add('open');
+    }
+
+    function closeSideNav() {
+      sideNavPanel.classList.remove('open');
+      sideNavBackdrop.classList.remove('open');
+    }
+
+    sideNavToggle.addEventListener('click', openSideNav);
+    sideNavClose.addEventListener('click', closeSideNav);
+    sideNavBackdrop.addEventListener('click', closeSideNav);
+
+    // Highlight Active Link
+    const currentPath = window.location.pathname.split('/').pop() || 'homepage.html';
+    document.querySelectorAll('.side-nav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      }
+    });
+
+    // Notifications (Mock)
+    const notifications = [
+      { id: 1, title: "Exam Schedule Released", msg: "Check the portal for details.", priority: "high", read: false },
+      { id: 2, title: "Library Due", msg: "Return 'Intro to AI' by tomorrow.", priority: "medium", read: false },
+      { id: 3, title: "New Assignment", msg: "Physics assignment added.", priority: "low", read: true }
+    ];
+
+    const notifBtn = document.getElementById('notifBtn');
+    const notifPanel = document.getElementById('notifPanel');
+    const notifBadge = document.getElementById('notifBadge');
+    const notifList = document.getElementById('notifList');
+    const notifCloseBtn = document.getElementById('notifCloseBtn');
+
+    function renderNotifs() {
+      const unread = notifications.filter(n => !n.read).length;
+      if (unread > 0) {
+        notifBadge.style.display = 'block';
+      } else {
+        notifBadge.style.display = 'none';
+      }
+
+      notifList.innerHTML = notifications.map(n => `
+          <div class="notif-item ${n.read ? '' : 'unread'}" onclick="markRead(${n.id})">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.2rem;">
+              <span style="font-weight:600; font-size:0.9rem;">${n.title}</span>
+              <span class="priority-tag priority-${n.priority}">${n.priority}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted);">${n.msg}</div>
+          </div>
+        `).join('');
+    }
+
+    window.markRead = (id) => {
+      const n = notifications.find(x => x.id === id);
+      if (n) n.read = true;
+      renderNotifs();
+    };
+
+    notifBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notifPanel.style.display = notifPanel.style.display === 'block' ? 'none' : 'block';
+    });
+
+    notifCloseBtn.addEventListener('click', () => {
+      notifPanel.style.display = 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!notifPanel.contains(e.target) && !notifBtn.contains(e.target)) {
+        notifPanel.style.display = 'none';
+      }
+    });
+
+    renderNotifs();
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('vc_user');
+      window.location.href = 'index.html';
+    });
+
+  </script>
+</body>
+
+</html>

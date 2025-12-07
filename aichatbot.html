@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Study Assistant – VIDYA-CUE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:#f3f4f6;
+        color:#111827;
+        padding:1.5rem;
+      }
+
+      .page-root {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 { font-size:1.9rem; font-weight:700; }
+      h3 { font-size:1rem; font-weight:600; }
+
+      .space-y-6 > * + * { margin-top:1.5rem; }
+
+      /* Hero header */
+      .hero {
+        background:linear-gradient(135deg,#06b6d4,#2563eb);
+        border-radius:1.5rem;
+        padding:2rem;
+        color:#e0f2fe;
+        box-shadow:0 20px 40px rgba(37,99,235,0.6);
+      }
+      .hero-inner {
+        display:flex;
+        gap:1.25rem;
+        align-items:center;
+      }
+      .hero-icon {
+        width:4rem;
+        height:4rem;
+        border-radius:1.2rem;
+        background:rgba(255,255,255,0.2);
+        border:2px solid rgba(255,255,255,0.4);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        backdrop-filter:blur(6px);
+        font-size:2rem;
+      }
+      .hero-chip {
+        display:inline-flex;
+        align-items:center;
+        gap:0.35rem;
+        font-size:0.75rem;
+        padding:0.2rem 0.8rem;
+        border-radius:9999px;
+        background:rgba(255,255,255,0.2);
+        margin-bottom:0.4rem;
+      }
+
+      /* Card */
+      .card {
+        background:#ffffff;
+        border-radius:1.25rem;
+        box-shadow:0 10px 26px rgba(15,23,42,0.15);
+      }
+
+      /* Chat header */
+      .chat-header {
+        padding:0.9rem 1.2rem;
+        border-bottom:1px solid #e5e7eb;
+        background:#f3f4f6;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+      }
+      .chat-header-left {
+        display:flex;
+        align-items:center;
+        gap:0.6rem;
+      }
+      .chat-avatar {
+        width:2.5rem;
+        height:2.5rem;
+        border-radius:9999px;
+        background:linear-gradient(135deg,#06b6d4,#2563eb);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#ffffff;
+        font-size:1.3rem;
+      }
+
+      /* Chat area */
+      .chat-body {
+        height:500px;
+        padding:1.25rem;
+        background:#f9fafb;
+        overflow-y:auto;
+      }
+
+      .messages-list {
+        display:flex;
+        flex-direction:column;
+        gap:0.9rem;
+      }
+
+      .msg-row {
+        display:flex;
+        gap:0.5rem;
+      }
+      .msg-row.bot {
+        flex-direction:row;
+        align-items:flex-start;
+      }
+      .msg-row.user {
+        flex-direction:row-reverse;
+        align-items:flex-start;
+      }
+
+      .msg-avatar {
+        width:2rem;
+        height:2rem;
+        border-radius:9999px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex-shrink:0;
+        font-size:1rem;
+      }
+      .msg-avatar-bot {
+        background:linear-gradient(135deg,#06b6d4,#2563eb);
+        color:#ffffff;
+      }
+      .msg-avatar-user {
+        background:#4f46e5;
+        color:#ffffff;
+      }
+
+      .msg-bubble-wrap {
+        max-width:80%;
+      }
+      .msg-bubble {
+        border-radius:1.3rem;
+        padding:0.6rem 0.9rem;
+        font-size:0.85rem;
+        line-height:1.5;
+        white-space:pre-wrap;
+      }
+      .msg-bubble-bot {
+        background:#ffffff;
+        border:1px solid #e5e7eb;
+        color:#111827;
+      }
+      .msg-bubble-user {
+        background:#4f46e5;
+        color:#eef2ff;
+      }
+      .msg-time {
+        font-size:0.7rem;
+        color:#9ca3af;
+        margin-top:0.15rem;
+        padding:0 0.2rem;
+      }
+
+      /* Typing indicator */
+      .typing-bubble {
+        border-radius:1.3rem;
+        padding:0.6rem 0.9rem;
+        background:#ffffff;
+        border:1px solid #e5e7eb;
+        display:inline-flex;
+        gap:0.25rem;
+      }
+      .typing-dot {
+        width:0.35rem;
+        height:0.35rem;
+        border-radius:9999px;
+        background:#9ca3af;
+        animation:bounce 0.9s infinite;
+      }
+      .typing-dot:nth-child(2) { animation-delay:0.12s; }
+      .typing-dot:nth-child(3) { animation-delay:0.24s; }
+
+      @keyframes bounce {
+        0%, 80%, 100% { transform:scale(0.7); opacity:0.6; }
+        40% { transform:scale(1); opacity:1; }
+      }
+
+      /* Quick questions */
+      .quick-wrap {
+        padding:0.6rem 1.25rem;
+        background:#f3f4f6;
+        border-top:1px solid #e5e7eb;
+      }
+      .quick-label {
+        font-size:0.7rem;
+        color:#9ca3af;
+        margin-bottom:0.25rem;
+      }
+      .quick-list {
+        display:flex;
+        flex-wrap:wrap;
+        gap:0.35rem;
+      }
+
+      /* Input area */
+      .chat-input-wrap {
+        padding:0.75rem 1rem;
+        border-top:1px solid #e5e7eb;
+        background:#ffffff;
+      }
+      .chat-input-row {
+        display:flex;
+        gap:0.5rem;
+      }
+      .chat-input {
+        flex:1;
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        padding:0.5rem 0.9rem;
+        font-size:0.85rem;
+        background:#f3f4f6;
+      }
+      .chat-input:focus {
+        outline:none;
+        border-color:#06b6d4;
+        box-shadow:0 0 0 1px #06b6d433;
+      }
+
+      /* Buttons */
+      .btn {
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        background:#ffffff;
+        padding:0.35rem 0.8rem;
+        font-size:0.8rem;
+        cursor:pointer;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:0.25rem;
+      }
+      .btn:hover { background:#f3f4f6; }
+      .btn-ghost {
+        background:transparent;
+      }
+      .btn-primary {
+        background:#2563eb;
+        border-color:#2563eb;
+        color:#e5e7eb;
+      }
+      .btn-primary:hover {
+        background:#1d4ed8;
+      }
+      .btn-chip {
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        background:#ffffff;
+        font-size:0.75rem;
+        padding:0.25rem 0.7rem;
+      }
+
+      .btn:disabled,
+      .chat-input:disabled {
+        opacity:0.6;
+        cursor:not-allowed;
+      }
+
+      /* Info cards */
+      .info-grid {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .info-grid {
+          grid-template-columns:repeat(3,minmax(0,1fr));
+        }
+      }
+      .info-card {
+        padding:1rem;
+        border-radius:1rem;
+        background:#ffffff;
+        box-shadow:0 10px 20px rgba(15,23,42,0.08);
+      }
+      .info-icon {
+        width:2.2rem;
+        height:2.2rem;
+        border-radius:0.7rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin-right:0.5rem;
+      }
+      .info-icon-1 { background:#dcfce7; color:#16a34a; }
+      .info-icon-2 { background:#dbeafe; color:#2563eb; }
+      .info-icon-3 { background:#ede9fe; color:#7c3aed; }
+      .info-title { font-size:0.9rem; font-weight:600; }
+      .info-text { font-size:0.8rem; color:#6b7280; }
+
+      .text-xs { font-size:0.75rem; }
+      .text-muted { color:#6b7280; }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <!-- Hero -->
+        <section class="hero">
+          <div class="hero-inner">
+            <div class="hero-icon">🤖</div>
+            <div>
+              <div class="hero-chip">
+                <span>✨</span>
+                <span>AI Powered</span>
+              </div>
+              <h1 style="color:#e0f2fe;margin-bottom:0.15rem;">AI Study Assistant</h1>
+              <p style="font-size:0.85rem;color:#a5f3fc;">
+                Your 24/7 academic companion for instant help
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chat Card -->
+        <section class="card">
+          <!-- Chat header -->
+          <div class="chat-header">
+            <div class="chat-header-left">
+              <div class="chat-avatar">🤖</div>
+              <div>
+                <div style="font-size:0.9rem;font-weight:600;">AI Assistant</div>
+                <div class="text-xs text-muted">Always active</div>
+              </div>
+            </div>
+            <button class="btn btn-ghost" id="clearBtn">
+              <span style="font-size:0.9rem;">🔄</span>
+              <span>Clear Chat</span>
+            </button>
+          </div>
+
+          <!-- Messages -->
+          <div class="chat-body" id="chatBody">
+            <div class="messages-list" id="messagesList"></div>
+          </div>
+
+          <!-- Quick questions -->
+          <div class="quick-wrap">
+            <div class="quick-label">Quick questions:</div>
+            <div class="quick-list" id="quickList"></div>
+          </div>
+
+          <!-- Input -->
+          <div class="chat-input-wrap">
+            <div class="chat-input-row">
+              <input
+                id="chatInput"
+                class="chat-input"
+                placeholder="Type your question here..."
+              />
+              <button class="btn btn-primary" id="sendBtn">
+                <span>📤</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Info cards -->
+        <section class="info-grid">
+          <div class="info-card">
+            <div style="display:flex;align-items:center;margin-bottom:0.4rem;">
+              <div class="info-icon info-icon-1">✨</div>
+              <div class="info-title">Instant Answers</div>
+            </div>
+            <div class="info-text">Get immediate responses to your academic queries.</div>
+          </div>
+
+          <div class="info-card">
+            <div style="display:flex;align-items:center;margin-bottom:0.4rem;">
+              <div class="info-icon info-icon-2">🤖</div>
+              <div class="info-title">24/7 Available</div>
+            </div>
+            <div class="info-text">Always here to help, anytime you need assistance.</div>
+          </div>
+
+          <div class="info-card">
+            <div style="display:flex;align-items:center;margin-bottom:0.4rem;">
+              <div class="info-icon info-icon-3">👤</div>
+              <div class="info-title">Personalized Help</div>
+            </div>
+            <div class="info-text">Tailored responses based on your academic context.</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      // Message structure:
+      // { id:number, type:'user'|'bot', content:string, timestamp:Date }
+      let messages = [
+        {
+          id: 1,
+          type: "bot",
+          content:
+            "Hello! I'm your AI Study Assistant. I can help you with:\n\n• Course information and syllabus\n• Study tips and learning strategies\n• Assignment and exam guidance\n• Career advice\n• Campus facilities\n• General academic queries\n\nHow can I assist you today?",
+          timestamp: new Date(),
+        },
+      ];
+      let isTyping = false;
+
+      const chatBody = document.getElementById("chatBody");
+      const messagesList = document.getElementById("messagesList");
+      const chatInput = document.getElementById("chatInput");
+      const sendBtn = document.getElementById("sendBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const quickList = document.getElementById("quickList");
+
+      const quickQuestions = [
+        "What's my attendance?",
+        "Show my grades",
+        "Upcoming exams?",
+        "Study tips for exams",
+        "Career guidance",
+      ];
+
+      function renderQuickButtons() {
+        quickList.innerHTML = "";
+        quickQuestions.forEach((q) => {
+          const btn = document.createElement("button");
+          btn.className = "btn btn-chip";
+          btn.textContent = q;
+          btn.addEventListener("click", () => {
+            chatInput.value = q;
+            chatInput.focus();
+          });
+          quickList.appendChild(btn);
+        });
+      }
+
+      function scrollToBottom() {
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      function formatTime(date) {
+        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      }
+
+      function renderMessages() {
+        messagesList.innerHTML = "";
+        messages.forEach((msg) => {
+          const row = document.createElement("div");
+          row.className = "msg-row " + (msg.type === "user" ? "user" : "bot");
+
+          const avatar = document.createElement("div");
+          avatar.className =
+            "msg-avatar " +
+            (msg.type === "user" ? "msg-avatar-user" : "msg-avatar-bot");
+          avatar.textContent = msg.type === "user" ? "👤" : "🤖";
+
+          const wrap = document.createElement("div");
+          wrap.className = "msg-bubble-wrap";
+
+          const bubble = document.createElement("div");
+          bubble.className =
+            "msg-bubble " +
+            (msg.type === "user" ? "msg-bubble-user" : "msg-bubble-bot");
+          bubble.textContent = msg.content;
+
+          const time = document.createElement("div");
+          time.className = "msg-time";
+          time.textContent = formatTime(msg.timestamp);
+
+          wrap.appendChild(bubble);
+          wrap.appendChild(time);
+
+          row.appendChild(avatar);
+          row.appendChild(wrap);
+
+          messagesList.appendChild(row);
+        });
+
+        if (isTyping) {
+          const row = document.createElement("div");
+          row.className = "msg-row bot";
+
+          const avatar = document.createElement("div");
+          avatar.className = "msg-avatar msg-avatar-bot";
+          avatar.textContent = "🤖";
+
+          const wrap = document.createElement("div");
+          wrap.className = "msg-bubble-wrap";
+
+          const bubble = document.createElement("div");
+          bubble.className = "typing-bubble";
+          const dot1 = document.createElement("div");
+          dot1.className = "typing-dot";
+          const dot2 = document.createElement("div");
+          dot2.className = "typing-dot";
+          const dot3 = document.createElement("div");
+          dot3.className = "typing-dot";
+          bubble.appendChild(dot1);
+          bubble.appendChild(dot2);
+          bubble.appendChild(dot3);
+
+          wrap.appendChild(bubble);
+          row.appendChild(avatar);
+          row.appendChild(wrap);
+          messagesList.appendChild(row);
+        }
+
+        scrollToBottom();
+      }
+
+      function getAIResponse(userMessage) {
+        const lowerMessage = userMessage.toLowerCase();
+
+        if (lowerMessage.match(/^(hi|hello|hey|good morning|good afternoon|good evening)/)) {
+          return "Hello! How can I help you with your studies today? Feel free to ask me about courses, exams, assignments, or any academic queries.";
+        }
+
+        if (lowerMessage.includes("course") || lowerMessage.includes("subject")) {
+          return "I can help you with course information! Here are your current courses:\n\n• Mathematics (MATH101)\n• Physics (PHY101)\n• Programming (CS101)\n• Communication Skills (ENG101)\n• Engineering Drawing (ME101)\n• Workshop Practice (ME102)\n\nWhich course would you like to know more about?";
+        }
+
+        if (lowerMessage.includes("syllabus")) {
+          return "The syllabus for each course is available in the Class Schedule section. You can also download the complete syllabus PDF from the Notes section. Would you like me to guide you there?";
+        }
+
+        if (lowerMessage.includes("exam") || lowerMessage.includes("test")) {
+          return "For exam information:\n\n• Check 'Exam Schedule & Scores' for upcoming exams\n• Visit 'PYQ Papers' for previous year questions\n• Review 'Notes' section for study materials\n\nYour next major exam is the Mathematics Mid-term on September 20, 2024. Would you like exam preparation tips?";
+        }
+
+        if (
+          lowerMessage.includes("study tip") ||
+          lowerMessage.includes("how to study") ||
+          lowerMessage.includes("preparation")
+        ) {
+          return "Here are some effective study tips:\n\n1. Time Management: Use the Pomodoro Technique (25 min study, 5 min break)\n2. Active Learning: Take notes, create mind maps, teach concepts to others\n3. Regular Review: Revise daily for 30 minutes\n4. Practice: Solve previous year papers and sample questions\n5. Group Study: Discuss topics with classmates\n6. Stay Healthy: Get 7-8 hours sleep, exercise regularly\n\nNeed specific tips for any subject?";
+        }
+
+        if (
+          lowerMessage.includes("assignment") ||
+          lowerMessage.includes("homework")
+        ) {
+          return "You have the following pending assignments:\n\n• Programming Assignment - Due today at 11:59 PM\n• Physics Lab Report - Due in 3 days\n\nCheck your Dashboard for complete assignment details. Need help with any specific assignment?";
+        }
+
+        if (lowerMessage.includes("attendance")) {
+          return "Your current attendance is:\n\n• Overall: 87.5%\n• Mathematics: 92%\n• Physics: 85%\n• Programming: 90%\n• Communication: 94%\n\nYou're doing great! Maintain above 75% to be eligible for exams. Visit 'Smart Attendance' for detailed tracking.";
+        }
+
+        if (
+          lowerMessage.includes("grade") ||
+          lowerMessage.includes("cgpa") ||
+          lowerMessage.includes("score")
+        ) {
+          return "Your academic performance:\n\n• Current CGPA: 8.7\n• Mathematics: A (92%)\n• Physics: B+ (85%)\n• Programming: A (95%)\n• Communication: A+ (98%)\n\nExcellent work! Keep it up! Check 'Exam Schedule & Scores' for detailed grade breakdown.";
+        }
+
+        if (
+          lowerMessage.includes("sport") ||
+          lowerMessage.includes("athletic") ||
+          lowerMessage.includes("fitness")
+        ) {
+          return "Sports & Fitness Information:\n\n• You're enrolled in Cricket and Basketball\n• Next cricket practice: Monday 5:00 PM\n• Gymnasium timings: 6:00 AM - 10:00 PM\n• Upcoming: Inter-College Cricket Tournament (Oct 15-20)\n\nVisit 'Sports Info' for complete details and facility booking.";
+        }
+
+        if (
+          lowerMessage.includes("professor") ||
+          lowerMessage.includes("teacher") ||
+          lowerMessage.includes("faculty")
+        ) {
+          return "Your faculty members:\n\n• Dr. Shokat Ali - Mathematics\n• Prof. Rajesh Kumar - Physics\n• Dr. Deepika Gupta - Programming\n• Prof. Shradha Parmar - Communication\n\nFor detailed profiles, office hours, and contact information, visit 'Know Your Professors' section.";
+        }
+
+        if (
+          lowerMessage.includes("fee") ||
+          lowerMessage.includes("payment") ||
+          lowerMessage.includes("receipt")
+        ) {
+          return "Fee Information:\n\n• Current semester fee: ₹100,000 (Paid)\n• Next payment due: January 15, 2025\n• All receipts available in 'Fee Receipt' section\n\nYou can download payment receipts and view fee breakdown there.";
+        }
+
+        if (
+          lowerMessage.includes("career") ||
+          lowerMessage.includes("job") ||
+          lowerMessage.includes("placement") ||
+          lowerMessage.includes("internship")
+        ) {
+          return "Career guidance resources:\n\n• Visit 'Career Guidance' for industry insights\n• Check 'Learning Roadmap' for skill development paths\n• Book a session with our 'Counselor' for personalized advice\n\nTop career paths for CSE: Software Development, Data Science, AI/ML Engineering, Cybersecurity, Cloud Computing. Which interests you?";
+        }
+
+        if (
+          lowerMessage.includes("roadmap") ||
+          lowerMessage.includes("learning path")
+        ) {
+          return "Learning roadmaps available for:\n\n• Web Development (Frontend & Backend)\n• Data Science & Machine Learning\n• Mobile App Development\n• Cybersecurity\n• Cloud Computing\n• DevOps\n\nVisit 'Learning Roadmap' section for detailed step-by-step guides from beginner to advanced level!";
+        }
+
+        if (
+          lowerMessage.includes("note") ||
+          lowerMessage.includes("material") ||
+          lowerMessage.includes("book")
+        ) {
+          return "Study materials available:\n\n• Faculty notes for all subjects\n• Student-shared notes\n• Reference books and PDFs\n• Video lecture links\n\nCheck the 'Notes' section to access all study materials. Most downloaded: Programming notes by Dr. Deepika Gupta!";
+        }
+
+        if (
+          lowerMessage.includes("pyq") ||
+          lowerMessage.includes("previous year") ||
+          lowerMessage.includes("past paper")
+        ) {
+          return "Previous Year Question Papers:\n\n• Available for all subjects (2022-2023)\n• Both Mid-term and End-term papers\n• Includes solutions for selected papers\n\nHighly recommended for exam preparation! Visit 'PYQ Papers' section to download.";
+        }
+
+        if (
+          lowerMessage.includes("time management") ||
+          lowerMessage.includes("schedule")
+        ) {
+          return "Time management tips:\n\n1. Check your Class Schedule daily\n2. Set reminders for assignments\n3. Allocate 2-3 hours for self-study\n4. Take breaks every 50 minutes\n5. Prioritize tasks (urgent vs important)\n6. Use calendar apps\n\nYour next class: Programming Practical at 11:30 AM today!";
+        }
+
+        if (
+          lowerMessage.includes("programming") ||
+          lowerMessage.includes("coding") ||
+          lowerMessage.includes("code")
+        ) {
+          return "Programming resources:\n\n• Course: CS101 by Dr. Deepika Gupta\n• Topics: C Programming, Data Structures, Algorithms\n• Practice platforms: HackerRank, LeetCode, CodeChef\n• Lab timings: Check Class Schedule\n\nStuck on a concept? Try:\n1. Review class notes\n2. Practice small programs\n3. Ask in study groups\n4. Attend doubt sessions";
+        }
+
+        if (
+          lowerMessage.includes("math") ||
+          lowerMessage.includes("calculus") ||
+          lowerMessage.includes("algebra")
+        ) {
+          return "Mathematics resources:\n\n• Course: MATH101 by Dr. Shokat Ali\n• Topics: Calculus, Linear Algebra, Differential Equations\n• Download notes and PYQ papers\n• Office hours: Mon-Fri 2:00-4:00 PM\n\nPractice is key! Solve 10-15 problems daily. Focus on understanding concepts before formulas.";
+        }
+
+        if (lowerMessage.includes("library")) {
+          return "Library Information:\n\n• Timings: 8:00 AM - 8:00 PM\n• Access to 10,000+ books\n• Digital library resources\n• Study rooms available\n• Current library fee: ₹2,000/semester (Paid)\n\nYou can issue up to 3 books at a time for 15 days each.";
+        }
+
+        if (
+          lowerMessage.includes("counselor") ||
+          lowerMessage.includes("counseling") ||
+          lowerMessage.includes("mental health")
+        ) {
+          return "Counseling Services:\n\n• Professional counselors available\n• Academic guidance\n• Career counseling\n• Personal development\n• Stress management\n\nBook a session through the 'Counselor' section. First consultation is free!";
+        }
+
+        if (
+          lowerMessage.includes("thank") ||
+          lowerMessage.includes("thanks")
+        ) {
+          return "You're welcome! I'm always here to help. Feel free to ask if you have more questions. Good luck with your studies! 📚✨";
+        }
+
+        if (
+          lowerMessage.includes("help") ||
+          lowerMessage.includes("what can you") ||
+          lowerMessage.includes("how can you")
+        ) {
+          return "I can assist you with:\n\n📚 Academic: Courses, syllabus, exams, assignments\n📝 Study Materials: Notes, PYQ papers, books\n🎯 Performance: Grades, attendance, CGPA\n👥 Faculty: Professor information, office hours\n🏆 Sports: Athletic activities, facilities\n💰 Finance: Fee information, receipts\n🚀 Career: Guidance, roadmaps, counseling\n📍 Campus: Facilities, library, services\n\nJust ask me anything!";
+        }
+
+        return "I'm here to help! Could you please provide more details about your question? I can assist with courses, exams, assignments, study tips, career guidance, and much more. What would you like to know?";
+      }
+
+      function setTypingState(value) {
+        isTyping = value;
+        renderMessages();
+      }
+
+      function addMessage(type, content) {
+        const msg = {
+          id: messages.length + 1,
+          type,
+          content,
+          timestamp: new Date(),
+        };
+        messages.push(msg);
+      }
+
+      function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text || isTyping) return;
+
+        addMessage("user", text);
+        chatInput.value = "";
+        setTypingState(true);
+
+        setTimeout(() => {
+          const reply = getAIResponse(text);
+          addMessage("bot", reply);
+          setTypingState(false);
+        }, 900);
+      }
+
+      sendBtn.addEventListener("click", sendMessage);
+      chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      clearBtn.addEventListener("click", () => {
+        messages = [
+          {
+            id: 1,
+            type: "bot",
+            content: "Chat cleared! How can I help you?",
+            timestamp: new Date(),
+          },
+        ];
+        isTyping = false;
+        renderMessages();
+      });
+
+      // Initial render
+      renderQuickButtons();
+      renderMessages();
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

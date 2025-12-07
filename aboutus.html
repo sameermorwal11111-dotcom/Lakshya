@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>About Smart Campus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="studentstyle.css">
+  <style>
+    /* Page specific overrides */
+    .page-root {
+      padding: 2rem 0;
+    }
+
+    .space-y-6>*+* {
+      margin-top: 2rem;
+    }
+
+    /* Hero Override */
+    .hero {
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      color: var(--text-light);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: radial-gradient(circle at top right, rgba(197, 160, 89, 0.2), transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.15);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media(min-width: 768px) {
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media(min-width: 768px) {
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    @media(min-width: 1024px) {
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* Stats Box */
+    .stat-box {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      transition: transform 0.2s;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Value Cards */
+    .value-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: var(--radius-md);
+      background: rgba(27, 54, 93, 0.1);
+      /* Primary with opacity */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    /* Team Avatar */
+    .avatar {
+      width: 6rem;
+      height: 6rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      margin: 0 auto 1rem;
+      font-size: 2.5rem;
+      border: 2px solid var(--bg-border);
+    }
+
+    /* Timeline */
+    .timeline-wrapper {
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 3.5rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--bg-border);
+      display: none;
+    }
+
+    @media(min-width: 768px) {
+      .timeline-line {
+        display: block;
+      }
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .timeline-year {
+      flex-shrink: 0;
+      width: 5rem;
+      height: 5rem;
+      border-radius: var(--radius-full);
+      background: var(--primary);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: var(--shadow-md);
+      border: 3px solid var(--bg-card);
+      z-index: 1;
+    }
+
+    .timeline-content {
+      flex: 1;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+    }
+
+    /* Facilities */
+    .facility-icon {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent);
+    }
+
+    /* Contact Icons */
+    .contact-icon {
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .contact-icon-blue {
+      background: #E0F2FE;
+      color: #0284C7;
+    }
+
+    .contact-icon-green {
+      background: #DCFCE7;
+      color: #16A34A;
+    }
+
+    .contact-icon-purple {
+      background: #F3E8FF;
+      color: #9333EA;
+    }
+
+    .contact-icon-orange {
+      background: #FFEDD5;
+      color: #EA580C;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      border: 1px solid var(--bg-border);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="container page-root">
+    <div class="space-y-6" id="root"></div>
+  </div>
+
+  <script>
+    const stats = [
+      { value: "50+", label: "Years of Excellence" },
+      { value: "10,000+", label: "Alumni Network" },
+      { value: "500+", label: "Expert Faculty" },
+      { value: "95%", label: "Placement Rate" },
+    ];
+
+    const values = [
+      {
+        icon: "🎯",
+        title: "Excellence",
+        description: "Committed to delivering world-class education and fostering innovation."
+      },
+      {
+        icon: "🤝",
+        title: "Collaboration",
+        description: "Building a community of learners, educators, and industry partners."
+      },
+      {
+        icon: "❤️",
+        title: "Integrity",
+        description: "Upholding ethical standards and transparency in all our endeavors."
+      },
+      {
+        icon: "👁️",
+        title: "Vision",
+        description: "Empowering students to become future leaders and change-makers."
+      },
+    ];
+
+    const team = [
+      {
+        name: "Dr. R.K. Sharma",
+        position: "Principal",
+        department: "Administration",
+        description: "Leading the institution with 30+ years of academic excellence."
+      },
+      {
+        name: "Prof. S.K. Gupta",
+        position: "Dean - Academics",
+        department: "Academic Affairs",
+        description: "Driving academic innovation and student success."
+      },
+      {
+        name: "Dr. M.L. Verma",
+        position: "Head - Placements",
+        department: "Training & Placement",
+        description: "Connecting students with top companies and career opportunities."
+      },
+    ];
+
+    const milestones = [
+      { year: "1974", event: "College Established" },
+      { year: "1990", event: "NAAC A+ Accreditation" },
+      { year: "2005", event: "NBA Accreditation for all programs" },
+      { year: "2015", event: "Ranked among Top 100 Engineering Colleges" },
+      { year: "2020", event: "Launched Innovation & Incubation Center" },
+      { year: "2024", event: "Introduced AI-Powered Learning Platform" },
+    ];
+
+    const facilities = [
+      { name: "State-of-the-Art Labs", description: "Equipped with latest technology and equipment", icon: "🔬" },
+      { name: "Digital Library", description: "10,000+ books and online resources", icon: "📚" },
+      { name: "Sports Complex", description: "Indoor and outdoor sports facilities", icon: "🏆" },
+      { name: "Innovation Hub", description: "Startup incubation and research center", icon: "💡" },
+      { name: "Smart Classrooms", description: "Technology-enabled learning spaces", icon: "🖥️" },
+      { name: "Hostel Facilities", description: "Comfortable accommodation for students", icon: "🏠" },
+    ];
+
+    const root = document.getElementById("root");
+
+    function renderHeader() {
+      const sec = document.createElement("section");
+      sec.className = "hero";
+      sec.innerHTML = `
+          <div style="position:relative; z-index:2;">
+            <div class="hero-chip">
+              <span>ℹ️</span> Our Story
+            </div>
+            <h1 style="color:white; margin-bottom:0.5rem; font-size:2.5rem;">About Smart Campus</h1>
+            <p style="font-size:1.1rem; opacity:0.9;">Engineering excellence since 1974</p>
+          </div>
+        `;
+      root.appendChild(sec);
+    }
+
+    function renderMissionVision() {
+      const wrap = document.createElement("section");
+      const grid = document.createElement("div");
+      grid.className = "grid-2";
+
+      const mission = document.createElement("div");
+      mission.className = "card";
+      mission.style.borderLeft = "4px solid var(--primary)";
+      mission.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem;">
+            <div style="width:3rem; height:3rem; border-radius:0.5rem; background:rgba(27,54,93,0.1); display:flex; align-items:center; justify-content:center; font-size:1.5rem;">
+              🎯
+            </div>
+            <h3>Our Mission</h3>
+          </div>
+          <p style="color:var(--text-muted); line-height:1.6;">
+            To provide quality technical education that empowers students with knowledge, skills, and values to become competent professionals and responsible citizens. We strive to create an environment that fosters innovation, research, and holistic development.
+          </p>
+        `;
+
+      const vision = document.createElement("div");
+      vision.className = "card";
+      vision.style.borderLeft = "4px solid var(--accent)";
+      vision.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem;">
+            <div style="width:3rem; height:3rem; border-radius:0.5rem; background:rgba(197,160,89,0.1); display:flex; align-items:center; justify-content:center; font-size:1.5rem;">
+              👁️
+            </div>
+            <h3>Our Vision</h3>
+          </div>
+          <p style="color:var(--text-muted); line-height:1.6;">
+            To be a globally recognized institution of excellence in technical education, research, and innovation. We envision producing world-class engineers and technologists who contribute significantly to society and lead the technological advancement of the nation.
+          </p>
+        `;
+
+      grid.appendChild(mission);
+      grid.appendChild(vision);
+      wrap.appendChild(grid);
+      root.appendChild(wrap);
+    }
+
+    function renderStats() {
+      const sec = document.createElement("section");
+      sec.className = "card";
+      const grid = document.createElement("div");
+      grid.className = "grid-4";
+      stats.forEach(s => {
+        const box = document.createElement("div");
+        box.className = "stat-box";
+        box.innerHTML = `
+            <div style="font-size:2rem; font-weight:700; color:var(--primary); margin-bottom:0.2rem;">${s.value}</div>
+            <div style="font-size:0.9rem; color:var(--text-muted);">${s.label}</div>
+          `;
+        grid.appendChild(box);
+      });
+      sec.appendChild(grid);
+      root.appendChild(sec);
+    }
+
+    function renderValues() {
+      const sec = document.createElement("section");
+      sec.innerHTML = `<h2 style="margin-bottom:1.5rem; text-align:center;">Our Core Values</h2>`;
+      const grid = document.createElement("div");
+      grid.className = "grid-4";
+      values.forEach(v => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <div class="value-icon">${v.icon}</div>
+            <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">${v.title}</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.5;">${v.description}</p>
+          `;
+        grid.appendChild(card);
+      });
+      sec.appendChild(grid);
+      root.appendChild(sec);
+    }
+
+    function renderTeam() {
+      const sec = document.createElement("section");
+      sec.innerHTML = `<h2 style="margin-bottom:1.5rem; text-align:center;">Leadership Team</h2>`;
+      const grid = document.createElement("div");
+      grid.className = "grid-3";
+
+      team.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.textAlign = "center";
+        card.innerHTML = `
+            <div class="avatar">👤</div>
+            <h3 style="font-size:1.1rem; margin-bottom:0.2rem;">${m.name}</h3>
+            <p style="font-size:0.9rem; color:var(--primary); font-weight:600; margin-bottom:0.5rem;">${m.position}</p>
+            <span class="badge" style="margin-bottom:0.8rem;">${m.department}</span>
+            <p style="font-size:0.85rem; color:var(--text-muted);">${m.description}</p>
+          `;
+        grid.appendChild(card);
+      });
+
+      sec.appendChild(grid);
+      root.appendChild(sec);
+    }
+
+    function renderTimeline() {
+      const sec = document.createElement("section");
+      sec.className = "card";
+      sec.innerHTML = `<h3 style="margin-bottom:1.5rem; font-size:1.5rem;">Our Journey</h3>`;
+      const wrap = document.createElement("div");
+      wrap.className = "timeline-wrapper";
+      const line = document.createElement("div");
+      line.className = "timeline-line";
+      wrap.appendChild(line);
+
+      const list = document.createElement("div");
+
+      milestones.forEach(m => {
+        const item = document.createElement("div");
+        item.className = "timeline-item";
+        item.innerHTML = `
+            <div class="timeline-year">${m.year}</div>
+            <div class="timeline-content">
+              <h4 style="margin-bottom:0;">${m.event}</h4>
+            </div>
+          `;
+        list.appendChild(item);
+      });
+
+      wrap.appendChild(list);
+      sec.appendChild(wrap);
+      root.appendChild(sec);
+    }
+
+    function renderFacilities() {
+      const sec = document.createElement("section");
+      sec.innerHTML = `<h2 style="margin-bottom:1.5rem; text-align:center;">World-Class Facilities</h2>`;
+      const grid = document.createElement("div");
+      grid.className = "grid-3";
+      facilities.forEach(f => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <div class="facility-icon">${f.icon}</div>
+            <h3 style="font-size:1.1rem; margin-bottom:0.3rem;">${f.name}</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted);">${f.description}</p>
+          `;
+        grid.appendChild(card);
+      });
+      sec.appendChild(grid);
+      root.appendChild(sec);
+    }
+
+    function renderContact() {
+      const sec = document.createElement("section");
+      sec.className = "card";
+      sec.innerHTML = `<h3 style="margin-bottom:1.5rem; font-size:1.5rem;">Get in Touch</h3>`;
+      const grid = document.createElement("div");
+      grid.className = "grid-2";
+
+      const left = document.createElement("div");
+      left.style.display = "flex";
+      left.style.flexDirection = "column";
+      left.style.gap = "1.5rem";
+      left.innerHTML = `
+          <div style="display:flex; gap:1rem;">
+            <div class="contact-icon contact-icon-blue">📍</div>
+            <div>
+              <h4 style="margin-bottom:0.2rem;">Address</h4>
+              <p style="font-size:0.9rem; color:var(--text-muted);">
+                Government Engineering College<br/>
+                Bikaner, Rajasthan 334004<br/>
+                India
+              </p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:1rem;">
+            <div class="contact-icon contact-icon-green">📞</div>
+            <div>
+              <h4 style="margin-bottom:0.2rem;">Phone</h4>
+              <p style="font-size:0.9rem; color:var(--text-muted);">
+                +91 151 225 4321<br/>
+                +91 151 225 4322
+              </p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:1rem;">
+            <div class="contact-icon contact-icon-purple">✉️</div>
+            <div>
+              <h4 style="margin-bottom:0.2rem;">Email</h4>
+              <p style="font-size:0.9rem; color:var(--text-muted);">
+                info@gecbikaner.ac.in<br/>
+                admissions@gecbikaner.ac.in
+              </p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:1rem;">
+            <div class="contact-icon contact-icon-orange">🌐</div>
+            <div>
+              <h4 style="margin-bottom:0.2rem;">Website</h4>
+              <p style="font-size:0.9rem; color:var(--text-muted);">www.gecbikaner.ac.in</p>
+            </div>
+          </div>
+        `;
+
+      const right = document.createElement("div");
+      right.innerHTML = `
+          <h4 style="margin-bottom:1rem;">Connect With Us</h4>
+          <div class="social-grid">
+            <button class="btn btn-outline" style="justify-content:flex-start; width:100%;">
+              📘 Facebook
+            </button>
+            <button class="btn btn-outline" style="justify-content:flex-start; width:100%;">
+              🐦 Twitter
+            </button>
+            <button class="btn btn-outline" style="justify-content:flex-start; width:100%;">
+              📸 Instagram
+            </button>
+            <button class="btn btn-outline" style="justify-content:flex-start; width:100%;">
+              💼 LinkedIn
+            </button>
+          </div>
+          <div style="margin-top:1.5rem; padding:1rem; background:var(--bg-secondary); border-radius:var(--radius-md);">
+            <h4 style="margin-bottom:0.5rem; font-size:0.95rem;">Office Hours</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.2rem;">Monday - Friday: 9:00 AM - 5:00 PM</p>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.2rem;">Saturday: 9:00 AM - 1:00 PM</p>
+            <p style="font-size:0.85rem; color:var(--text-muted);">Sunday: Closed</p>
+          </div>
+        `;
+
+      grid.appendChild(left);
+      grid.appendChild(right);
+      sec.appendChild(grid);
+      root.appendChild(sec);
+    }
+
+    function renderAccreditations() {
+      const sec = document.createElement("section");
+      sec.className = "card";
+      sec.style.background = "linear-gradient(to right, var(--bg-secondary), white)";
+      sec.innerHTML = `<h3 style="margin-bottom:1rem; text-align:center;">Accreditations & Affiliations</h3>`;
+      const wrap = document.createElement("div");
+      wrap.style.display = "flex";
+      wrap.style.flexWrap = "wrap";
+      wrap.style.justifyContent = "center";
+      wrap.style.gap = "0.8rem";
+
+      const items = [
+        "NAAC A+ Accredited",
+        "NBA Accredited",
+        "AICTE Approved",
+        "RTU Affiliated",
+        "ISO 9001:2015",
+      ];
+
+      items.forEach(t => {
+        const b = document.createElement("span");
+        b.className = "badge";
+        b.style.padding = "0.5rem 1rem";
+        b.style.fontSize = "0.9rem";
+        b.style.background = "white";
+        b.style.boxShadow = "var(--shadow-sm)";
+        b.innerHTML = `<span style="margin-right:0.5rem;">🏅</span>${t}`;
+        wrap.appendChild(b);
+      });
+
+      sec.appendChild(wrap);
+      root.appendChild(sec);
+    }
+
+    renderHeader();
+    renderMissionVision();
+    renderStats();
+    renderValues();
+    renderTeam();
+    renderTimeline();
+    renderFacilities();
+    renderContact();
+    renderAccreditations();
+  </script>
+  <script src="include-html.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Dashboard – VIDYA-CUE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="studentstyle.css">
+  <style>
+    /* Dashboard specific styles */
+    body {
+      background: var(--bg-body);
+      color: var(--text-main);
+    }
+
+    .min-h-screen {
+      min-height: 100vh;
+    }
+
+    /* Main area */
+    .content-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    main {
+      padding: 2rem 1.5rem;
+    }
+
+    /* Section Card */
+    .section-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--bg-border);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    /* Dashboard Grid */
+    .row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--bg-border);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .card a {
+      text-decoration: none;
+      color: inherit;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .card-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+
+  <div class="content-wrap">
+    <!-- Shared Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main -->
+    <main>
+      <div id="mainContent"></div>
+    </main>
+  </div>
+
+  <script src="include-html.js"></script>
+  <script>
+    // State
+    const state = {
+      activeSection: "dashboard",
+      userInfo: {
+        name: "Student", // Will be updated from localStorage
+        institute: "ABC Institute",
+      },
+    };
+
+    // Load user info from localStorage if available
+    const storedUser = JSON.parse(localStorage.getItem('vc_user'));
+    if (storedUser) {
+      state.userInfo.name = storedUser.name;
+    }
+
+    // Render content for each section
+    function renderSection(section) {
+      const main = document.getElementById("mainContent");
+      let title = "";
+      let description = "";
+
+      switch (section) {
+        case "profile":
+          title = "Profile";
+          description = "View and update your personal details.";
+          break;
+        case "attendance":
+          title = "Smart Attendance";
+          description = "Scan QR or view your attendance records.";
+          break;
+        case "assignments":
+          title = "Assignments";
+          description = "Check and submit your assignments.";
+          break;
+        case "schedule":
+          title = "Class Schedule";
+          description = "View your daily and weekly class schedule.";
+          break;
+        case "exams":
+          title = "Exam Schedule";
+          description = "See upcoming exams and important dates.";
+          break;
+        case "skills":
+          title = "Skills Labs";
+          description = "Explore labs and skill development activities.";
+          break;
+        case "achievements":
+          title = "Achievements";
+          description = "Track your badges, ranks, and milestones.";
+          break;
+        case "sports":
+          title = "Sports Info";
+          description = "View sports activities and registrations.";
+          break;
+        case "professors":
+          title = "Know Your Professors";
+          description = "Learn about your faculty and mentors.";
+          break;
+        case "pyq":
+          title = "PYQ Papers";
+          description = "Access previous year question papers.";
+          break;
+        case "notes":
+          title = "Notes";
+          description = "Find and manage study notes.";
+          break;
+        case "chatbot":
+          title = "AI Chatbot";
+          description = "Ask questions and get instant help.";
+          break;
+        case "roadmap":
+          title = "Learning Roadmap";
+          description = "Plan your semester and learning journey.";
+          break;
+        case "career":
+          title = "Career Guidance";
+          description = "Explore career paths and resources.";
+          break;
+        case "counselor":
+          title = "Counselor";
+          description = "Reach out for academic or personal support.";
+          break;
+        case "about":
+          title = "About Us";
+          description = "Learn more about VIDYA-CUE.";
+          break;
+        default:
+          title = "Dashboard";
+          description = "Overview of your courses, attendance, and upcoming activities.";
+      }
+
+      if (section === "dashboard") {
+        main.innerHTML = `
+            <div style="margin-bottom:2rem;">
+              <h1 style="font-family:'Playfair Display', serif; font-size:2rem; color:var(--primary); margin-bottom:0.5rem;">Hello, ${state.userInfo.name}</h1>
+              <p style="color:var(--text-muted);">Welcome to your student dashboard.</p>
+            </div>
+            <div class="row">
+              <div class="card"><a href="studentprofile.html"><div class="card-title">Profile</div><div class="card-sub">View and edit profile</div></a></div>
+              <div class="card"><a href="smartattendance.html"><div class="card-title">Smart Attendance</div><div class="card-sub">View attendance & QR scan</div></a></div>
+              <div class="card"><a href="assignment.html"><div class="card-title">Assignments</div><div class="card-sub">Manage assignments</div></a></div>
+              <div class="card"><a href="classschedule.html"><div class="card-title">Class Schedule</div><div class="card-sub">View timetable</div></a></div>
+              <div class="card"><a href="studentexammschedule.html"><div class="card-title">Exam Schedule</div><div class="card-sub">Exam dates & notifications</div></a></div>
+              <div class="card"><a href="skills.html"><div class="card-title">Skills</div><div class="card-sub">Labs & workshops</div></a></div>
+              <div class="card"><a href="studentnotes.html"><div class="card-title">Notes</div><div class="card-sub">Notes & study materials</div></a></div>
+              <div class="card"><a href="studentPYQ.html"><div class="card-title">PYQ</div><div class="card-sub">Previous year questions</div></a></div>
+              <div class="card"><a href="aichatbot.html"><div class="card-title">AI Chatbot</div><div class="card-sub">Ask for help & guidance</div></a></div>
+              <div class="card"><a href="studentroadmape.html"><div class="card-title">Roadmap</div><div class="card-sub">Learning path</div></a></div>
+              <div class="card"><a href="studentsports.html"><div class="card-title">Sports</div><div class="card-sub">Sports activities</div></a></div>
+              <div class="card"><a href="careerguidence.html"><div class="card-title">Career Guidance</div><div class="card-sub">Career resources</div></a></div>
+              <div class="card"><a href="studentcounclor.html"><div class="card-title">Counselor</div><div class="card-sub">Get counseling help</div></a></div>
+            </div>
+          `;
+      } else {
+        // This part is mostly for testing, as the cards link to actual pages
+        main.innerHTML = `
+            <div class="section-card">
+              <div class="section-title">${title}</div>
+              <div class="section-sub">${description}</div>
+            </div>
+          `;
+      }
+    }
+
+    // Initial load
+    renderSection(state.activeSection);
+  </script>
+</body>
+
+</html>

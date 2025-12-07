@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Notes & Study Materials – VIDYA-CUE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background-color: #f3f4f6;
+        color: #111827;
+        padding: 1.5rem;
+      }
+
+      .page-root {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 { font-size: 1.8rem; font-weight: 700; }
+      h2 { font-size: 1.3rem; font-weight: 600; }
+      h3 { font-size: 1rem; font-weight: 600; }
+      p  { font-size: 0.85rem; color: #d1fae5; }
+
+      .space-y-6 > * + * { margin-top: 1.5rem; }
+
+      /* Hero */
+      .hero {
+        background: linear-gradient(135deg,#16a34a,#0f766e);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        color: #ecfdf5;
+        box-shadow: 0 20px 40px rgba(22,101,52,0.5);
+      }
+
+      .hero-inner {
+        display:flex;
+        flex-direction:column;
+        gap:1.5rem;
+      }
+      @media (min-width:1024px) {
+        .hero-inner {
+          flex-direction:row;
+          align-items:center;
+          justify-content:space-between;
+        }
+      }
+
+      .hero-chip {
+        display:inline-flex;
+        align-items:center;
+        gap:0.35rem;
+        font-size:0.75rem;
+        padding:0.2rem 0.8rem;
+        border-radius:9999px;
+        background:rgba(255,255,255,0.2);
+        backdrop-filter:blur(6px);
+        margin-bottom:0.8rem;
+      }
+
+      .hero-stats {
+        display:grid;
+        grid-template-columns: repeat(3,minmax(0,1fr));
+        gap:0.75rem;
+      }
+
+      .hero-stat {
+        background:rgba(255,255,255,0.12);
+        padding:0.85rem;
+        border-radius:0.9rem;
+        border:1px solid rgba(255,255,255,0.3);
+        text-align:left;
+      }
+      .hero-stat-value {
+        font-size:1.4rem;
+        font-weight:600;
+        margin-bottom:0.1rem;
+      }
+      .hero-stat-label {
+        font-size:0.7rem;
+        color:#bbf7d0;
+      }
+
+      /* Cards, inputs, buttons */
+      .card {
+        background:#ffffff;
+        border-radius:1rem;
+        box-shadow:0 10px 25px rgba(15,23,42,0.08);
+        padding:1.5rem;
+      }
+
+      .flex { display:flex; }
+      .flex-col { flex-direction:column; }
+      .flex-1 { flex:1; }
+      .items-center { align-items:center; }
+      .justify-between { justify-content:space-between; }
+      .gap-4 { gap:1rem; }
+      .gap-2 { gap:0.5rem; }
+
+      .input {
+        width:100%;
+        border-radius:0.7rem;
+        padding:0.5rem 0.7rem;
+        border:1px solid #d1d5db;
+        font-size:0.85rem;
+      }
+      .input:focus { outline:none; border-color:#22c55e; box-shadow:0 0 0 1px #22c55e33; }
+
+      .input-search {
+        padding-left:2.1rem;
+        height:2.6rem;
+      }
+
+      .btn {
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        padding:0.4rem 0.9rem;
+        background:#ffffff;
+        cursor:pointer;
+        font-size:0.85rem;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:0.35rem;
+      }
+      .btn:hover { background:#f3f4f6; }
+      .btn-primary {
+        background:#16a34a;
+        border-color:#16a34a;
+        color:#ecfdf5;
+      }
+      .btn-primary:hover { background:#15803d; }
+      .btn-outline {
+        background:transparent;
+      }
+      .btn-sm {
+        padding:0.25rem 0.7rem;
+        font-size:0.8rem;
+      }
+      .btn-full { width:100%; }
+
+      .icon-text { font-size:0.9rem; }
+
+      /* Badges */
+      .badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.1rem 0.5rem;
+        border-radius:9999px;
+        font-size:0.7rem;
+        font-weight:500;
+        border:1px solid transparent;
+      }
+      .badge-faculty {
+        background:#dbeafe;
+        color:#1d4ed8;
+        border-color:#bfdbfe;
+      }
+      .badge-student {
+        background:#e9d5ff;
+        color:#6b21a8;
+        border-color:#c4b5fd;
+      }
+      .badge-outline {
+        background:transparent;
+        border-color:#e5e7eb;
+        color:#4b5563;
+      }
+
+      /* Tabs */
+      .tabs {
+        display:flex;
+        gap:0.4rem;
+        padding:0.25rem;
+        border-radius:9999px;
+        background:#e5e7eb;
+        width:fit-content;
+      }
+      .tab-btn {
+        border:none;
+        background:transparent;
+        border-radius:9999px;
+        padding:0.4rem 0.9rem;
+        font-size:0.8rem;
+        cursor:pointer;
+      }
+      .tab-btn.active {
+        background:#ffffff;
+        box-shadow:0 2px 5px rgba(15,23,42,0.2);
+      }
+
+      /* Notes grid */
+      .notes-grid {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .notes-grid {
+          grid-template-columns: repeat(2,minmax(0,1fr));
+        }
+      }
+
+      .note-card {
+        padding:1.5rem;
+        border-radius:1rem;
+        box-shadow:0 8px 20px rgba(15,23,42,0.08);
+        background:#ffffff;
+        transition:transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .note-card:hover {
+        transform:translateY(-2px);
+        box-shadow:0 14px 30px rgba(15,23,42,0.13);
+      }
+
+      .note-icon {
+        width:3.2rem;
+        height:3.2rem;
+        border-radius:0.9rem;
+        background:#dcfce7;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1.4rem;
+        color:#16a34a;
+      }
+
+      .note-title { font-size:1rem; font-weight:600; margin-bottom:0.15rem; }
+      .note-sub { font-size:0.8rem; color:#6b7280; }
+      .note-author { font-size:0.8rem; color:#6b7280; margin-top:0.25rem; }
+
+      .note-meta-grid {
+        display:grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap:0.5rem;
+        margin:0.8rem 0;
+      }
+      .meta-box {
+        padding:0.55rem 0.7rem;
+        border-radius:0.7rem;
+        background:#f3f4f6;
+        font-size:0.8rem;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+      }
+      .meta-label { color:#6b7280; }
+      .meta-value { color:#111827; }
+      .meta-rating {
+        display:flex;
+        align-items:center;
+        gap:0.15rem;
+      }
+
+      .topics-wrap {
+        display:flex;
+        flex-wrap:wrap;
+        gap:0.35rem;
+      }
+      .topic-badge {
+        border-radius:9999px;
+        border:1px solid #e5e7eb;
+        padding:0.15rem 0.55rem;
+        font-size:0.7rem;
+        color:#4b5563;
+      }
+
+      .note-actions {
+        display:flex;
+        align-items:center;
+        gap:0.5rem;
+        border-top:1px solid #e5e7eb;
+        padding-top:0.8rem;
+        margin-top:0.8rem;
+      }
+
+      /* Upload dialog */
+      .modal-backdrop {
+        position:fixed;
+        inset:0;
+        background:rgba(15,23,42,0.5);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:50;
+      }
+      .modal {
+        background:#ffffff;
+        border-radius:1rem;
+        max-width:480px;
+        width:100%;
+        padding:1.5rem;
+        box-shadow:0 20px 50px rgba(15,23,42,0.4);
+      }
+      .modal-header {
+        margin-bottom:0.75rem;
+      }
+      .modal-title { font-size:1.1rem; font-weight:600; margin-bottom:0.1rem; }
+      .modal-desc { font-size:0.8rem; color:#6b7280; }
+      .modal-body { margin-top:0.75rem; }
+      .modal-footer {
+        margin-top:1rem;
+        display:flex;
+        justify-content:flex-end;
+        gap:0.5rem;
+      }
+      .field-group { margin-bottom:0.75rem; }
+      .field-label {
+        font-size:0.8rem;
+        color:#374151;
+        margin-bottom:0.2rem;
+        display:block;
+      }
+
+      .dropzone {
+        margin-top:0.35rem;
+        border-radius:0.9rem;
+        border:2px dashed #d1d5db;
+        padding:1.8rem 1rem;
+        text-align:center;
+        transition:border-color 0.15s ease, background-color 0.15s ease;
+        font-size:0.85rem;
+      }
+      .dropzone.drag-active {
+        border-color:#16a34a;
+        background:#ecfdf5;
+      }
+
+      /* Toast */
+      .toast {
+        position:fixed;
+        bottom:1rem;
+        right:1rem;
+        background:#16a34a;
+        color:#ecfdf5;
+        padding:0.6rem 0.9rem;
+        border-radius:0.7rem;
+        font-size:0.8rem;
+        box-shadow:0 10px 25px rgba(22,163,74,0.4);
+        opacity:0;
+        transform:translateY(10px);
+        transition:opacity 0.15s ease, transform 0.15s ease;
+        z-index:60;
+      }
+      .toast.show {
+        opacity:1;
+        transform:translateY(0);
+      }
+
+      .text-muted { color:#6b7280; }
+
+      .relative { position:relative; }
+      .search-icon {
+        position:absolute;
+        left:0.8rem;
+        top:50%;
+        transform:translateY(-50%);
+        font-size:0.9rem;
+        color:#9ca3af;
+      }
+
+      .text-center { text-align:center; }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <!-- Hero -->
+        <section class="hero">
+          <div class="hero-inner">
+            <div>
+              <div class="hero-chip">
+                <span>📝</span>
+                <span>Study Materials</span>
+              </div>
+              <h1 class="mb-2">Notes & Study Materials</h1>
+              <p>Access quality notes shared by faculty and students.</p>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="statTotal">0</div>
+                <div class="hero-stat-label">Total Notes</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="statFaculty">0</div>
+                <div class="hero-stat-label">Faculty</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="statStudent">0</div>
+                <div class="hero-stat-label">Student</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Search + Upload -->
+        <section class="card">
+          <div class="flex flex-col gap-4" style="flex-direction:column;">
+            <div class="flex gap-4" style="flex-direction:column;">
+              <div class="flex-1">
+                <div class="relative">
+                  <span class="search-icon">🔍</span>
+                  <input
+                    id="searchInput"
+                    class="input input-search"
+                    placeholder="Search notes by title, subject, or topic..."
+                  />
+                </div>
+              </div>
+              <button class="btn btn-primary" id="openUploadBtn">
+                <span class="icon-text">⬆️</span>
+                <span>Upload Notes</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tabs -->
+        <section>
+          <div class="tabs" id="tabs">
+            <button class="tab-btn active" data-tab="all" id="tabAll">All Notes (0)</button>
+            <button class="tab-btn" data-tab="faculty" id="tabFaculty">Faculty (0)</button>
+            <button class="tab-btn" data-tab="student" id="tabStudent">Student (0)</button>
+          </div>
+        </section>
+
+        <!-- Notes list -->
+        <section id="notesSection">
+          <!-- Content injected by JS -->
+        </section>
+      </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal-backdrop" style="display:none;">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Upload Notes</div>
+          <div class="modal-desc">Share your notes with other students.</div>
+        </div>
+        <div class="modal-body">
+          <div class="field-group">
+            <label class="field-label" for="noteTitle">Note Title</label>
+            <input id="noteTitle" class="input" placeholder="Enter note title" />
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="noteSubject">Subject</label>
+            <input id="noteSubject" class="input" placeholder="Enter subject name" />
+          </div>
+          <div class="field-group">
+            <span class="field-label">Upload File</span>
+            <div
+              id="dropzone"
+              class="dropzone"
+            >
+              <div style="font-size:1.5rem;margin-bottom:0.5rem;">📄</div>
+              <div style="margin-bottom:0.25rem;color:#111827;">Drag and drop your file here</div>
+              <div style="font-size:0.8rem;margin-bottom:0.5rem;color:#6b7280;">or</div>
+              <label style="cursor:pointer;">
+                <span class="btn btn-outline btn-sm">Browse Files</span>
+                <input id="fileInput" type="file" style="display:none;" accept=".pdf,.doc,.docx" />
+              </label>
+              <div style="font-size:0.7rem;margin-top:0.5rem;color:#6b7280;">
+                Supported formats: PDF, DOC, DOCX (Max 10MB)
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-sm btn-outline" id="cancelUploadBtn">Cancel</button>
+          <button class="btn btn-sm btn-primary" id="submitUploadBtn">Upload Notes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+      // ----- DATA -----
+      const notesData = [
+        {
+          id: 1,
+          title: "Calculus Complete Notes",
+          subject: "Mathematics",
+          code: "MATH101",
+          author: "Dr. Shokat Ali",
+          uploadedBy: "Faculty",
+          type: "PDF",
+          pages: 45,
+          size: "2.5 MB",
+          downloads: 342,
+          rating: 4.8,
+          uploadDate: "2024-01-15",
+          topics: ["Differentiation", "Integration", "Limits", "Continuity"],
+          description:
+            "Comprehensive notes covering all calculus topics with solved examples",
+        },
+        {
+          id: 2,
+          title: "Linear Algebra Handwritten Notes",
+          subject: "Mathematics",
+          code: "MATH101",
+          author: "Student Notes",
+          uploadedBy: "Student",
+          type: "PDF",
+          pages: 32,
+          size: "4.1 MB",
+          downloads: 289,
+          rating: 4.6,
+          uploadDate: "2024-01-20",
+          topics: ["Matrices", "Determinants", "Vector Spaces", "Eigenvalues"],
+          description:
+            "Detailed handwritten notes with diagrams and examples",
+        },
+        {
+          id: 3,
+          title: "Quantum Mechanics Lecture Notes",
+          subject: "Physics",
+          code: "PHY101",
+          author: "Prof. Rajesh Kumar",
+          uploadedBy: "Faculty",
+          type: "PDF",
+          pages: 58,
+          size: "3.2 MB",
+          downloads: 267,
+          rating: 4.9,
+          uploadDate: "2024-01-10",
+          topics: [
+            "Wave Functions",
+            "Schrodinger Equation",
+            "Quantum States",
+          ],
+          description: "Complete lecture notes on quantum mechanics fundamentals",
+        },
+        {
+          id: 4,
+          title: "Thermodynamics Summary Notes",
+          subject: "Physics",
+          code: "PHY101",
+          author: "Student Notes",
+          uploadedBy: "Student",
+          type: "PDF",
+          pages: 28,
+          size: "1.8 MB",
+          downloads: 198,
+          rating: 4.4,
+          uploadDate: "2024-01-18",
+          topics: [
+            "Laws of Thermodynamics",
+            "Heat Transfer",
+            "Entropy",
+          ],
+          description: "Concise summary notes perfect for quick revision",
+        },
+        {
+          id: 5,
+          title: "C Programming Complete Guide",
+          subject: "Programming",
+          code: "CS101",
+          author: "Dr. Deepika Gupta",
+          uploadedBy: "Faculty",
+          type: "PDF",
+          pages: 68,
+          size: "5.5 MB",
+          downloads: 523,
+          rating: 4.9,
+          uploadDate: "2024-01-05",
+          topics: [
+            "Syntax",
+            "Pointers",
+            "Functions",
+            "File Handling",
+            "Data Structures",
+          ],
+          description:
+            "Complete programming guide with code examples and practice problems",
+        },
+        {
+          id: 6,
+          title: "Data Structures & Algorithms",
+          subject: "Programming",
+          code: "CS101",
+          author: "Student Notes",
+          uploadedBy: "Student",
+          type: "PDF",
+          pages: 52,
+          size: "3.9 MB",
+          downloads: 467,
+          rating: 4.7,
+          uploadDate: "2024-01-12",
+          topics: [
+            "Arrays",
+            "Linked Lists",
+            "Trees",
+            "Graphs",
+            "Sorting",
+            "Searching",
+          ],
+          description:
+            "Comprehensive notes on data structures with complexity analysis",
+        },
+        {
+          id: 7,
+          title: "Technical Writing Guide",
+          subject: "Communication Skills",
+          code: "ENG101",
+          author: "Prof. Shradha Parmar",
+          uploadedBy: "Faculty",
+          type: "PDF",
+          pages: 24,
+          size: "1.2 MB",
+          downloads: 176,
+          rating: 4.5,
+          uploadDate: "2024-01-22",
+          topics: ["Report Writing", "Email Etiquette", "Presentation Skills"],
+          description: "Professional guide for technical communication",
+        },
+        {
+          id: 8,
+          title: "Engineering Drawing Basics",
+          subject: "Engineering Drawing",
+          code: "ME101",
+          author: "Prof. Anil Sharma",
+          uploadedBy: "Faculty",
+          type: "PDF",
+          pages: 42,
+          size: "6.8 MB",
+          downloads: 234,
+          rating: 4.6,
+          uploadDate: "2024-01-08",
+          topics: [
+            "Orthographic Projection",
+            "Isometric Views",
+            "Sectional Views",
+          ],
+          description:
+            "Detailed notes with diagrams for engineering drawing",
+        },
+      ];
+
+      // ----- STATE -----
+      let searchTerm = "";
+      let activeTab = "all";
+      let dragActive = false;
+      let selectedFileName = "";
+
+      // Helpers
+      function getFilteredNotes() {
+        const lower = searchTerm.toLowerCase();
+        const bySearch = notesData.filter((note) => {
+          const inTitle = note.title.toLowerCase().includes(lower);
+          const inSubject = note.subject.toLowerCase().includes(lower);
+          const inTopics = note.topics.some((t) =>
+            t.toLowerCase().includes(lower)
+          );
+          return inTitle || inSubject || inTopics;
+        });
+
+        if (activeTab === "faculty") {
+          return bySearch.filter((n) => n.uploadedBy === "Faculty");
+        } else if (activeTab === "student") {
+          return bySearch.filter((n) => n.uploadedBy === "Student");
+        }
+        return bySearch;
+      }
+
+      function countByRole() {
+        const faculty = notesData.filter((n) => n.uploadedBy === "Faculty")
+          .length;
+        const student = notesData.filter((n) => n.uploadedBy === "Student")
+          .length;
+        return { faculty, student };
+      }
+
+      // Render hero stats and tab labels
+      function renderCounts() {
+        const { faculty, student } = countByRole();
+        const total = notesData.length;
+
+        document.getElementById("statTotal").textContent = total;
+        document.getElementById("statFaculty").textContent = faculty;
+        document.getElementById("statStudent").textContent = student;
+
+        document.getElementById(
+          "tabAll"
+        ).textContent = `All Notes (${getFilteredNotes().length})`;
+        document.getElementById(
+          "tabFaculty"
+        ).textContent = `Faculty (${notesData.filter(
+          (n) => n.uploadedBy === "Faculty"
+        ).length})`;
+        document.getElementById(
+          "tabStudent"
+        ).textContent = `Student (${notesData.filter(
+          (n) => n.uploadedBy === "Student"
+        ).length})`;
+      }
+
+      function renderNotes() {
+        const container = document.getElementById("notesSection");
+        const notes = getFilteredNotes();
+
+        if (notes.length === 0) {
+          container.innerHTML = `
+            <div class="card" style="text-align:center;padding:3rem 1.5rem;">
+              <div style="font-size:2rem;margin-bottom:0.75rem;color:#9ca3af;">📝</div>
+              <div style="margin-bottom:0.25rem;font-size:0.95rem;">No notes found</div>
+              <div class="text-muted" style="font-size:0.8rem;">Try adjusting your search.</div>
+            </div>
+          `;
+          renderCounts();
+          return;
+        }
+
+        let html = '<div class="notes-grid">';
+        notes.forEach((note) => {
+          const roleBadgeClass =
+            note.uploadedBy === "Faculty" ? "badge-faculty" : "badge-student";
+          html += `
+            <article class="note-card">
+              <div class="flex" style="gap:1rem;">
+                <div class="note-icon">📄</div>
+                <div class="flex-1" style="min-width:0;">
+                  <div class="flex justify-between" style="align-items:flex-start;margin-bottom:0.3rem;">
+                    <div style="flex:1;">
+                      <div class="note-title">${note.title}</div>
+                      <div class="note-sub">${note.subject} • ${note.code}</div>
+                    </div>
+                    <span class="badge ${roleBadgeClass}">
+                      ${note.uploadedBy}
+                    </span>
+                  </div>
+                  <div class="note-author">${note.author}</div>
+                </div>
+              </div>
+
+              <div style="margin:0.75rem 0;font-size:0.8rem;color:#6b7280;">
+                ${note.description}
+              </div>
+
+              <div class="note-meta-grid">
+                <div class="meta-box">
+                  <span class="meta-label">Pages</span>
+                  <span class="meta-value">${note.pages}</span>
+                </div>
+                <div class="meta-box">
+                  <span class="meta-label">Size</span>
+                  <span class="meta-value">${note.size}</span>
+                </div>
+                <div class="meta-box">
+                  <span class="meta-label">Downloads</span>
+                  <span class="meta-value">${note.downloads}</span>
+                </div>
+                <div class="meta-box">
+                  <span class="meta-label">Rating</span>
+                  <span class="meta-rating">
+                    <span style="color:#eab308;">★</span>
+                    <span>${note.rating}</span>
+                  </span>
+                </div>
+              </div>
+
+              <div style="margin-bottom:0.3rem;">
+                <div style="font-size:0.8rem;color:#6b7280;margin-bottom:0.25rem;">Topics Covered</div>
+                <div class="topics-wrap">
+                  ${note.topics
+                    .map(
+                      (t) =>
+                        `<span class="topic-badge">${t}</span>`
+                    )
+                    .join("")}
+                </div>
+              </div>
+
+              <div class="note-actions">
+                <button class="btn btn-sm btn-primary" onclick="alert('Download (demo)')">
+                  ⬇️ <span>Download</span>
+                </button>
+                <button class="btn btn-sm btn-outline" onclick="alert('Preview (demo)')">
+                  👁
+                </button>
+                <button class="btn btn-sm btn-outline" onclick="alert('Share (demo)')">
+                  🔗
+                </button>
+              </div>
+            </article>
+          `;
+        });
+        html += "</div>";
+        container.innerHTML = html;
+
+        renderCounts();
+      }
+
+      // Tabs
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeTab = btn.getAttribute("data-tab");
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderNotes();
+        });
+      });
+
+      // Search
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", (e) => {
+          searchTerm = e.target.value;
+          renderNotes();
+        });
+
+      // Upload modal
+      const uploadModal = document.getElementById("uploadModal");
+      const dropzone = document.getElementById("dropzone");
+      const fileInput = document.getElementById("fileInput");
+      const toastEl = document.getElementById("toast");
+
+      function showModal() {
+        uploadModal.style.display = "";
+      }
+      function hideModal() {
+        uploadModal.style.display = "none";
+        selectedFileName = "";
+      }
+
+      document
+        .getElementById("openUploadBtn")
+        .addEventListener("click", showModal);
+      document
+        .getElementById("cancelUploadBtn")
+        .addEventListener("click", hideModal);
+
+      uploadModal.addEventListener("click", (e) => {
+        if (e.target === uploadModal) hideModal();
+      });
+
+      // Drag & drop handlers
+      function setDragActive(active) {
+        dragActive = active;
+        if (active) dropzone.classList.add("drag-active");
+        else dropzone.classList.remove("drag-active");
+      }
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+
+      dropzone.addEventListener("dragenter", () => setDragActive(true));
+      dropzone.addEventListener("dragover", () => setDragActive(true));
+      dropzone.addEventListener("dragleave", () => setDragActive(false));
+      dropzone.addEventListener("drop", (e) => {
+        setDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleFileUpload(e.dataTransfer.files[0]);
+        }
+      });
+
+      dropzone.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFileUpload(e.target.files[0]);
+        }
+      });
+
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.add("show");
+        setTimeout(() => {
+          toastEl.classList.remove("show");
+        }, 2200);
+      }
+
+      function handleFileUpload(file) {
+        selectedFileName = file.name;
+        showToast("Notes uploaded successfully! File: " + file.name);
+        hideModal();
+      }
+
+      document
+        .getElementById("submitUploadBtn")
+        .addEventListener("click", () => {
+          if (!selectedFileName) {
+            showToast("Please select a file first.");
+            return;
+          }
+          showToast("Notes uploaded successfully! File: " + selectedFileName);
+          hideModal();
+        });
+
+      // Initial render
+      renderNotes();
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

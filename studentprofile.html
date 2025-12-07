@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Profile – VIDYA-CUE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="studentstyle.css">
+  <style>
+    /* Page specific overrides */
+    body {
+      background: var(--bg-body);
+      color: var(--text-main);
+    }
+
+    .page-root {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .space-y-6>*+* {
+      margin-top: 1.5rem;
+    }
+
+    /* Profile Header */
+    .profile-header-cover {
+      height: 10rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      position: relative;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .profile-header-inner {
+      padding: 0 2rem 2rem 2rem;
+    }
+
+    .profile-main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: -4rem;
+    }
+
+    @media (min-width: 768px) {
+      .profile-main {
+        flex-direction: row;
+      }
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 9rem;
+      height: 9rem;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 4px solid var(--bg-card);
+      box-shadow: var(--shadow-lg);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 3rem;
+    }
+
+    .avatar-edit-btn {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-md);
+      background: var(--bg-card);
+      border: 1px solid var(--bg-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .profile-info-main {
+      flex: 1;
+      margin-top: 4.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .profile-info-main {
+        margin-top: 4.5rem;
+      }
+
+      /* Adjusted for alignment */
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .quick-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .stat-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.3rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      width: fit-content;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-full);
+      padding: 0.5rem 1.2rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Grid Helpers */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .grid-3 {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Pills */
+    .pill {
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-lg);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .pill-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* Progress Bar */
+    .progress-wrap {
+      width: 100%;
+      height: 0.5rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-border);
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: var(--primary);
+    }
+
+    /* Achievements Grid */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .achievement-card {
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      background: var(--bg-secondary);
+      border: 1px solid var(--bg-border);
+      text-align: center;
+    }
+
+    /* Skills */
+    .skills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .skill-pill {
+      border-radius: var(--radius-full);
+      border: 1px solid var(--bg-border);
+      padding: 0.3rem 1rem;
+      font-size: 0.85rem;
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      max-width: 500px;
+      width: 90%;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .dropzone {
+      margin-top: 0.5rem;
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--bg-border);
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .dropzone:hover {
+      border-color: var(--primary);
+      background: rgba(27, 54, 93, 0.05);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #10B981;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="page-root">
+    <div class="space-y-6">
+      <!-- PROFILE HEADER -->
+      <section class="card" style="padding:0;">
+        <div class="profile-header-cover">
+          <button id="editCoverBtn" class="btn btn-sm"
+            style="position:absolute; right:1.5rem; top:1.5rem; background:rgba(255,255,255,0.9);">
+            <span>📷</span> Edit Cover
+          </button>
+        </div>
+        <div class="profile-header-inner">
+          <div class="profile-main">
+            <!-- Avatar -->
+            <div style="position:relative;">
+              <div id="avatar" class="avatar-wrap">🎓</div>
+              <button id="editProfileBtn" class="avatar-edit-btn">
+                <span>📷</span>
+              </button>
+            </div>
+
+            <!-- Info -->
+            <div class="profile-info-main">
+              <div style="display:flex; flex-direction:column; gap:1rem;">
+                <div>
+                  <div
+                    style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.2rem;">
+                        <h1 id="studentName"
+                          style="margin:0; font-family:'Playfair Display', serif; color:var(--primary);">Student Name
+                        </h1>
+                        <span class="badge"
+                          style="background:#DCFCE7; color:#166534; border:1px solid #BBF7D0;">Active</span>
+                      </div>
+                      <div id="studentDept" style="color:var(--text-muted);">Department</div>
+                      <div id="studentIdYear" style="font-size:0.9rem; color:var(--text-muted); opacity:0.8;">ID • Year
+                      </div>
+                    </div>
+                    <button class="btn btn-primary" id="editProfileBtn2">
+                      <span>✏️</span> Edit Profile
+                    </button>
+                  </div>
+                  <div id="bioText"
+                    style="margin-top:0.8rem; color:var(--text-muted); max-width:600px; line-height:1.6;"></div>
+                </div>
+
+                <!-- Quick stats -->
+                <div class="quick-stats">
+                  <div class="quick-stat">
+                    <div class="stat-icon" style="background:#DBEAFE; color:#1E40AF;">📈</div>
+                    <div>
+                      <div style="font-size:0.85rem; color:var(--text-muted);">CGPA</div>
+                      <div id="statGpa" style="font-weight:600;">0.0</div>
+                    </div>
+                  </div>
+                  <div class="quick-stat">
+                    <div class="stat-icon" style="background:#DCFCE7; color:#166534;">✅</div>
+                    <div>
+                      <div style="font-size:0.85rem; color:var(--text-muted);">Attendance</div>
+                      <div id="statAttendance" style="font-weight:600;">0%</div>
+                    </div>
+                  </div>
+                  <div class="quick-stat">
+                    <div class="stat-icon" style="background:#F3E8FF; color:#6B21A8;">🏅</div>
+                    <div>
+                      <div style="font-size:0.85rem; color:var(--text-muted);">Achievements</div>
+                      <div id="statAchievements" style="font-weight:600;">0</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TABS -->
+      <section>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="overview">Overview</button>
+          <button class="tab-btn" data-tab="performance">Performance</button>
+          <button class="tab-btn" data-tab="achievements">Achievements</button>
+          <button class="tab-btn" data-tab="activities">Activities</button>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div id="tab-overview" class="tab-panel">
+          <div class="grid-3">
+            <!-- Contact Info -->
+            <div class="card">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+                <h3 style="margin:0; color:var(--primary);">Contact Information</h3>
+                <button class="btn btn-outline" style="padding:0.3rem 0.6rem;">✏️</button>
+              </div>
+              <div class="grid-2" style="gap:1rem;">
+                <div class="pill">
+                  <div class="pill-icon" style="background:#DBEAFE; color:#1E40AF;">✉️</div>
+                  <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">Email</div>
+                    <div id="fieldEmail" style="font-weight:500;"></div>
+                  </div>
+                </div>
+                <div class="pill">
+                  <div class="pill-icon" style="background:#DCFCE7; color:#166534;">📞</div>
+                  <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">Phone</div>
+                    <div id="fieldPhone" style="font-weight:500;"></div>
+                  </div>
+                </div>
+                <div class="pill">
+                  <div class="pill-icon" style="background:#F3E8FF; color:#6B21A8;">📍</div>
+                  <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">Address</div>
+                    <div id="fieldAddress" style="font-weight:500;"></div>
+                  </div>
+                </div>
+                <div class="pill">
+                  <div class="pill-icon" style="background:#FFEDD5; color:#9A3412;">📅</div>
+                  <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">Enrollment Date</div>
+                    <div id="fieldEnroll" style="font-weight:500;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Social links -->
+              <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--bg-border);">
+                <h4 style="margin-bottom:1rem; color:var(--primary);">Social Links</h4>
+                <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+                  <button class="btn btn-outline">
+                    <span>🐱</span> <span id="socialGithub"></span>
+                  </button>
+                  <button class="btn btn-outline">
+                    <span>🔗</span> <span id="socialLinkedin"></span>
+                  </button>
+                  <button class="btn btn-outline">
+                    <span>🌐</span> <span id="socialPortfolio"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Academic Details -->
+            <div class="card">
+              <h3 style="margin-bottom:1.5rem; color:var(--primary);">Academic Details</h3>
+              <div style="display:flex; flex-direction:column; gap:1rem;">
+                <div class="pill">
+                  <div class="pill-icon" style="background:#DBEAFE; color:#1E40AF;">🎓</div>
+                  <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">Program</div>
+                    <div id="fieldCourse" style="font-weight:500;"></div>
+                  </div>
+                </div>
+                <div class="pill">
+                  <div class="pill-icon" style="background:#DCFCE7; color:#166534;">#</div>
+                  <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">Roll Number</div>
+                    <div id="fieldRoll" style="font-weight:500;"></div>
+                  </div>
+                </div>
+                <div class="pill">
+                  <div class="pill-icon" style="background:#F3E8FF; color:#6B21A8;">📘</div>
+                  <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">Semester</div>
+                    <div id="fieldSemester" style="font-weight:500;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-outline" style="width:100%; margin-top:1.5rem;">
+                <span>📥</span> Download ID Card
+              </button>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="card" style="margin-top:1.5rem;">
+            <h3 style="margin-bottom:1rem; color:var(--primary);">Skills</h3>
+            <div class="skills-wrap" id="skillsWrap"></div>
+            <button class="btn btn-outline" style="margin-top:1rem; border:none; color:var(--text-muted);">
+              + Add Skill
+            </button>
+          </div>
+        </div>
+
+        <!-- PERFORMANCE -->
+        <div id="tab-performance" class="tab-panel" style="display:none;">
+          <div class="grid-2">
+            <div class="card">
+              <h3 style="margin-bottom:1.5rem; color:var(--primary);">Subject Grades</h3>
+              <div id="gradesList" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
+            </div>
+            <div class="card">
+              <h3 style="margin-bottom:1.5rem; color:var(--primary);">Attendance Overview</h3>
+              <div id="attendanceList" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div id="tab-achievements" class="tab-panel" style="display:none;">
+          <div class="card">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+              <h3 style="margin:0; color:var(--primary);">My Achievements</h3>
+              <button class="btn btn-primary">
+                <span>🏆</span> Add Achievement
+              </button>
+            </div>
+            <div class="achievements-grid" id="achievementsGrid"></div>
+          </div>
+        </div>
+
+        <!-- ACTIVITIES -->
+        <div id="tab-activities" class="tab-panel" style="display:none;">
+          <div class="card">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+              <h3 style="margin:0; color:var(--primary);">Extracurricular Activities</h3>
+              <button class="btn btn-primary">
+                <span>💼</span> Add Activity
+              </button>
+            </div>
+            <div id="activitiesList" style="display:flex; flex-direction:column; gap:1rem;"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="profileModal" class="modal-backdrop" style="display:none;">
+    <div class="modal">
+      <div style="margin-bottom:1.5rem;">
+        <h2 style="margin-bottom:0.5rem; color:var(--primary);">Edit Profile</h2>
+        <p style="color:var(--text-muted);">Update your profile picture and bio</p>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Profile Picture</label>
+        <div id="profileDropzone" class="dropzone">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">⬆️</div>
+          <p style="color:var(--text-muted); margin-bottom:1rem;">Drag and drop your image here</p>
+          <button class="btn btn-outline">Browse Files</button>
+          <input id="profileFileInput" type="file" accept="image/*" style="display:none;" />
+        </div>
+      </div>
+
+      <div style="margin-bottom:2rem;">
+        <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Bio</label>
+        <textarea id="bioInput" class="input" rows="4" style="resize:vertical;"></textarea>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:1rem;">
+        <button class="btn btn-outline" id="cancelProfileBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Cover Modal -->
+  <div id="coverModal" class="modal-backdrop" style="display:none;">
+    <div class="modal">
+      <div style="margin-bottom:1.5rem;">
+        <h2 style="margin-bottom:0.5rem; color:var(--primary);">Edit Cover Image</h2>
+        <p style="color:var(--text-muted);">Upload a new cover image for your profile</p>
+      </div>
+
+      <div id="coverDropzone" class="dropzone" style="margin-bottom:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">⬆️</div>
+        <p style="color:var(--text-muted); margin-bottom:0.5rem;">Drag and drop your cover image here</p>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Recommended size: 1200x300px</p>
+        <button class="btn btn-outline">Browse Files</button>
+        <input id="coverFileInput" type="file" accept="image/*" style="display:none;" />
+      </div>
+
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="btn btn-outline" id="cancelCoverBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="include-html.js"></script>
+  <script>
+    // DATA
+    const studentData = {
+      name: "Himanshu Saini",
+      studentId: "CSE2024001",
+      email: "himanshu.saini@gecbikaner.ac.in",
+      phone: "+91 98765 43210",
+      address: "Bikaner, Rajasthan",
+      department: "Computer Science Engineering",
+      course: "B.Tech CSE",
+      year: "1st Year",
+      semester: "2nd Semester",
+      enrollmentDate: "August 2024",
+      gpa: "8.7",
+      rollNo: "CSE001",
+      skills: ["JavaScript", "React", "Python", "Machine Learning", "Data Structures"],
+      achievements: [
+        { title: "Dean's List", date: "Fall 2024", icon: "🏅" },
+        { title: "Hackathon Winner", date: "Sept 2024", icon: "🏆" },
+        { title: "Perfect Attendance", date: "Aug 2024", icon: "✅" },
+      ],
+      activities: [
+        { title: "Tech Club President", org: "College Tech Society", icon: "👥" },
+        { title: "Volunteer", org: "NSS", icon: "❤️" },
+      ],
+      socialLinks: {
+        github: "himanshu-saini",
+        linkedin: "himanshu-saini",
+        portfolio: "himanshusaini.dev",
+      },
+    };
+
+    const performanceData = {
+      subjects: [
+        { name: "Mathematics", grade: "A", score: 92, credits: 4 },
+        { name: "Physics", grade: "B+", score: 85, credits: 4 },
+        { name: "Programming", grade: "A", score: 95, credits: 4 },
+        { name: "Communication", grade: "A+", score: 98, credits: 3 },
+      ],
+      attendance: {
+        overall: 87.5,
+        bySubject: [
+          { name: "Mathematics", percentage: 92 },
+          { name: "Physics", percentage: 85 },
+          { name: "Programming", percentage: 90 },
+          { name: "Communication", percentage: 94 },
+        ],
+      },
+    };
+
+    let bio = "Passionate computer science student with a keen interest in web development and artificial intelligence. Always eager to learn new technologies and solve challenging problems.";
+
+    // Toast
+    const toastEl = document.getElementById("toast");
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 2200);
+    }
+
+    // Populate header and overview
+    function initProfile() {
+      // Try to get name from localStorage if set by login
+      const storedUser = JSON.parse(localStorage.getItem('vc_user'));
+      if (storedUser && storedUser.name) {
+        studentData.name = storedUser.name;
+      }
+
+      document.getElementById("studentName").textContent = studentData.name;
+      document.getElementById("studentDept").textContent = studentData.department;
+      document.getElementById("studentIdYear").textContent = studentData.studentId + " • " + studentData.year;
+
+      document.getElementById("bioText").textContent = bio;
+      document.getElementById("fieldEmail").textContent = studentData.email;
+      document.getElementById("fieldPhone").textContent = studentData.phone;
+      document.getElementById("fieldAddress").textContent = studentData.address;
+      document.getElementById("fieldEnroll").textContent = studentData.enrollmentDate;
+
+      document.getElementById("socialGithub").textContent = studentData.socialLinks.github;
+      document.getElementById("socialLinkedin").textContent = studentData.socialLinks.linkedin;
+      document.getElementById("socialPortfolio").textContent = studentData.socialLinks.portfolio;
+
+      document.getElementById("fieldCourse").textContent = studentData.course;
+      document.getElementById("fieldRoll").textContent = studentData.rollNo;
+      document.getElementById("fieldSemester").textContent = studentData.semester;
+
+      document.getElementById("statGpa").textContent = studentData.gpa;
+      document.getElementById("statAttendance").textContent = performanceData.attendance.overall + "%";
+      document.getElementById("statAchievements").textContent = studentData.achievements.length;
+
+      const skillsWrap = document.getElementById("skillsWrap");
+      skillsWrap.innerHTML = "";
+      studentData.skills.forEach((s) => {
+        const span = document.createElement("span");
+        span.className = "skill-pill";
+        span.textContent = s;
+        skillsWrap.appendChild(span);
+      });
+
+      // Grades
+      const gradesList = document.getElementById("gradesList");
+      gradesList.innerHTML = "";
+      performanceData.subjects.forEach((subj) => {
+        const box = document.createElement("div");
+        box.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
+              <div>
+                <div style="font-weight:600;">${subj.name}</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">${subj.credits} Credits</div>
+              </div>
+              <div style="text-align:right;">
+                <span class="badge" style="background:var(--bg-secondary); border:1px solid var(--bg-border);">${subj.grade}</span>
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">${subj.score}%</div>
+              </div>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-bar" style="width:${subj.score}%;"></div>
+            </div>
+          `;
+        gradesList.appendChild(box);
+      });
+
+      // Attendance by subject
+      const attendanceList = document.getElementById("attendanceList");
+      attendanceList.innerHTML = "";
+      performanceData.attendance.bySubject.forEach((s) => {
+        let color = "var(--primary)";
+        if (s.percentage < 75) color = "#EA580C"; // Orange for low attendance
+
+        const box = document.createElement("div");
+        box.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
+              <div style="font-weight:600;">${s.name}</div>
+              <div style="font-size:0.9rem; color:var(--text-muted);">${s.percentage}%</div>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-bar" style="width:${s.percentage}%; background:${color};"></div>
+            </div>
+          `;
+        attendanceList.appendChild(box);
+      });
+
+      // Achievements
+      const achGrid = document.getElementById("achievementsGrid");
+      achGrid.innerHTML = "";
+      studentData.achievements.forEach((a) => {
+        const card = document.createElement("div");
+        card.className = "achievement-card";
+        card.innerHTML = `
+            <div style="font-size:2rem; margin-bottom:0.5rem;">${a.icon}</div>
+            <div style="font-weight:600; margin-bottom:0.2rem;">${a.title}</div>
+            <div style="font-size:0.85rem; color:var(--text-muted);">${a.date}</div>
+          `;
+        achGrid.appendChild(card);
+      });
+
+      // Activities
+      const actList = document.getElementById("activitiesList");
+      actList.innerHTML = "";
+      studentData.activities.forEach((a) => {
+        const item = document.createElement("div");
+        item.className = "pill";
+        item.innerHTML = `
+            <div class="pill-icon" style="background:#F3E8FF; color:#6B21A8;">${a.icon}</div>
+            <div>
+              <div style="font-weight:600;">${a.title}</div>
+              <div style="font-size:0.85rem; color:var(--text-muted);">${a.org}</div>
+            </div>
+          `;
+        actList.appendChild(item);
+      });
+    }
+
+    // Tabs
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+    tabBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const target = btn.dataset.tab;
+        tabPanels.forEach((p) => {
+          p.style.display = p.id === "tab-" + target ? "block" : "none";
+        });
+      });
+    });
+
+    // Modals
+    const profileModal = document.getElementById("profileModal");
+    const coverModal = document.getElementById("coverModal");
+
+    document.getElementById("editProfileBtn").addEventListener("click", () => {
+      document.getElementById("bioInput").value = bio;
+      profileModal.style.display = "flex";
+    });
+    document.getElementById("editProfileBtn2").addEventListener("click", () => {
+      document.getElementById("bioInput").value = bio;
+      profileModal.style.display = "flex";
+    });
+    document.getElementById("editCoverBtn").addEventListener("click", () => {
+      coverModal.style.display = "flex";
+    });
+
+    document.getElementById("cancelProfileBtn").addEventListener("click", () => {
+      profileModal.style.display = "none";
+    });
+    document.getElementById("cancelCoverBtn").addEventListener("click", () => {
+      coverModal.style.display = "none";
+    });
+
+    document.getElementById("saveProfileBtn").addEventListener("click", () => {
+      const newBio = document.getElementById("bioInput").value;
+      if (newBio) {
+        bio = newBio;
+        document.getElementById("bioText").textContent = bio;
+        showToast("Profile updated successfully!");
+      }
+      profileModal.style.display = "none";
+    });
+
+    // Close modals on backdrop click
+    profileModal.addEventListener("click", (e) => {
+      if (e.target === profileModal) profileModal.style.display = "none";
+    });
+    coverModal.addEventListener("click", (e) => {
+      if (e.target === coverModal) coverModal.style.display = "none";
+    });
+
+    initProfile();
+  </script>
+</body>
+
+</html>

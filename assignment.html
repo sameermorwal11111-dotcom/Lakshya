@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Assignments Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing: border-box; margin:0; padding:0; }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:#f3f4f6;
+        color:#111827;
+        padding:1.5rem;
+      }
+
+      .page-root { max-width:1200px; margin:0 auto; }
+      .space-y-6 > * + * { margin-top:1.5rem; }
+
+      h1 { font-size:1.9rem; font-weight:700; }
+      h3 { font-size:1rem; font-weight:600; }
+
+      /* Card */
+      .card {
+        background:#ffffff;
+        border-radius:1.1rem;
+        box-shadow:0 8px 20px rgba(15,23,42,0.08);
+        border:1px solid transparent;
+      }
+      .card-inner { padding:1.5rem; }
+
+      /* Buttons */
+      .btn {
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        padding:0.4rem 0.9rem;
+        font-size:0.8rem;
+        cursor:pointer;
+        background:#ffffff;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:0.3rem;
+      }
+      .btn:hover { background:#f3f4f6; }
+      .btn-sm { padding:0.3rem 0.8rem; font-size:0.78rem; }
+      .btn-primary {
+        background:#2563eb;
+        border-color:#2563eb;
+        color:#e5e7eb;
+      }
+      .btn-primary:hover { background:#1d4ed8; }
+      .btn-outline {
+        background:transparent;
+      }
+
+      /* Badges */
+      .badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.1rem 0.6rem;
+        border-radius:9999px;
+        font-size:0.7rem;
+        border:1px solid transparent;
+      }
+      .badge-outline {
+        border-color:#fb923c;
+        color:#c2410c;
+        background:#ffedd5;
+      }
+      .badge-red {
+        background:#fee2e2;
+        color:#b91c1c;
+        border-color:#fecaca;
+      }
+      .badge-blue {
+        background:#dbeafe;
+        color:#1d4ed8;
+      }
+      .badge-green {
+        background:#dcfce7;
+        color:#166534;
+      }
+
+      /* Inputs/select */
+      .input {
+        width:100%;
+        border-radius:0.7rem;
+        border:1px solid #d1d5db;
+        padding:0.45rem 0.75rem;
+        font-size:0.85rem;
+        background:#f9fafb;
+      }
+      .input:focus {
+        outline:none;
+        border-color:#2563eb;
+        box-shadow:0 0 0 1px #2563eb33;
+      }
+      select {
+        width:100%;
+        border-radius:0.7rem;
+        border:1px solid #d1d5db;
+        padding:0.45rem 0.75rem;
+        font-size:0.85rem;
+        background:#f9fafb;
+      }
+
+      .text-muted { color:#6b7280; }
+      .text-xs { font-size:0.75rem; }
+      .text-sm { font-size:0.82rem; }
+
+      /* Grid */
+      .grid-4 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .grid-4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+      }
+
+      .filters-row {
+        display:flex;
+        flex-direction:column;
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .filters-row {
+          flex-direction:row;
+          align-items:center;
+        }
+      }
+
+      /* Assignments list */
+      .assignments-list > * + * { margin-top:1rem; }
+
+      .assignment-card-header {
+        padding:1.2rem 1.5rem 0.5rem 1.5rem;
+      }
+      .assignment-card-content {
+        padding:0 1.5rem 1.2rem 1.5rem;
+      }
+
+      .overdue-border {
+        border-color:#fecaca;
+      }
+
+      /* Simple icons (emoji) */
+      .icon-pill {
+        padding:0.5rem;
+        border-radius:0.8rem;
+      }
+
+      /* Modal */
+      .backdrop {
+        position:fixed;
+        inset:0;
+        background:rgba(15,23,42,0.55);
+        display:none;
+        align-items:center;
+        justify-content:center;
+        z-index:40;
+      }
+      .backdrop.show { display:flex; }
+      .modal {
+        background:#ffffff;
+        border-radius:1.1rem;
+        width:100%;
+        max-width:480px;
+        padding:1.4rem;
+        box-shadow:0 20px 40px rgba(15,23,42,0.6);
+      }
+      .modal-header { margin-bottom:0.7rem; }
+      .modal-title { font-size:1.05rem; font-weight:600; margin-bottom:0.15rem; }
+      .modal-desc { font-size:0.82rem; color:#6b7280; }
+
+      /* Dropzone */
+      .dropzone {
+        border:2px dashed #d1d5db;
+        border-radius:1rem;
+        padding:2.2rem 1.2rem;
+        text-align:center;
+        margin-top:0.8rem;
+        transition:border-color 0.15s ease, background-color 0.15s ease;
+      }
+      .dropzone.drag {
+        border-color:#2563eb;
+        background:#dbeafe;
+      }
+
+      /* Toast */
+      .toast {
+        position:fixed;
+        bottom:1rem;
+        right:1rem;
+        background:#16a34a;
+        color:#ecfdf5;
+        padding:0.6rem 0.9rem;
+        border-radius:0.7rem;
+        font-size:0.8rem;
+        box-shadow:0 10px 25px rgba(22,163,74,0.5);
+        opacity:0;
+        transform:translateY(10px);
+        transition:opacity 0.15s ease, transform 0.15s ease;
+        z-index:50;
+      }
+      .toast.show {
+        opacity:1;
+        transform:translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <!-- Header -->
+        <section>
+          <h1 style="margin-bottom:0.3rem;">Assignments</h1>
+          <p class="text-muted" style="font-size:0.9rem;">
+            View and submit your course assignments
+          </p>
+        </section>
+
+        <!-- Stats -->
+        <section class="grid-4" id="statsCards">
+          <!-- Filled by JS -->
+        </section>
+
+        <!-- Filters -->
+        <section class="card">
+          <div class="card-inner">
+            <div class="filters-row">
+              <div style="flex:1; position:relative;">
+                <span style="position:absolute;left:0.7rem;top:50%;transform:translateY(-50%);font-size:0.9rem;color:#9ca3af;">
+                  🔍
+                </span>
+                <input
+                  id="searchInput"
+                  class="input"
+                  style="padding-left:2rem;"
+                  placeholder="Search assignments..."
+                />
+              </div>
+              <div style="width:100%;max-width:200px;">
+                <select id="subjectSelect">
+                  <option value="all">All Subjects</option>
+                </select>
+              </div>
+              <div style="width:100%;max-width:200px;">
+                <select id="sortSelect">
+                  <option value="dueDate">Due Date (Earliest)</option>
+                  <option value="dueDateDesc">Due Date (Latest)</option>
+                  <option value="subject">Subject</option>
+                </select>
+              </div>
+              <div>
+                <button id="clearBtn" class="btn btn-sm" style="display:none;">
+                  <span>✖</span>
+                  <span>Clear</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Assignments list -->
+        <section>
+          <div id="assignmentsList" class="assignments-list"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Submit Assignment Modal -->
+    <div id="modalBackdrop" class="backdrop">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Submit Assignment</div>
+          <div id="modalDesc" class="modal-desc"></div>
+        </div>
+        <div
+          id="dropzone"
+          class="dropzone"
+        >
+          <div style="font-size:2rem;margin-bottom:0.5rem;color:#6b7280;">📤</div>
+          <p style="margin-bottom:0.3rem;font-size:0.9rem;color:#111827;">
+            Drag and drop your file here
+          </p>
+          <p class="text-muted" style="margin-bottom:0.6rem;font-size:0.8rem;">or</p>
+          <label style="cursor:pointer;font-size:0.8rem;">
+            <span class="btn btn-sm btn-outline">Browse Files</span>
+            <input id="fileInput" type="file" style="display:none;" accept=".pdf,.doc,.docx,.zip" />
+          </label>
+          <p class="text-muted" style="margin-top:0.5rem;font-size:0.75rem;">
+            Supported formats: PDF, DOC, DOCX, ZIP (Max 10MB)
+          </p>
+        </div>
+        <div style="margin-top:0.9rem;display:flex;justify-content:flex-end;gap:0.5rem;">
+          <button id="cancelModalBtn" class="btn btn-sm">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+      // Same data as React component
+      const assignments = [
+        {
+          id: 1,
+          title: "Data Structures Lab 1",
+          course: "Data Structures",
+          batch: "B.Tech CSE - 3rd Sem",
+          dueDate: "2024-12-05",
+          totalMarks: 50,
+          status: "submitted",
+          description: "Implement stack and queue operations",
+          submissionDate: "2024-11-25",
+          fileName: "DS_Lab1_Instructions.pdf",
+        },
+        {
+          id: 2,
+          title: "Algorithm Analysis Project",
+          course: "Algorithms",
+          batch: "B.Tech CSE - 5th Sem",
+          dueDate: "2024-12-08",
+          totalMarks: 100,
+          status: "pending",
+          description: "Analyze time complexity of sorting algorithms",
+          fileName: "Algorithm_Project.pdf",
+        },
+        {
+          id: 3,
+          title: "Database Design Assignment",
+          course: "Database Systems",
+          batch: "B.Tech CSE - 7th Sem",
+          dueDate: "2024-11-28",
+          totalMarks: 75,
+          status: "graded",
+          description: "Design a relational database for library management",
+          submissionDate: "2024-11-27",
+          marks: 68,
+          feedback: "Good work! Consider normalizing your schema further.",
+          fileName: "DB_Assignment.pdf",
+        },
+        {
+          id: 4,
+          title: "Web Development Project",
+          course: "Web Technologies",
+          batch: "B.Tech CSE - 5th Sem",
+          dueDate: "2024-12-10",
+          totalMarks: 100,
+          status: "pending",
+          description:
+            "Create a responsive website using HTML, CSS, and JavaScript",
+          fileName: "Web_Project.pdf",
+        },
+        {
+          id: 5,
+          title: "Machine Learning Assignment",
+          course: "Machine Learning",
+          batch: "B.Tech CSE - 7th Sem",
+          dueDate: "2024-12-03",
+          totalMarks: 80,
+          status: "pending",
+          description:
+            "Implement linear regression and evaluate model performance",
+          fileName: "ML_Assignment.pdf",
+        },
+      ];
+
+      // State
+      let searchQuery = "";
+      let subjectFilter = "all";
+      let sortBy = "dueDate";
+      let dragActive = false;
+      let selectedAssignment = null;
+
+      // Elements
+      const statsCardsEl = document.getElementById("statsCards");
+      const searchInput = document.getElementById("searchInput");
+      const subjectSelect = document.getElementById("subjectSelect");
+      const sortSelect = document.getElementById("sortSelect");
+      const clearBtn = document.getElementById("clearBtn");
+      const assignmentsListEl = document.getElementById("assignmentsList");
+      const modalBackdrop = document.getElementById("modalBackdrop");
+      const modalDesc = document.getElementById("modalDesc");
+      const dropzone = document.getElementById("dropzone");
+      const fileInput = document.getElementById("fileInput");
+      const cancelModalBtn = document.getElementById("cancelModalBtn");
+      const toastEl = document.getElementById("toast");
+
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.add("show");
+        setTimeout(() => {
+          toastEl.classList.remove("show");
+        }, 2200);
+      }
+
+      function getDaysUntilDue(dueDateStr) {
+        const due = new Date(dueDateStr);
+        const today = new Date();
+        const diffTime = due.getTime() - today.getTime();
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      }
+
+      function getStats() {
+        return {
+          total: assignments.length,
+          pending: assignments.filter((a) => a.status === "pending").length,
+          submitted: assignments.filter((a) => a.status === "submitted").length,
+          graded: assignments.filter((a) => a.status === "graded").length,
+        };
+      }
+
+      function renderStats() {
+        const stats = getStats();
+        const statCards = [
+          {
+            label: "Total",
+            value: stats.total,
+            bg: "#dbeafe",
+            emoji: "📋",
+          },
+          {
+            label: "Pending",
+            value: stats.pending,
+            bg: "#ffedd5",
+            emoji: "⏳",
+          },
+          {
+            label: "Submitted",
+            value: stats.submitted,
+            bg: "#dbeafe",
+            emoji: "📤",
+          },
+          {
+            label: "Graded",
+            value: stats.graded,
+            bg: "#dcfce7",
+            emoji: "✅",
+          },
+        ];
+
+        statsCardsEl.innerHTML = "";
+        statCards.forEach((s) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card-inner">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <p class="text-sm text-muted">${s.label}</p>
+                  <p style="font-size:1.6rem;font-weight:600;margin-top:0.2rem;">${s.value}</p>
+                </div>
+                <div class="icon-pill" style="background:${s.bg};">
+                  <span style="font-size:1.4rem;">${s.emoji}</span>
+                </div>
+              </div>
+            </div>
+          `;
+          statsCardsEl.appendChild(card);
+        });
+      }
+
+      function initFilters() {
+        // Subjects
+        const subjects = Array.from(
+          new Set(assignments.map((a) => a.course))
+        );
+        subjects.forEach((subj) => {
+          const opt = document.createElement("option");
+          opt.value = subj;
+          opt.textContent = subj;
+          subjectSelect.appendChild(opt);
+        });
+      }
+
+      function getFilteredAndSortedAssignments() {
+        let filtered = assignments.slice();
+
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          filtered = filtered.filter(
+            (a) =>
+              a.title.toLowerCase().includes(q) ||
+              a.course.toLowerCase().includes(q)
+          );
+        }
+
+        if (subjectFilter !== "all") {
+          filtered = filtered.filter((a) => a.course === subjectFilter);
+        }
+
+        filtered.sort((a, b) => {
+          if (sortBy === "dueDate") {
+            return new Date(a.dueDate) - new Date(b.dueDate);
+          }
+          if (sortBy === "dueDateDesc") {
+            return new Date(b.dueDate) - new Date(a.dueDate);
+          }
+          if (sortBy === "subject") {
+            return a.course.localeCompare(b.course);
+          }
+          return 0;
+        });
+
+        return filtered;
+      }
+
+      function renderAssignments() {
+        const list = getFilteredAndSortedAssignments();
+        const hasActiveFilters =
+          searchQuery || subjectFilter !== "all" || sortBy !== "dueDate";
+        clearBtn.style.display = hasActiveFilters ? "inline-flex" : "none";
+
+        assignmentsListEl.innerHTML = "";
+
+        if (list.length === 0) {
+          const emptyCard = document.createElement("div");
+          emptyCard.className = "card";
+          emptyCard.innerHTML = `
+            <div class="card-inner" style="text-align:center;padding:3rem 1rem;">
+              <div style="font-size:2.4rem;color:#9ca3af;margin-bottom:0.6rem;">📋</div>
+              <h3 style="margin-bottom:0.2rem;">No assignments found</h3>
+              <p class="text-muted" style="font-size:0.85rem;">Try adjusting your search or filters</p>
+            </div>
+          `;
+          assignmentsListEl.appendChild(emptyCard);
+          return;
+        }
+
+        list.forEach((a) => {
+          const days = getDaysUntilDue(a.dueDate);
+          const isOverdue = days < 0 && a.status === "pending";
+
+          const card = document.createElement("div");
+          card.className = "card" + (isOverdue ? " overdue-border" : "");
+          let statusBadge = "";
+          if (a.status === "pending") {
+            statusBadge =
+              '<span class="badge badge-outline">⏰ Pending</span>';
+          } else if (a.status === "submitted") {
+            statusBadge =
+              '<span class="badge badge-blue">⏱ Submitted</span>';
+          } else if (a.status === "graded") {
+            statusBadge =
+              '<span class="badge badge-green">✅ Graded</span>';
+          }
+
+          const overdueBadge = isOverdue
+            ? '<span class="badge badge-red">Overdue</span>'
+            : "";
+
+          card.innerHTML = `
+            <div class="assignment-card-header">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;">
+                <div style="flex:1;">
+                  <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;flex-wrap:wrap;">
+                    <div style="font-size:1.05rem;font-weight:600;">${a.title}</div>
+                    ${statusBadge}
+                    ${overdueBadge}
+                  </div>
+                  <div class="text-muted" style="font-size:0.85rem;">${a.description}</div>
+                </div>
+              </div>
+            </div>
+            <div class="assignment-card-content">
+              <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:0.8rem;margin-bottom:0.8rem;">
+                <div>
+                  <p class="text-xs text-muted" style="margin-bottom:0.2rem;">Course</p>
+                  <p style="font-size:0.85rem;font-weight:500;">${a.course}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-muted" style="margin-bottom:0.2rem;">Batch</p>
+                  <p style="font-size:0.85rem;font-weight:500;">${a.batch}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-muted" style="margin-bottom:0.2rem;">Due Date</p>
+                  <div style="display:flex;align-items:center;gap:0.35rem;">
+                    <span style="font-size:0.9rem;color:#6b7280;">📅</span>
+                    <p style="font-size:0.85rem;font-weight:500;">${a.dueDate}</p>
+                  </div>
+                  ${
+                    a.status === "pending"
+                      ? `<p class="text-xs" style="margin-top:0.15rem;color:${
+                          isOverdue ? "#b91c1c" : "#6b7280"
+                        };">${
+                          isOverdue
+                            ? `${Math.abs(days)} days overdue`
+                            : `${days} days left`
+                        }</p>`
+                      : ""
+                  }
+                </div>
+                <div>
+                  <p class="text-xs text-muted" style="margin-bottom:0.2rem;">Total Marks</p>
+                  <p style="font-size:0.85rem;font-weight:500;">${a.totalMarks}</p>
+                </div>
+              </div>
+
+              ${
+                a.status === "submitted"
+                  ? `
+                <div style="padding:0.6rem 0.75rem;border-radius:0.7rem;background:#eff6ff;margin-bottom:0.8rem;font-size:0.8rem;color:#1d4ed8;">
+                  <span>✅</span>
+                  <span style="margin-left:0.25rem;">Submitted on ${a.submissionDate}</span>
+                </div>
+              `
+                  : ""
+              }
+
+              ${
+                a.status === "graded"
+                  ? `
+                <div style="padding:0.8rem 0.9rem;border-radius:0.7rem;background:#ecfdf3;margin-bottom:0.8rem;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem;">
+                    <p style="font-size:0.8rem;font-weight:600;color:#166534;">Grade</p>
+                    <p style="font-size:1.2rem;font-weight:600;color:#166534;">
+                      ${a.marks}/${a.totalMarks}
+                    </p>
+                  </div>
+                  ${
+                    a.feedback
+                      ? `
+                    <div style="margin-top:0.3rem;">
+                      <p style="font-size:0.7rem;color:#15803d;margin-bottom:0.1rem;">Teacher Feedback:</p>
+                      <p style="font-size:0.8rem;color:#166534;">${a.feedback}</p>
+                    </div>
+                  `
+                      : ""
+                  }
+                </div>
+              `
+                  : ""
+              }
+
+              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                ${
+                  a.fileName
+                    ? `
+                  <button class="btn btn-sm">
+                    <span>⬇</span>
+                    <span>Download Instructions</span>
+                  </button>`
+                    : ""
+                }
+                ${
+                  a.status === "pending"
+                    ? `
+                  <button class="btn btn-sm btn-primary" data-action="submit" data-id="${a.id}">
+                    <span>📤</span>
+                    <span>Submit Assignment</span>
+                  </button>`
+                    : ""
+                }
+                ${
+                  a.status === "submitted"
+                    ? `
+                  <button class="btn btn-sm">
+                    <span>📄</span>
+                    <span>View Submission</span>
+                  </button>`
+                    : ""
+                }
+              </div>
+            </div>
+          `;
+          assignmentsListEl.appendChild(card);
+        });
+
+        // Attach click handlers for submit buttons
+        assignmentsListEl
+          .querySelectorAll("[data-action='submit']")
+          .forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const id = parseInt(btn.getAttribute("data-id"), 10);
+              const a = assignments.find((x) => x.id === id);
+              openSubmitDialog(a);
+            });
+          });
+      }
+
+      function openSubmitDialog(a) {
+        selectedAssignment = a;
+        modalDesc.textContent = a
+          ? `Upload your submission for "${a.title}"`
+          : "";
+        modalBackdrop.classList.add("show");
+      }
+
+      function closeSubmitDialog() {
+        modalBackdrop.classList.remove("show");
+        selectedAssignment = null;
+      }
+
+      function handleSubmitAssignment(file) {
+        showToast("Assignment submitted successfully! File: " + file.name);
+        closeSubmitDialog();
+      }
+
+      // Events
+      searchInput.addEventListener("input", (e) => {
+        searchQuery = e.target.value || "";
+        renderAssignments();
+      });
+
+      subjectSelect.addEventListener("change", (e) => {
+        subjectFilter = e.target.value;
+        renderAssignments();
+      });
+
+      sortSelect.addEventListener("change", (e) => {
+        sortBy = e.target.value;
+        renderAssignments();
+      });
+
+      clearBtn.addEventListener("click", () => {
+        searchQuery = "";
+        subjectFilter = "all";
+        sortBy = "dueDate";
+        searchInput.value = "";
+        subjectSelect.value = "all";
+        sortSelect.value = "dueDate";
+        renderAssignments();
+      });
+
+      cancelModalBtn.addEventListener("click", closeSubmitDialog);
+      modalBackdrop.addEventListener("click", (e) => {
+        if (e.target === modalBackdrop) closeSubmitDialog();
+      });
+
+      // Dropzone events
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((evt) => {
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+
+      dropzone.addEventListener("dragenter", () => {
+        dropzone.classList.add("drag");
+      });
+      dropzone.addEventListener("dragover", () => {
+        dropzone.classList.add("drag");
+      });
+      dropzone.addEventListener("dragleave", () => {
+        dropzone.classList.remove("drag");
+      });
+      dropzone.addEventListener("drop", (e) => {
+        dropzone.classList.remove("drag");
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleSubmitAssignment(e.dataTransfer.files[0]);
+        }
+      });
+
+      dropzone.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleSubmitAssignment(e.target.files[0]);
+        }
+      });
+
+      // Init
+      renderStats();
+      initFilters();
+      renderAssignments();
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

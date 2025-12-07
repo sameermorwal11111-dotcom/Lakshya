@@ -1,0 +1,27 @@
+/* ===================================
+   ASSIGNMENT SECTION STYLES
+   =================================== */
+
+/* File Drop Area */
+.file-drop-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-drop-area:hover {
+    border-color: var(--primary);
+    background-color: var(--muted);
+}
+
+.file-drop-area.drag-over {
+    border-color: var(--primary);
+    background-color: var(--muted);
+    transform: scale(1.02);
+}
+
+/* Assignment specific styles */
+/* Using base modal, form, and card styles from base.css */

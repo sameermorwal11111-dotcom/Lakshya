@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal | VIDYA-CUE</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Base Styles -->
+    <link rel="stylesheet" href="base.css">
+    <!-- Section Specific Styles -->
+    <link rel="stylesheet" href="generateqrcode.css">
+    <link rel="stylesheet" href="attendance.css">
+    <link rel="stylesheet" href="assignment.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="todayschedule.css">
+    <link rel="stylesheet" href="evaluation-grades.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QRCode.js -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <button id="sidebar-toggle" class="btn btn-ghost btn-icon lg:hidden">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="p-2 bg-primary rounded-lg" style="background-color: var(--primary); border-radius: 0.5rem;">
+                    <i data-lucide="graduation-cap" class="text-primary-foreground"
+                        style="color: var(--primary-foreground);"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-semibold">Teacher Dashboard</h1>
+                    <p class="text-xs text-muted-foreground" id="user-institute">Institute Name</p>
+                </div>
+            </div>
+
+            <div class="user-actions">
+                <button class="btn btn-ghost btn-icon relative">
+                    <i data-lucide="bell"></i>
+                    <span id="notification-badge"
+                        class="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-white text-xs rounded-full flex items-center justify-center"
+                        style="position: absolute; top: -0.25rem; right: -0.25rem; background-color: var(--destructive); color: white; border-radius: 9999px; width: 1rem; height: 1rem; display: none; align-items: center; justify-content: center; font-size: 0.75rem;">0</span>
+                </button>
+                <button id="theme-toggle" class="btn btn-ghost btn-icon">
+                    <i data-lucide="moon"></i>
+                </button>
+                <div class="flex items-center gap-3 px-3 py-2 rounded-lg" style="background-color: var(--muted);">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-medium"
+                        id="user-initial"
+                        style="width: 2rem; height: 2rem; background-color: var(--primary); color: var(--primary-foreground); border-radius: 9999px; display: flex; align-items: center; justify-content: center;">
+                        U
+                    </div>
+                    <div class="hidden md:block">
+                        <p class="text-sm font-medium" id="user-name">User Name</p>
+                        <p class="text-xs text-muted-foreground">Professor</p>
+                    </div>
+                </div>
+                <button class="btn btn-ghost btn-icon">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="p-4 space-y-2" style="padding: 1rem;">
+                <button class="nav-item active" data-page="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-page="attendance">
+                    <i data-lucide="calendar-check-2"></i>
+                    <span>Attendance</span>
+                </button>
+                <button class="nav-item" data-page="qr-code">
+                    <i data-lucide="qr-code"></i>
+                    <span>Generate QR Code</span>
+                </button>
+                <button class="nav-item" data-page="assignments">
+                    <i data-lucide="clipboard-list"></i>
+                    <span>Assignments</span>
+                </button>
+                <button class="nav-item" data-page="schedule">
+                    <i data-lucide="calendar"></i>
+                    <span>Today's Schedule</span>
+                </button>
+                <button class="nav-item" data-page="grades">
+                    <i data-lucide="graduation-cap"></i>
+                    <span>Evaluation & Grades</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="page-section active">
+                <div id="dashboard-content"></div>
+            </div>
+
+            <!-- Attendance Section -->
+            <div id="attendance-section" class="page-section">
+                <div id="attendance-content"></div>
+            </div>
+
+            <!-- QR Code Section -->
+            <div id="qr-code-section" class="page-section">
+                <div id="qr-code-content"></div>
+            </div>
+
+            <!-- Assignments Section -->
+            <div id="assignments-section" class="page-section">
+                <div id="assignments-content"></div>
+            </div>
+
+            <!-- Schedule Section -->
+            <div id="schedule-section" class="page-section">
+                <div id="schedule-content"></div>
+            </div>
+
+            <!-- Grades Section -->
+            <div id="grades-section" class="page-section">
+                <div id="grades-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="assignment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="assignment-modal-title" class="modal-title">Create Assignment</h3>
+            </div>
+            <div class="modal-body space-y-4">
+                <div class="space-y-2">
+                    <label class="label">Assignment Name</label>
+                    <input type="text" id="assignment-name" class="input" placeholder="Enter assignment name">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="label">Batch</label>
+                        <select id="assignment-batch" class="select">
+                            <option value="">Select Batch</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="label">Course</label>
+                        <select id="assignment-course" class="select">
+                            <option value="">Select Course</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="label">Due Date</label>
+                    <input type="date" id="assignment-due-date" class="input">
+                </div>
+                <div class="space-y-2">
+                    <label class="label">Upload Assignment File</label>
+                    <div id="file-drop-area" class="file-drop-area">
+                        <i data-lucide="upload-cloud" class="w-12 h-12 text-muted-foreground mb-2"></i>
+                        <p class="text-sm font-medium mb-1">Drag and drop your file here</p>
+                        <p class="text-xs text-muted-foreground mb-3">or</p>
+                        <button type="button" class="btn btn-outline btn-sm"
+                            onclick="document.getElementById('file-input').click()">Browse Files</button>
+                        <input type="file" id="file-input" class="hidden" accept=".pdf,.doc,.docx,.txt">
+                        <p class="text-xs text-muted-foreground mt-3">Supported formats: PDF, DOC, DOCX, TXT</p>
+                    </div>
+                    <div id="file-preview" class="hidden mt-2 p-3 rounded-lg border flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-5 h-5 text-primary"></i>
+                            <span id="file-name" class="text-sm font-medium"></span>
+                        </div>
+                        <button type="button" onclick="removeFile()" class="btn btn-ghost btn-icon btn-sm">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeAssignmentModal()">Cancel</button>
+                <button id="assignment-submit-btn" class="btn" onclick="saveAssignment()">Create Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Modules -->
+    <script src="dashboard-section.js"></script>
+    <script src="attendance-section.js"></script>
+    <script src="qr-code-section.js"></script>
+    <script src="assignments-section.js"></script>
+    <script src="schedule-section.js"></script>
+    <script src="grades-section.js"></script>
+
+    <!-- Main Script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

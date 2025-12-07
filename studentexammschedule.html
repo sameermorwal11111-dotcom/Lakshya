@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Exam Schedule & Scores</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing:border-box; margin:0; padding:0; }
+
+      body {
+        font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        background:#f3f4f6;
+        color:#111827;
+        padding:1.5rem;
+      }
+
+      .page-root { max-width:1100px; margin:0 auto; }
+      .space-y-6 > * + * { margin-top:1.5rem; }
+
+      h2 { font-size:1.6rem; font-weight:600; }
+      h3 { font-size:1.05rem; font-weight:600; }
+
+      /* Card */
+      .card {
+        background:#ffffff;
+        border-radius:1.1rem;
+        box-shadow:0 8px 20px rgba(15,23,42,0.08);
+      }
+      .card-inner { padding:1.2rem; }
+
+      /* Badges */
+      .badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.15rem 0.6rem;
+        border-radius:9999px;
+        font-size:0.72rem;
+        border:1px solid transparent;
+        white-space:nowrap;
+      }
+
+      /* Progress */
+      .progress-wrap {
+        width:100%;
+        height:0.35rem;
+        border-radius:9999px;
+        background:#e5e7eb;
+        overflow:hidden;
+      }
+      .progress-bar {
+        height:100%;
+        border-radius:9999px;
+        background:#22c55e;
+      }
+
+      .text-muted { color:#6b7280; }
+      .text-sm { font-size:0.82rem; }
+
+      /* Grid layouts */
+      .grid-4 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .grid-4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+      }
+
+      .grid-2 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.5rem;
+      }
+      @media (min-width:1024px) {
+        .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+
+      .pill-icon {
+        width:3rem;
+        height:3rem;
+        border-radius:0.9rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1.5rem;
+      }
+
+      .upcoming-card,
+      .recent-card {
+        background:#f9fafb;
+        border-radius:0.9rem;
+      }
+
+      .upcoming-card { padding:1rem; }
+      .recent-card { padding:1rem; display:flex; gap:1rem; align-items:center; }
+
+      @media (max-width:640px) {
+        .recent-card { flex-direction:column; align-items:flex-start; }
+        .recent-right { text-align:left !important; }
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <!-- Header -->
+        <section>
+          <h2>Exam Schedule &amp; Scores</h2>
+          <p class="text-muted" style="margin-top:0.25rem;font-size:0.9rem;">
+            Track your examination schedule and academic performance.
+          </p>
+        </section>
+
+        <!-- Performance Overview -->
+        <section class="grid-4">
+          <div class="card">
+            <div class="card-inner">
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="pill-icon" style="background:#dcfce7;color:#16a34a;">📈</div>
+                <div>
+                  <p class="text-sm text-muted">Current SGPA</p>
+                  <p id="sgpa" style="font-size:1.6rem;font-weight:600;color:#16a34a;margin-top:0.1rem;"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="pill-icon" style="background:#dbeafe;color:#2563eb;">🏅</div>
+                <div>
+                  <p class="text-sm text-muted">Overall CGPA</p>
+                  <p id="cgpa" style="font-size:1.6rem;font-weight:600;color:#2563eb;margin-top:0.1rem;"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="pill-icon" style="background:#ede9fe;color:#7c3aed;">🏆</div>
+                <div>
+                  <p class="text-sm text-muted">Class Rank</p>
+                  <p id="rank" style="font-size:1.6rem;font-weight:600;color:#7c3aed;margin-top:0.1rem;"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="pill-icon" style="background:#ffedd5;color:#ea580c;">📊</div>
+                <div>
+                  <p class="text-sm text-muted">Improvement</p>
+                  <p id="improvement" style="font-size:1.6rem;font-weight:600;color:#ea580c;margin-top:0.1rem;">+0.3</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Upcoming & Recent -->
+        <section class="grid-2">
+          <!-- Upcoming Exams -->
+          <div class="card">
+            <div class="card-inner">
+              <h3 style="margin-bottom:0.7rem;">Upcoming Exams</h3>
+              <div id="upcomingList" class="space-y-4"></div>
+            </div>
+          </div>
+
+          <!-- Recent Scores -->
+          <div class="card">
+            <div class="card-inner">
+              <h3 style="margin-bottom:0.7rem;">Recent Scores</h3>
+              <div id="recentList" class="space-y-4"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const examData = {
+        upcoming: [
+          {
+            subject: "Mathematics",
+            date: "2024-09-20",
+            time: "09:00 AM - 12:00 PM",
+            type: "Mid-term",
+            syllabus: "70%",
+            room: "Exam Hall A",
+          },
+          {
+            subject: "Physics",
+            date: "2024-09-22",
+            time: "02:00 PM - 05:00 PM",
+            type: "Lab Practical",
+            syllabus: "85%",
+            room: "Physics Lab",
+          },
+          {
+            subject: "Chemistry",
+            date: "2024-09-25",
+            time: "10:00 AM - 01:00 PM",
+            type: "Mid-term",
+            syllabus: "60%",
+            room: "Exam Hall B",
+          },
+        ],
+        recent: [
+          {
+            subject: "Programming",
+            date: "2024-09-05",
+            maxMarks: 100,
+            obtained: 92,
+            grade: "A+",
+            type: "Assignment",
+          },
+          {
+            subject: "English",
+            date: "2024-09-03",
+            maxMarks: 50,
+            obtained: 43,
+            grade: "A",
+            type: "Quiz",
+          },
+          {
+            subject: "Mathematics",
+            date: "2024-08-28",
+            maxMarks: 100,
+            obtained: 88,
+            grade: "A+",
+            type: "Unit Test",
+          },
+          {
+            subject: "Physics",
+            date: "2024-08-25",
+            maxMarks: 75,
+            obtained: 65,
+            grade: "B+",
+            type: "Lab Report",
+          },
+        ],
+        performance: {
+          currentSemester: 8.7,
+          previousSemester: 8.4,
+          overallCGPA: 8.5,
+          rank: 1,
+          totalStudents: 120,
+        },
+      };
+
+      function getGradeBadgeClasses(grade) {
+        const map = {
+          "A+": "background:#dcfce7;color:#166534;border-color:#bbf7d0;",
+          "A": "background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe;",
+          "B+": "background:#fef9c3;color:#854d0e;border-color:#fef08a;",
+          "B": "background:#ffedd5;color:#9a3412;border-color:#fed7aa;",
+          "C": "background:#fee2e2;color:#b91c1c;border-color:#fecaca;",
+        };
+        return map[grade] || "background:#e5e7eb;color:#111827;border-color:#d1d5db;";
+      }
+
+      function getTypeBadgeClasses(type) {
+        const map = {
+          "Mid-term": "background:#f3e8ff;color:#6b21a8;border-color:#e9d5ff;",
+          "Lab Practical": "background:#ffedd5;color:#9a3412;border-color:#fed7aa;",
+          "Assignment": "background:#ccfbf1;color:#0f766e;border-color:#99f6e4;",
+          "Quiz": "background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe;",
+          "Unit Test": "background:#dcfce7;color:#166534;border-color:#bbf7d0;",
+          "Lab Report": "background:#fef9c3;color:#854d0e;border-color:#fef08a;",
+        };
+        return map[type] || "background:#e5e7eb;color:#111827;border-color:#d1d5db;";
+      }
+
+      // Fill performance
+      document.getElementById("sgpa").textContent =
+        examData.performance.currentSemester;
+      document.getElementById("cgpa").textContent =
+        examData.performance.overallCGPA;
+      document.getElementById("rank").textContent =
+        "#" + examData.performance.rank;
+
+      // Upcoming exams
+      const upcomingList = document.getElementById("upcomingList");
+      examData.upcoming.forEach((exam) => {
+        const wrap = document.createElement("div");
+        wrap.className = "upcoming-card";
+        const value = parseInt(exam.syllabus, 10) || 0;
+
+        wrap.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.3rem;">
+            <h4 style="font-size:0.95rem;font-weight:600;">${exam.subject}</h4>
+            <span class="badge" style="${getTypeBadgeClasses(exam.type)}">
+              ${exam.type}
+            </span>
+          </div>
+          <div style="margin-top:0.2rem;">
+            <div class="text-sm text-muted" style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+              <span>📅</span><span>${exam.date}</span>
+              <span style="margin-left:0.5rem;">⏰</span><span>${exam.time}</span>
+            </div>
+            <div class="text-sm text-muted" style="display:flex;align-items:center;gap:0.5rem;">
+              <span>📘</span><span>${exam.room}</span>
+            </div>
+          </div>
+          <div style="margin-top:0.6rem;">
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.15rem;">
+              <span class="text-muted">Syllabus Coverage</span>
+              <span>${exam.syllabus}</span>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-bar" style="width:${value}%;"></div>
+            </div>
+          </div>
+        `;
+        upcomingList.appendChild(wrap);
+      });
+
+      // Recent scores
+      const recentList = document.getElementById("recentList");
+      examData.recent.forEach((r) => {
+        const wrap = document.createElement("div");
+        wrap.className = "recent-card";
+        const percent = ((r.obtained / r.maxMarks) * 100).toFixed(1);
+
+        wrap.innerHTML = `
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.15rem;">
+              <h4 style="font-size:0.95rem;font-weight:600;">${r.subject}</h4>
+              <span class="badge" style="${getTypeBadgeClasses(r.type)}">
+                ${r.type}
+              </span>
+            </div>
+            <div class="text-sm text-muted" style="display:flex;align-items:center;gap:0.35rem;">
+              <span>📅</span><span>${r.date}</span>
+            </div>
+          </div>
+          <div class="recent-right" style="text-align:right;">
+            <div style="font-size:1.05rem;font-weight:600;">${r.obtained}/${r.maxMarks}</div>
+            <div class="text-sm text-muted">${percent}%</div>
+          </div>
+          <div>
+            <span class="badge" style="${getGradeBadgeClasses(r.grade)}">
+              ${r.grade}
+            </span>
+          </div>
+        `;
+        recentList.appendChild(wrap);
+      });
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

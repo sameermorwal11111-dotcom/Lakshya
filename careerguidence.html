@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Career Guidance Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{
+        font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        background:#f3f4f6;
+        color:#0f172a;
+        padding:1.5rem;
+      }
+      .page-root{max-width:1400px;margin:0 auto}
+      .space-y-6>*+*{margin-top:1.5rem}
+
+      h1{font-size:1.9rem}
+      h2{font-size:1.3rem}
+      h3{font-size:1.05rem}
+      h4{font-size:0.95rem}
+      .text-sm{font-size:0.8rem}
+      .text-xs{font-size:0.7rem}
+      .text-muted{color:#6b7280}
+
+      .card{
+        background:#fff;
+        border-radius:1.1rem;
+        padding:1.4rem;
+        box-shadow:0 10px 26px rgba(15,23,42,.14);
+        border:1px solid transparent;
+      }
+      .card-soft{
+        background:#f9fafb;
+      }
+
+      .badge{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.12rem .6rem;
+        border-radius:9999px;
+        font-size:.7rem;
+        border:1px solid transparent;
+        white-space:nowrap;
+      }
+      .badge-outline{
+        background:#fff;
+        border-color:#e5e7eb;
+        color:#4b5563;
+      }
+      .badge-green{
+        background:#dcfce7;
+        border-color:#bbf7d0;
+        color:#166534;
+      }
+      .badge-blue{
+        background:#dbeafe;
+        border-color:#bfdbfe;
+        color:#1d4ed8;
+      }
+
+      .btn{
+        border-radius:9999px;
+        border:1px solid #e5e7eb;
+        padding:.35rem .9rem;
+        font-size:.8rem;
+        background:#fff;
+        cursor:pointer;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:.3rem;
+        transition:background .15s,box-shadow .15s,transform .1s;
+      }
+      .btn:hover{
+        background:#f9fafb;
+        box-shadow:0 10px 22px rgba(15,23,42,.16);
+        transform:translateY(-1px);
+      }
+      .btn-sm{padding:.3rem .8rem;font-size:.78rem}
+      .btn-primary{
+        background:#059669;
+        border-color:#059669;
+        color:#ecfdf5;
+      }
+
+      /* Header hero */
+      .hero{
+        border-radius:1.6rem;
+        padding:2rem;
+        color:#ecfdf5;
+        background:linear-gradient(135deg,#059669,#0f766e);
+        box-shadow:0 22px 45px rgba(4,120,87,.65);
+      }
+      .hero-inner{
+        display:flex;
+        flex-direction:column;
+        gap:1.5rem;
+      }
+      @media(min-width:1024px){
+        .hero-inner{
+          flex-direction:row;
+          align-items:center;
+          justify-content:space-between;
+        }
+      }
+      .hero-chip{
+        display:inline-flex;
+        align-items:center;
+        gap:.35rem;
+        padding:.18rem .7rem;
+        border-radius:9999px;
+        background:rgba(255,255,255,.2);
+        font-size:.76rem;
+        margin-bottom:.8rem;
+        backdrop-filter:blur(10px);
+      }
+      .hero-sub{font-size:.9rem;color:#a7f3d0}
+      .hero-stats{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:.8rem;
+      }
+      .hero-stat{
+        background:rgba(255,255,255,.12);
+        border-radius:1rem;
+        padding:.8rem 1rem;
+        border:1px solid rgba(255,255,255,.25);
+      }
+      .hero-stat-val{font-size:1.4rem;font-weight:600;margin-bottom:.15rem}
+      .hero-stat-label{font-size:.72rem;color:#a7f3d0}
+
+      /* Grid helpers */
+      .grid-2{
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.1rem;
+      }
+      @media(min-width:768px){
+        .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+      }
+      .grid-3{
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.1rem;
+      }
+      @media(min-width:1024px){
+        .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      }
+      .grid-5{
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media(min-width:768px){
+        .grid-5{grid-template-columns:repeat(5,minmax(0,1fr))}
+      }
+      .grid-4{
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media(min-width:768px){
+        .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+      }
+
+      .stat-block{
+        text-align:center;
+        padding:1rem;
+        border-radius:1rem;
+        background:#f3f4f6;
+      }
+
+      /* Career card */
+      .career-card{
+        border-radius:1.1rem;
+        padding:1.25rem;
+        background:#fff;
+        box-shadow:0 12px 26px rgba(15,23,42,.14);
+        border:1px solid transparent;
+        transition:box-shadow .15s,transform .1s;
+      }
+      .career-card:hover{
+        box-shadow:0 16px 40px rgba(5,150,105,.4);
+        transform:translateY(-2px);
+      }
+
+      /* Upcoming events */
+      .event-row{
+        display:flex;
+        flex-direction:column;
+        gap:1rem;
+        padding:1rem;
+        border-radius:1.1rem;
+        background:#f3f4f6;
+        border:1px solid #e5e7eb;
+      }
+      @media(min-width:768px){
+        .event-row{
+          flex-direction:row;
+          align-items:center;
+        }
+      }
+
+      .icon-chip{
+        width:3rem;
+        height:3rem;
+        border-radius:.9rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .icon-chip-blue{
+        background:#dbeafe;
+        color:#1d4ed8;
+      }
+      .icon-chip-purple{
+        background:#ede9fe;
+        color:#6b21a8;
+      }
+      .icon-chip-green{
+        background:#dcfce7;
+        color:#166534;
+      }
+
+      .footer-cards{
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.1rem;
+      }
+      @media(min-width:768px){
+        .footer-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+      }
+
+      .icon-sm{font-size:.9rem}
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6" id="root"></div>
+    </div>
+
+    <script>
+      const careerPaths = [
+        {
+          id:1,
+          title:"Software Development",
+          icon:"💻",
+          description:"Build applications and software solutions",
+          avgSalary:"₹6-15 LPA",
+          demand:"Very High",
+          skills:["Programming","Problem Solving","Algorithms","System Design"],
+          companies:["Google","Microsoft","Amazon","Flipkart","Zomato"],
+          growth:"+25% annually"
+        },
+        {
+          id:2,
+          title:"Data Science & Analytics",
+          icon:"📊",
+          description:"Extract insights from data",
+          avgSalary:"₹7-20 LPA",
+          demand:"Very High",
+          skills:["Python","Statistics","Machine Learning","Data Visualization"],
+          companies:["Walmart","Netflix","Uber","LinkedIn","Adobe"],
+          growth:"+30% annually"
+        },
+        {
+          id:3,
+          title:"DevOps Engineer",
+          icon:"⚙️",
+          description:"Automate and streamline operations",
+          avgSalary:"₹8-18 LPA",
+          demand:"High",
+          skills:["Linux","Docker","Kubernetes","CI/CD","Cloud Platforms"],
+          companies:["AWS","Red Hat","HashiCorp","Atlassian"],
+          growth:"+22% annually"
+        },
+        {
+          id:4,
+          title:"Cybersecurity Specialist",
+          icon:"🔒",
+          description:"Protect systems and data",
+          avgSalary:"₹6-16 LPA",
+          demand:"High",
+          skills:["Network Security","Ethical Hacking","Cryptography","Risk Assessment"],
+          companies:["Cisco","Palo Alto","CrowdStrike","FireEye"],
+          growth:"+28% annually"
+        },
+        {
+          id:5,
+          title:"Cloud Architect",
+          icon:"☁️",
+          description:"Design cloud infrastructure",
+          avgSalary:"₹10-25 LPA",
+          demand:"Very High",
+          skills:["AWS/Azure","Architecture Design","Networking","Security"],
+          companies:["Amazon","Microsoft","Google Cloud","Oracle"],
+          growth:"+27% annually"
+        },
+        {
+          id:6,
+          title:"AI/ML Engineer",
+          icon:"🤖",
+          description:"Develop intelligent systems",
+          avgSalary:"₹8-22 LPA",
+          demand:"Very High",
+          skills:["Deep Learning","NLP","Computer Vision","TensorFlow/PyTorch"],
+          companies:["OpenAI","DeepMind","Tesla","NVIDIA"],
+          growth:"+35% annually"
+        }
+      ];
+
+      const industryInsights = [
+        {title:"Tech Industry Growth",stat:"18%",description:"Expected annual growth in IT sector",trend:"up"},
+        {title:"Job Openings",stat:"2.5M+",description:"Tech jobs in India by 2025",trend:"up"},
+        {title:"Skill Gap",stat:"60%",description:"Companies report skill shortage",trend:"neutral"},
+        {title:"Remote Work",stat:"45%",description:"Tech jobs offer remote options",trend:"up"},
+      ];
+
+      const upcomingEvents = [
+        {
+          id:1,
+          title:"Tech Career Fair 2024",
+          date:"November 15, 2024",
+          type:"Career Fair",
+          companies:"50+ companies",
+          location:"Virtual + On-campus"
+        },
+        {
+          id:2,
+          title:"Resume Building Workshop",
+          date:"November 5, 2024",
+          type:"Workshop",
+          companies:"Industry Experts",
+          location:"Seminar Hall"
+        },
+        {
+          id:3,
+          title:"Mock Interview Drive",
+          date:"November 20, 2024",
+          type:"Interview Prep",
+          companies:"Alumni Mentors",
+          location:"On-campus"
+        },
+      ];
+
+      const placementStats = {
+        placed:287,
+        totalStudents:320,
+        avgPackage:"₹8.5 LPA",
+        highestPackage:"₹42 LPA",
+        companies:85
+      };
+
+      const root = document.getElementById("root");
+
+      function renderHeader(){
+        const header = document.createElement("section");
+        header.className = "hero";
+        header.innerHTML = `
+          <div class="hero-inner">
+            <div>
+              <div class="hero-chip">
+                <span class="icon-sm">💼</span>
+                <span>Career Development</span>
+              </div>
+              <h1 class="hero-title" style="margin-bottom:.3rem;">Career Guidance</h1>
+              <p class="hero-sub">Explore opportunities and plan your professional journey</p>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-val">${careerPaths.length}</div>
+                <div class="hero-stat-label">Career Paths</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-val">${placementStats.companies}</div>
+                <div class="hero-stat-label">Partner Companies</div>
+              </div>
+            </div>
+          </div>
+        `;
+        root.appendChild(header);
+      }
+
+      function renderPlacementStats(){
+        const sec = document.createElement("section");
+        sec.className = "card";
+        sec.innerHTML = `<h3 style="margin-bottom:1rem;">Placement Statistics 2023-24</h3>`;
+        const grid = document.createElement("div");
+        grid.className = "grid-5";
+
+        const placed = document.createElement("div");
+        placed.className = "stat-block";
+        placed.innerHTML = `
+          <div style="font-size:1.9rem;color:#16a34a;margin-bottom:.3rem;">${placementStats.placed}</div>
+          <div class="text-sm text-muted">Students Placed</div>
+        `;
+        const rate = document.createElement("div");
+        rate.className = "stat-block";
+        const pct = ((placementStats.placed/placementStats.totalStudents)*100).toFixed(0);
+        rate.innerHTML = `
+          <div style="font-size:1.9rem;color:#2563eb;margin-bottom:.3rem;">${pct}%</div>
+          <div class="text-sm text-muted">Placement Rate</div>
+        `;
+        const avg = document.createElement("div");
+        avg.className = "stat-block";
+        avg.innerHTML = `
+          <div style="font-size:1.3rem;color:#7c3aed;margin-bottom:.3rem;">${placementStats.avgPackage}</div>
+          <div class="text-sm text-muted">Avg Package</div>
+        `;
+        const high = document.createElement("div");
+        high.className = "stat-block";
+        high.innerHTML = `
+          <div style="font-size:1.3rem;color:#ea580c;margin-bottom:.3rem;">${placementStats.highestPackage}</div>
+          <div class="text-sm text-muted">Highest Package</div>
+        `;
+        const comps = document.createElement("div");
+        comps.className = "stat-block";
+        comps.innerHTML = `
+          <div style="font-size:1.9rem;color:#0d9488;margin-bottom:.3rem;">${placementStats.companies}+</div>
+          <div class="text-sm text-muted">Companies Visited</div>
+        `;
+        [placed,rate,avg,high,comps].forEach(x=>grid.appendChild(x));
+        sec.appendChild(grid);
+        root.appendChild(sec);
+      }
+
+      function renderIndustryInsights(){
+        const sec = document.createElement("section");
+        sec.innerHTML = `<h2 style="margin-bottom:.7rem;">Industry Insights</h2>`;
+        const grid = document.createElement("div");
+        grid.className = "grid-4";
+        industryInsights.forEach(ins=>{
+          const card = document.createElement("div");
+          card.className = "card";
+          let trendIcon = "";
+          if(ins.trend === "up"){
+            trendIcon = `<div style="padding:.35rem;border-radius:.7rem;background:#dcfce7;color:#166534;font-size:.8rem;">⬈</div>`;
+          } else if(ins.trend === "neutral"){
+            trendIcon = `<div style="padding:.35rem;border-radius:.7rem;background:#e5e7eb;color:#4b5563;font-size:.8rem;">▬</div>`;
+          }
+          card.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem;">
+              <div style="font-size:1.7rem;font-weight:600;">${ins.stat}</div>
+              ${trendIcon}
+            </div>
+            <h4 style="margin-bottom:.2rem;">${ins.title}</h4>
+            <p class="text-sm text-muted">${ins.description}</p>
+          `;
+          grid.appendChild(card);
+        });
+        sec.appendChild(grid);
+        root.appendChild(sec);
+      }
+
+      function renderCareerPaths(){
+        const sec = document.createElement("section");
+        sec.innerHTML = `<h2 style="margin-bottom:.7rem;">Explore Career Paths</h2>`;
+        const grid = document.createElement("div");
+        grid.className = "grid-3";
+
+        careerPaths.forEach(career=>{
+          const card = document.createElement("div");
+          card.className = "career-card";
+          const demandBadgeClass = career.demand === "Very High" ? "badge badge-green" : "badge badge-blue";
+          card.innerHTML = `
+            <div style="display:flex;gap:.8rem;margin-bottom:.8rem;">
+              <div style="font-size:2rem;">${career.icon}</div>
+              <div style="flex:1;">
+                <h3 style="margin-bottom:.15rem;">${career.title}</h3>
+                <p class="text-sm text-muted">${career.description}</p>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .55rem;border-radius:.8rem;background:#f3f4f6;">
+                <div class="text-sm text-muted" style="display:flex;align-items:center;gap:.35rem;">
+                  <span class="icon-sm">💰</span><span>Salary Range</span>
+                </div>
+                <span class="text-sm">${career.avgSalary}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .55rem;border-radius:.8rem;background:#f3f4f6;">
+                <div class="text-sm text-muted" style="display:flex;align-items:center;gap:.35rem;">
+                  <span class="icon-sm">📈</span><span>Demand</span>
+                </div>
+                <span class="${demandBadgeClass}">${career.demand}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .55rem;border-radius:.8rem;background:#f3f4f6;">
+                <div class="text-sm text-muted" style="display:flex;align-items:center;gap:.35rem;">
+                  <span class="icon-sm">🎯</span><span>Growth</span>
+                </div>
+                <span class="text-sm">${career.growth}</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom:.7rem;">
+              <p class="text-sm text-muted" style="margin-bottom:.2rem;">Key Skills Required:</p>
+              <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+                ${career.skills.map(s=>`<span class="badge badge-outline" style="font-size:.7rem;">${s}</span>`).join("")}
+              </div>
+            </div>
+
+            <div style="margin-bottom:.8rem;">
+              <p class="text-sm text-muted" style="margin-bottom:.2rem;">Top Recruiters:</p>
+              <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+                ${career.companies.slice(0,3).map(c=>`<span class="badge" style="background:#e0e7ff;border-color:#c7d2fe;color:#3730a3;font-size:.7rem;">${c}</span>`).join("")}
+              </div>
+            </div>
+
+            <button class="btn btn-sm btn-primary" style="width:100%;">
+              Learn More <span class="icon-sm">🔗</span>
+            </button>
+          `;
+          grid.appendChild(card);
+        });
+
+        sec.appendChild(grid);
+        root.appendChild(sec);
+      }
+
+      function renderUpcomingEvents(){
+        const sec = document.createElement("section");
+        sec.className = "card";
+        sec.innerHTML = `<h3 style="margin-bottom:1rem;">Upcoming Career Events</h3>`;
+        const list = document.createElement("div");
+        list.style.display = "flex";
+        list.style.flexDirection = "column";
+        list.style.gap = ".8rem";
+
+        upcomingEvents.forEach(ev=>{
+          const row = document.createElement("div");
+          row.className = "event-row";
+          row.innerHTML = `
+            <div style="flex:1;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem;">
+                <h4>${ev.title}</h4>
+                <span class="badge badge-outline">${ev.type}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.3rem;font-size:.8rem;color:#6b7280;">
+                <div style="display:flex;align-items:center;gap:.35rem;">
+                  <span class="icon-sm">📅</span><span>${ev.date}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.35rem;">
+                  <span class="icon-sm">🏢</span><span>${ev.companies}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.35rem;">
+                  <span class="icon-sm">📍</span><span>${ev.location}</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary">Register Now</button>
+          `;
+          list.appendChild(row);
+        });
+
+        sec.appendChild(list);
+        root.appendChild(sec);
+      }
+
+      function renderResources(){
+        const sec = document.createElement("section");
+        const grid = document.createElement("div");
+        grid.className = "footer-cards";
+
+        const card1 = document.createElement("div");
+        card1.className = "card";
+        card1.innerHTML = `
+          <div class="icon-chip icon-chip-blue" style="margin-bottom:.8rem;">
+            <span class="icon-sm">🎓</span>
+          </div>
+          <h3 style="margin-bottom:.25rem;">Learning Roadmaps</h3>
+          <p class="text-sm text-muted" style="margin-bottom:.7rem;">Structured learning paths for every career</p>
+          <button class="btn btn-sm">View Roadmaps</button>
+        `;
+
+        const card2 = document.createElement("div");
+        card2.className = "card";
+        card2.innerHTML = `
+          <div class="icon-chip icon-chip-purple" style="margin-bottom:.8rem;">
+            <span class="icon-sm">👥</span>
+          </div>
+          <h3 style="margin-bottom:.25rem;">Counselor Sessions</h3>
+          <p class="text-sm text-muted" style="margin-bottom:.7rem;">One-on-one career counseling</p>
+          <button class="btn btn-sm">Book Session</button>
+        `;
+
+        const card3 = document.createElement("div");
+        card3.className = "card";
+        card3.innerHTML = `
+          <div class="icon-chip icon-chip-green" style="margin-bottom:.8rem;">
+            <span class="icon-sm">🎯</span>
+          </div>
+          <h3 style="margin-bottom:.25rem;">AI Career Assistant</h3>
+          <p class="text-sm text-muted" style="margin-bottom:.7rem;">Get instant career advice from AI</p>
+          <button class="btn btn-sm">Ask AI</button>
+        `;
+
+        [card1,card2,card3].forEach(c=>grid.appendChild(c));
+        sec.appendChild(grid);
+        root.appendChild(sec);
+      }
+
+      renderHeader();
+      renderPlacementStats();
+      renderIndustryInsights();
+      renderCareerPaths();
+      renderUpcomingEvents();
+      renderResources();
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

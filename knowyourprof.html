@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Know Your Professors</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing:border-box; margin:0; padding:0; }
+
+      body {
+        font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        background:#f3f4f6;
+        color:#0f172a;
+        padding:1.5rem;
+      }
+
+      .page-root { max-width:1380px; margin:0 auto; }
+      .space-y-6 > * + * { margin-top:1.5rem; }
+
+      h1 { font-size:1.9rem; font-weight:700; }
+      h3 { font-size:1.05rem; font-weight:600; }
+
+      /* Card */
+      .card {
+        background:#ffffff;
+        border-radius:1.2rem;
+        box-shadow:0 10px 25px rgba(15,23,42,0.12);
+        border:1px solid transparent;
+      }
+      .card-inner { padding:1.4rem; }
+
+      /* Buttons */
+      .btn {
+        border-radius:9999px;
+        border:1px solid #e5e7eb;
+        padding:0.35rem 0.9rem;
+        font-size:0.8rem;
+        cursor:pointer;
+        background:#ffffff;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:0.3rem;
+        transition:background 0.15s ease,box-shadow 0.15s ease,transform 0.1s ease;
+      }
+      .btn:hover {
+        background:#f9fafb;
+        box-shadow:0 8px 20px rgba(15,23,42,0.12);
+        transform:translateY(-1px);
+      }
+      .btn-sm { padding:0.32rem 0.8rem; font-size:0.78rem; }
+      .btn-outline {
+        background:transparent;
+      }
+
+      /* Badge */
+      .badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.1rem 0.6rem;
+        border-radius:9999px;
+        font-size:0.7rem;
+        border:1px solid transparent;
+        white-space:nowrap;
+      }
+      .badge-outline {
+        border-color:#e5e7eb;
+        background:#f9fafb;
+        color:#4b5563;
+      }
+      .badge-purple {
+        background:#ede9fe;
+        color:#5b21b6;
+        border-color:#ddd6fe;
+      }
+      .badge-indigo {
+        background:#e0e7ff;
+        color:#3730a3;
+        border-color:#c7d2fe;
+      }
+
+      /* Input */
+      .input {
+        width:100%;
+        border-radius:9999px;
+        border:1px solid #d1d5db;
+        padding:0.6rem 0.9rem 0.6rem 2.5rem;
+        font-size:0.85rem;
+        background:#f9fafb;
+      }
+      .input:focus {
+        outline:none;
+        border-color:#4f46e5;
+        box-shadow:0 0 0 1px #4f46e53b;
+      }
+
+      .text-muted { color:#6b7280; }
+      .text-xs { font-size:0.72rem; }
+      .text-sm { font-size:0.82rem; }
+
+      /* Header hero */
+      .hero {
+        background:linear-gradient(135deg,#7c3aed,#4f46e5);
+        border-radius:1.5rem;
+        padding:2rem;
+        color:#fef9ff;
+        box-shadow:0 20px 40px rgba(91,33,182,0.6);
+      }
+      .hero-inner {
+        display:flex;
+        flex-direction:column;
+        gap:1.5rem;
+      }
+      @media (min-width:1024px) {
+        .hero-inner {
+          flex-direction:row;
+          align-items:center;
+          justify-content:space-between;
+        }
+      }
+      .hero-chip {
+        display:inline-flex;
+        align-items:center;
+        gap:0.35rem;
+        padding:0.18rem 0.7rem;
+        background:rgba(255,255,255,0.18);
+        border-radius:9999px;
+        font-size:0.76rem;
+        backdrop-filter:blur(10px);
+        margin-bottom:0.8rem;
+      }
+      .hero-title {
+        font-size:1.9rem;
+        font-weight:700;
+        margin-bottom:0.2rem;
+      }
+      .hero-sub {
+        font-size:0.9rem;
+        color:#e0e7ff;
+      }
+      .hero-stats {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:0.9rem;
+        max-width:260px;
+      }
+      .hero-stat {
+        background:rgba(255,255,255,0.12);
+        border-radius:0.9rem;
+        padding:0.8rem 1rem;
+        border:1px solid rgba(255,255,255,0.22);
+      }
+      .hero-stat-value {
+        font-size:1.4rem;
+        font-weight:600;
+        margin-bottom:0.2rem;
+      }
+      .hero-stat-label {
+        font-size:0.74rem;
+        color:#e9d5ff;
+      }
+
+      /* Search card */
+      .search-card { padding:0.8rem 1rem; }
+
+      /* Grid */
+      .grid-md-2 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.3rem;
+      }
+      @media (min-width:768px) {
+        .grid-md-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+
+      /* Professor card */
+      .prof-card {
+        padding:1.4rem;
+        border-radius:1.2rem;
+        background:#ffffff;
+        box-shadow:0 10px 25px rgba(15,23,42,0.12);
+        border:1px solid transparent;
+        transition:box-shadow 0.15s ease,transform 0.12s ease;
+      }
+      .prof-card:hover {
+        box-shadow:0 16px 40px rgba(79,70,229,0.25);
+        transform:translateY(-2px);
+      }
+      .prof-top {
+        display:flex;
+        gap:1.2rem;
+      }
+      .prof-avatar {
+        width:5.5rem;
+        height:5.5rem;
+        border-radius:1rem;
+        background:linear-gradient(135deg,#a855f7,#4f46e5);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#f9fafb;
+        box-shadow:0 10px 20px rgba(79,70,229,0.5);
+        flex-shrink:0;
+        font-size:2rem;
+      }
+      .prof-main {
+        flex:1;
+        min-width:0;
+      }
+      .prof-header-row {
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:0.6rem;
+      }
+      .prof-name {
+        font-size:1rem;
+        font-weight:600;
+        margin-bottom:0.15rem;
+      }
+      .prof-designation {
+        font-size:0.8rem;
+        color:#6b7280;
+        margin-bottom:0.22rem;
+      }
+      .rating-row {
+        display:flex;
+        align-items:center;
+        gap:0.2rem;
+        font-size:0.8rem;
+      }
+      .rating-star {
+        color:#fbbf24;
+        font-size:0.95rem;
+      }
+
+      .contact-list {
+        margin-top:0.7rem;
+        display:flex;
+        flex-direction:column;
+        gap:0.25rem;
+        font-size:0.8rem;
+        color:#6b7280;
+      }
+      .contact-row {
+        display:flex;
+        align-items:center;
+        gap:0.35rem;
+      }
+
+      .section-divider {
+        margin-top:1rem;
+        padding-top:1rem;
+        border-top:1px solid #e5e7eb;
+      }
+
+      .chip-row {
+        display:flex;
+        flex-wrap:wrap;
+        gap:0.35rem;
+      }
+
+      .stats-grid {
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:0.7rem;
+        text-align:center;
+        font-size:0.8rem;
+      }
+      .stat-value {
+        margin-bottom:0.1rem;
+      }
+      .stat-label {
+        font-size:0.7rem;
+        color:#6b7280;
+      }
+
+      .awards-list {
+        display:flex;
+        flex-direction:column;
+        gap:0.25rem;
+        font-size:0.8rem;
+      }
+
+      .empty-card {
+        text-align:center;
+        padding:2.5rem 1rem;
+        font-size:0.85rem;
+        color:#6b7280;
+      }
+
+      .icon {
+        width:1rem;
+        height:1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <!-- Header -->
+        <section class="hero">
+          <div class="hero-inner">
+            <div>
+              <div class="hero-chip">
+                <span style="font-size:0.9rem;">🎓</span>
+                <span>Faculty Directory</span>
+              </div>
+              <h1 class="hero-title">Know Your Professors</h1>
+              <p class="hero-sub">
+                Connect with your faculty members and mentors
+              </p>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="facultyCount"></div>
+                <div class="hero-stat-label">Faculty Members</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="deptCount"></div>
+                <div class="hero-stat-label">Departments</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Search -->
+        <section class="card search-card">
+          <div class="card-inner" style="padding:0;">
+            <div class="search-card">
+              <div style="position:relative;">
+                <span
+                  style="position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);font-size:1rem;color:#9ca3af;"
+                >
+                  🔍
+                </span>
+                <input
+                  id="searchInput"
+                  class="input"
+                  placeholder="Search by name, department, or specialization..."
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Professors Grid -->
+        <section>
+          <div id="profGrid" class="grid-md-2"></div>
+        </section>
+
+        <!-- Empty state -->
+        <section id="emptyState" style="display:none;">
+          <div class="card">
+            <div class="card-inner empty-card">
+              <div style="margin-bottom:0.3rem;">No professors found</div>
+              <p style="font-size:0.8rem;color:#9ca3af;">
+                Try adjusting your search criteria
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const professors = [
+        {
+          id: 1,
+          name: "Dr. Shokat Ali",
+          designation: "Professor & Head",
+          department: "Mathematics",
+          photo: "",
+          email: "shokat.ali@gecbikaner.ac.in",
+          phone: "+91 98765 12345",
+          office: "Math Department, Room 301",
+          education: "Ph.D. in Applied Mathematics",
+          specialization: ["Calculus","Linear Algebra","Differential Equations"],
+          experience: "15 years",
+          officeHours: "Mon-Fri: 2:00 PM - 4:00 PM",
+          rating: 4.8,
+          subjects: ["Mathematics I","Advanced Calculus","Mathematical Methods"],
+          publications: 45,
+          awards: ["Best Teacher Award 2023","Excellence in Research 2022"],
+        },
+        {
+          id: 2,
+          name: "Prof. Rajesh Kumar",
+          designation: "Associate Professor",
+          department: "Physics",
+          photo: "",
+          email: "rajesh.kumar@gecbikaner.ac.in",
+          phone: "+91 98765 12346",
+          office: "Physics Department, Room 205",
+          education: "Ph.D. in Quantum Physics",
+          specialization: ["Quantum Mechanics","Thermodynamics","Optics"],
+          experience: "12 years",
+          officeHours: "Mon, Wed, Fri: 3:00 PM - 5:00 PM",
+          rating: 4.6,
+          subjects: ["Physics I","Modern Physics","Quantum Mechanics"],
+          publications: 38,
+          awards: ["Research Excellence 2023"],
+        },
+        {
+          id: 3,
+          name: "Dr. Deepika Gupta",
+          designation: "Assistant Professor",
+          department: "Computer Science",
+          photo: "",
+          email: "deepika.gupta@gecbikaner.ac.in",
+          phone: "+91 98765 12347",
+          office: "CS Department, Room 401",
+          education: "Ph.D. in Computer Science",
+          specialization: ["Programming","Data Structures","Machine Learning","AI"],
+          experience: "8 years",
+          officeHours: "Tue, Thu: 2:00 PM - 4:00 PM",
+          rating: 4.9,
+          subjects: ["Programming Fundamentals","Data Structures","AI & ML"],
+          publications: 28,
+          awards: ["Young Faculty Award 2024","Best Teacher 2023"],
+        },
+        {
+          id: 4,
+          name: "Prof. Shradha Parmar",
+          designation: "Associate Professor",
+          department: "English & Communication",
+          photo: "",
+          email: "shradha.parmar@gecbikaner.ac.in",
+          phone: "+91 98765 12348",
+          office: "Humanities Block, Room 102",
+          education: "Ph.D. in English Literature",
+          specialization: ["Communication Skills","Technical Writing","Public Speaking"],
+          experience: "10 years",
+          officeHours: "Mon-Fri: 11:00 AM - 1:00 PM",
+          rating: 4.7,
+          subjects: ["Communication Skills","Technical Writing","Professional Ethics"],
+          publications: 22,
+          awards: ["Excellence in Teaching 2023"],
+        },
+        {
+          id: 5,
+          name: "Prof. Anil Sharma",
+          designation: "Professor",
+          department: "Mechanical Engineering",
+          photo: "",
+          email: "anil.sharma@gecbikaner.ac.in",
+          phone: "+91 98765 12349",
+          office: "ME Department, Room 201",
+          education: "Ph.D. in Mechanical Engineering",
+          specialization: ["Engineering Drawing","CAD/CAM","Manufacturing"],
+          experience: "18 years",
+          officeHours: "Tue, Thu, Sat: 1:00 PM - 3:00 PM",
+          rating: 4.5,
+          subjects: ["Engineering Drawing","CAD","Manufacturing Processes"],
+          publications: 52,
+          awards: ["Lifetime Achievement Award 2024"],
+        },
+        {
+          id: 6,
+          name: "Prof. Mohan Singh",
+          designation: "Assistant Professor",
+          department: "Workshop Practice",
+          photo: "",
+          email: "mohan.singh@gecbikaner.ac.in",
+          phone: "+91 98765 12350",
+          office: "Workshop Building",
+          education: "M.Tech in Production Engineering",
+          specialization: ["Workshop Practice","Machining","Welding"],
+          experience: "14 years",
+          officeHours: "Mon, Wed, Fri: 10:00 AM - 12:00 PM",
+          rating: 4.4,
+          subjects: ["Workshop Practice","Manufacturing Technology"],
+          publications: 15,
+          awards: ["Best Practical Instructor 2023"],
+        },
+      ];
+
+      const searchInput = document.getElementById("searchInput");
+      const profGrid = document.getElementById("profGrid");
+      const emptyState = document.getElementById("emptyState");
+      const facultyCountEl = document.getElementById("facultyCount");
+      const deptCountEl = document.getElementById("deptCount");
+
+      facultyCountEl.textContent = professors.length.toString();
+      const deptSet = new Set(professors.map((p) => p.department));
+      deptCountEl.textContent = deptSet.size.toString();
+
+      function filterProfessors(term) {
+        const q = term.toLowerCase();
+        return professors.filter((prof) => {
+          if (prof.name.toLowerCase().includes(q)) return true;
+          if (prof.department.toLowerCase().includes(q)) return true;
+          if (
+            prof.specialization.some((spec) =>
+              spec.toLowerCase().includes(q)
+            )
+          )
+            return true;
+          return false;
+        });
+      }
+
+      function createProfCard(prof) {
+        const card = document.createElement("div");
+        card.className = "prof-card";
+
+        card.innerHTML = `
+          <div class="prof-top">
+            <div class="prof-avatar">🎓</div>
+            <div class="prof-main">
+              <div class="prof-header-row">
+                <div>
+                  <div class="prof-name">${prof.name}</div>
+                  <div class="prof-designation">${prof.designation}</div>
+                  <span class="badge badge-purple">${prof.department}</span>
+                </div>
+                <div class="rating-row">
+                  <span class="rating-star">★</span>
+                  <span>${prof.rating.toFixed(1)}</span>
+                </div>
+              </div>
+
+              <div class="contact-list">
+                <div class="contact-row">
+                  <span class="icon">✉️</span>
+                  <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${prof.email}</span>
+                </div>
+                <div class="contact-row">
+                  <span class="icon">📞</span>
+                  <span>${prof.phone}</span>
+                </div>
+                <div class="contact-row">
+                  <span class="icon">📍</span>
+                  <span>${prof.office}</span>
+                </div>
+                <div class="contact-row">
+                  <span class="icon">⏰</span>
+                  <span>${prof.officeHours}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider">
+            <div style="margin-bottom:0.6rem;">
+              <div class="text-sm text-muted" style="margin-bottom:0.15rem;">Education</div>
+              <div class="text-sm">${prof.education}</div>
+            </div>
+            <div style="margin-bottom:0.6rem;">
+              <div class="text-sm text-muted" style="margin-bottom:0.25rem;">Specialization</div>
+              <div class="chip-row">
+                ${prof.specialization
+                  .map(
+                    (spec) =>
+                      `<span class="badge badge-outline" style="font-size:0.72rem;">${spec}</span>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+            <div>
+              <div class="text-sm text-muted" style="margin-bottom:0.25rem;">Teaching Subjects</div>
+              <div class="chip-row">
+                ${prof.subjects
+                  .map(
+                    (subject) =>
+                      `<span class="badge badge-indigo" style="font-size:0.72rem;">${subject}</span>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider">
+            <div class="stats-grid">
+              <div>
+                <div class="stat-value">${prof.experience}</div>
+                <div class="stat-label">Experience</div>
+              </div>
+              <div>
+                <div class="stat-value">${prof.publications}</div>
+                <div class="stat-label">Publications</div>
+              </div>
+              <div>
+                <div class="stat-value">${prof.awards.length}</div>
+                <div class="stat-label">Awards</div>
+              </div>
+            </div>
+          </div>
+
+          ${
+            prof.awards.length
+              ? `<div class="section-divider">
+                   <div class="text-sm text-muted" style="margin-bottom:0.25rem;">Recent Awards</div>
+                   <div class="awards-list">
+                     ${prof.awards
+                       .map(
+                         (award) =>
+                           `<div style="display:flex;align-items:center;gap:0.3rem;">
+                              <span style="font-size:0.9rem;color:#eab308;">🏅</span>
+                              <span>${award}</span>
+                            </div>`
+                       )
+                       .join("")}
+                   </div>
+                 </div>`
+              : ""
+          }
+
+          <div class="section-divider" style="display:flex;gap:0.4rem;">
+            <button class="btn btn-sm" style="flex:1;">✉️ Email</button>
+            <button class="btn btn-sm btn-outline" style="flex:1;">🗓 Book Appointment</button>
+          </div>
+        `;
+        return card;
+      }
+
+      function renderProfessors(list) {
+        profGrid.innerHTML = "";
+        if (list.length === 0) {
+          emptyState.style.display = "block";
+          return;
+        }
+        emptyState.style.display = "none";
+        list.forEach((prof) => {
+          profGrid.appendChild(createProfCard(prof));
+        });
+      }
+
+      // Initial render
+      renderProfessors(professors);
+
+      searchInput.addEventListener("input", (e) => {
+        const term = e.target.value || "";
+        const filtered = filterProfessors(term);
+        renderProfessors(filtered);
+      });
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>

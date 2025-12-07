@@ -1,0 +1,52 @@
+/* ===================================
+   QR CODE GENERATION SECTION STYLES
+   =================================== */
+
+.timer-display {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+    color: var(--foreground);
+    transition: color 0.3s ease;
+}
+
+.timer-display.text-destructive {
+    color: var(--destructive);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+#qr-expired-overlay {
+    backdrop-filter: blur(4px);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+#qr-timer-display {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* QR Code specific styles can be added here */
+/* Currently using base card and form styles from base.css */

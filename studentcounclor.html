@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Counseling Services</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="studentstyle.css">
+    <style>
+      * { box-sizing:border-box; margin:0; padding:0; }
+
+      body {
+        font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        background:#f3f4f6;
+        color:#0f172a;
+        padding:1.5rem;
+      }
+
+      .page-root { max-width:1380px; margin:0 auto; }
+      .space-y-6 > * + * { margin-top:1.5rem; }
+
+      h1 { font-size:1.9rem; font-weight:700; }
+      h2 { font-size:1.3rem; font-weight:600; }
+      h3 { font-size:1.05rem; font-weight:600; }
+
+      /* Card */
+      .card {
+        background:#ffffff;
+        border-radius:1.2rem;
+        box-shadow:0 10px 25px rgba(15,23,42,0.12);
+        border:1px solid transparent;
+      }
+      .card-inner { padding:1.4rem; }
+
+      /* Buttons */
+      .btn {
+        border-radius:9999px;
+        border:1px solid #e5e7eb;
+        padding:0.4rem 0.9rem;
+        font-size:0.8rem;
+        cursor:pointer;
+        background:#ffffff;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:0.3rem;
+      }
+      .btn:hover { background:#f9fafb; }
+      .btn-sm { padding:0.32rem 0.8rem; font-size:0.78rem; }
+      .btn-primary {
+        background:#ec4899;
+        border-color:#ec4899;
+        color:#fdf2f8;
+      }
+      .btn-primary:hover { background:#db2777; }
+
+      /* Badges */
+      .badge {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0.1rem 0.6rem;
+        border-radius:9999px;
+        font-size:0.7rem;
+        border:1px solid transparent;
+        white-space:nowrap;
+      }
+      .badge-outline {
+        border-color:#e5e7eb;
+        color:#4b5563;
+        background:#f9fafb;
+      }
+
+      /* Inputs / Textarea */
+      .input, .textarea {
+        width:100%;
+        border-radius:0.7rem;
+        border:1px solid #d1d5db;
+        padding:0.45rem 0.75rem;
+        font-size:0.85rem;
+        background:#f9fafb;
+      }
+      .textarea { resize:vertical; min-height:120px; }
+      .input:focus, .textarea:focus {
+        outline:none;
+        border-color:#ec4899;
+        box-shadow:0 0 0 1px #ec489933;
+      }
+
+      .label {
+        display:block;
+        font-size:0.8rem;
+        color:#6b7280;
+        margin-bottom:0.25rem;
+      }
+
+      .text-muted { color:#6b7280; }
+      .text-xs { font-size:0.72rem; }
+      .text-sm { font-size:0.82rem; }
+
+      /* Layout helpers */
+      .grid-2 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.5rem;
+      }
+      @media (min-width:768px) {
+        .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+
+      .grid-3 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.2rem;
+      }
+      @media (min-width:768px) {
+        .grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      }
+
+      .grid-md-2 {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1.2rem;
+      }
+      @media (min-width:768px) {
+        .grid-md-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      }
+
+      /* Hero */
+      .hero {
+        background:linear-gradient(135deg,#db2777,#e11d48);
+        border-radius:1.5rem;
+        padding:2rem;
+        color:#fef2f2;
+        box-shadow:0 20px 40px rgba(190,24,93,0.55);
+      }
+      .hero-inner {
+        display:flex;
+        flex-direction:column;
+        gap:1.5rem;
+      }
+      @media (min-width:1024px) {
+        .hero-inner {
+          flex-direction:row;
+          align-items:center;
+          justify-content:space-between;
+        }
+      }
+
+      .hero-chip {
+        display:inline-flex;
+        align-items:center;
+        gap:0.35rem;
+        padding:0.18rem 0.7rem;
+        background:rgba(255,255,255,0.15);
+        border-radius:9999px;
+        font-size:0.76rem;
+        backdrop-filter:blur(10px);
+        margin-bottom:0.8rem;
+      }
+
+      .hero-stat {
+        background:rgba(255,255,255,0.12);
+        border-radius:0.9rem;
+        padding:0.8rem 1rem;
+        border:1px solid rgba(255,255,255,0.2);
+      }
+
+      .hero-stat-label {
+        font-size:0.72rem;
+        color:#fecaca;
+      }
+      .hero-stat-value {
+        font-size:1.35rem;
+        font-weight:600;
+      }
+
+      /* Upcoming sessions */
+      .upcoming-wrap {
+        display:flex;
+        flex-direction:column;
+        gap:1rem;
+      }
+      .upcoming-item {
+        display:flex;
+        flex-direction:column;
+        gap:0.8rem;
+        padding:1rem;
+        border-radius:0.9rem;
+        background:#f9fafb;
+      }
+      @media (min-width:768px) {
+        .upcoming-item {
+          flex-direction:row;
+          align-items:center;
+          justify-content:space-between;
+        }
+      }
+
+      /* Benefits */
+      .benefit-item {
+        display:flex;
+        align-items:flex-start;
+        gap:0.6rem;
+        padding:0.7rem 0.9rem;
+        border-radius:0.9rem;
+        background:#f9fafb;
+      }
+
+      /* Counselors */
+      .counselor-card {
+        padding:1.4rem;
+        border-radius:1.2rem;
+        background:#ffffff;
+        box-shadow:0 10px 24px rgba(15,23,42,0.12);
+        border:1px solid transparent;
+        transition:box-shadow 0.15s ease, transform 0.15s ease;
+      }
+      .counselor-card:hover {
+        box-shadow:0 16px 40px rgba(190,24,93,0.25);
+        transform:translateY(-2px);
+      }
+
+      .counselor-avatar {
+        width:5rem;
+        height:5rem;
+        border-radius:9999px;
+        background:linear-gradient(135deg,#fb7185,#ec4899);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#fef2f2;
+        box-shadow:0 10px 20px rgba(236,72,153,0.4);
+        flex-shrink:0;
+        font-size:1.7rem;
+      }
+
+      .counselor-meta-grid {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:0.7rem;
+      }
+
+      .meta-chip {
+        display:flex;
+        align-items:center;
+        gap:0.4rem;
+        padding:0.55rem 0.6rem;
+        border-radius:0.8rem;
+        background:#f9fafb;
+      }
+
+      .chip-icon {
+        width:1rem;
+        height:1rem;
+      }
+
+      .pill-dot {
+        width:0.5rem;
+        height:0.5rem;
+        border-radius:9999px;
+        background:#fbbf24;
+      }
+
+      .qual-badge {
+        font-size:0.72rem;
+        padding:0.15rem 0.55rem;
+        border-radius:9999px;
+        border:1px solid #e5e7eb;
+        background:#f9fafb;
+      }
+
+      .expertise-badge {
+        font-size:0.72rem;
+        padding:0.15rem 0.55rem;
+        border-radius:9999px;
+        border:1px solid #fed7e2;
+        background:#fce7f3;
+        color:#9d174d;
+      }
+
+      .availability-row {
+        display:flex;
+        align-items:center;
+        gap:0.4rem;
+        font-size:0.8rem;
+      }
+
+      .footer-row {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:0.8rem;
+        padding-top:0.8rem;
+        border-top:1px solid #e5e7eb;
+      }
+
+      /* Session types */
+      .session-card {
+        padding:1.4rem;
+        border-radius:1.2rem;
+        background:#ffffff;
+        box-shadow:0 8px 20px rgba(15,23,42,0.08);
+        cursor:pointer;
+        border:1px solid transparent;
+        transition:box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+      }
+      .session-card:hover {
+        border-color:#ec4899;
+        box-shadow:0 16px 40px rgba(236,72,153,0.28);
+        transform:translateY(-2px);
+      }
+      .session-icon-box {
+        width:3rem;
+        height:3rem;
+        border-radius:0.9rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin-bottom:0.8rem;
+      }
+
+      /* Form */
+      .form-grid {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        gap:1rem;
+      }
+      @media (min-width:768px) {
+        .form-grid {
+          grid-template-columns:repeat(2,minmax(0,1fr));
+        }
+      }
+
+      /* Simple toast */
+      .toast {
+        position:fixed;
+        bottom:1rem;
+        right:1rem;
+        background:#16a34a;
+        color:#ecfdf5;
+        padding:0.6rem 0.9rem;
+        border-radius:0.7rem;
+        font-size:0.8rem;
+        box-shadow:0 10px 25px rgba(22,163,74,0.5);
+        opacity:0;
+        transform:translateY(10px);
+        transition:opacity 0.15s ease, transform 0.15s ease;
+        z-index:40;
+      }
+      .toast.show {
+        opacity:1;
+        transform:translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="page-root">
+      <div class="space-y-6">
+        <!-- Header / Hero -->
+        <section class="hero">
+          <div class="hero-inner">
+            <div>
+              <div class="hero-chip">
+                <span style="font-size:1rem;">🤝</span>
+                <span>Professional Support</span>
+              </div>
+              <h1 style="margin-bottom:0.25rem;">Counseling Services</h1>
+              <p style="color:#fecaca;font-size:0.9rem;">
+                Get expert guidance for your personal and professional growth
+              </p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.9rem;max-width:260px;">
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="heroCounselorCount"></div>
+                <div class="hero-stat-label">Expert Counselors</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value">1</div>
+                <div class="hero-stat-label">Free Session</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Upcoming Sessions -->
+        <section class="card" id="upcomingCard" style="display:none;border-left:4px solid #22c55e;">
+          <div class="card-inner">
+            <h3 style="margin-bottom:0.7rem;">Your Upcoming Sessions</h3>
+            <div class="upcoming-wrap" id="upcomingList"></div>
+          </div>
+        </section>
+
+        <!-- Benefits -->
+        <section class="card">
+          <div class="card-inner">
+            <h3 style="margin-bottom:0.9rem;">Why Choose Our Counseling Services?</h3>
+            <div class="grid-3">
+              <!-- Benefits inserted by JS -->
+              <div class="benefit-item">
+                <span style="color:#16a34a;font-size:1.1rem;flex-shrink:0;">✔</span>
+                <p class="text-sm">
+                  Professional guidance from certified counselors
+                </p>
+              </div>
+              <div class="benefit-item">
+                <span style="color:#16a34a;font-size:1.1rem;flex-shrink:0;">✔</span>
+                <p class="text-sm">
+                  Confidential and safe environment
+                </p>
+              </div>
+              <div class="benefit-item">
+                <span style="color:#16a34a;font-size:1.1rem;flex-shrink:0;">✔</span>
+                <p class="text-sm">
+                  Flexible scheduling options
+                </p>
+              </div>
+              <div class="benefit-item">
+                <span style="color:#16a34a;font-size:1.1rem;flex-shrink:0;">✔</span>
+                <p class="text-sm">
+                  Follow-up sessions and progress tracking
+                </p>
+              </div>
+              <div class="benefit-item">
+                <span style="color:#16a34a;font-size:1.1rem;flex-shrink:0;">✔</span>
+                <p class="text-sm">
+                  First session free for all students
+                </p>
+              </div>
+              <div class="benefit-item">
+                <span style="color:#16a34a;font-size:1.1rem;flex-shrink:0;">✔</span>
+                <p class="text-sm">
+                  Affordable pricing for students
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Counselors Grid -->
+        <section>
+          <h2 style="margin-bottom:0.7rem;">Our Expert Counselors</h2>
+          <div class="grid-md-2" id="counselorGrid"></div>
+        </section>
+
+        <!-- Session Types -->
+        <section>
+          <h2 style="margin-bottom:0.7rem;">Choose Your Session Type</h2>
+          <div class="grid-3" id="sessionTypeGrid"></div>
+        </section>
+
+        <!-- Contact Form -->
+        <section class="card">
+          <div class="card-inner">
+            <h3 style="margin-bottom:1rem;">Request a Callback</h3>
+            <form id="callbackForm">
+              <div class="form-grid" style="margin-bottom:1rem;">
+                <div>
+                  <label class="label">Full Name</label>
+                  <input class="input" placeholder="Enter your name" required />
+                </div>
+                <div>
+                  <label class="label">Email</label>
+                  <input class="input" type="email" placeholder="your.email@example.com" required />
+                </div>
+                <div>
+                  <label class="label">Phone Number</label>
+                  <input class="input" type="tel" placeholder="+91 98765 43210" required />
+                </div>
+                <div>
+                  <label class="label">Preferred Date</label>
+                  <input class="input" type="date" />
+                </div>
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label class="label">What would you like to discuss?</label>
+                <textarea class="textarea" placeholder="Brief description of your concerns..." rows="4"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Submit Request
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+      // Static data from the React component
+      const counselors = [
+        {
+          id: 1,
+          name: "Dr. Priya Sharma",
+          specialization: "Career Counseling",
+          experience: "12 years",
+          rating: 4.9,
+          sessions: 450,
+          qualifications: [
+            "Ph.D. in Psychology",
+            "Certified Career Counselor",
+            "NLP Practitioner",
+          ],
+          expertise: [
+            "Career Planning",
+            "Interview Preparation",
+            "Resume Building",
+            "Skill Assessment",
+          ],
+          availability: [
+            "Mon, Wed, Fri: 2:00 PM - 6:00 PM",
+            "Sat: 10:00 AM - 2:00 PM",
+          ],
+          price: "₹499",
+          type: "Paid",
+        },
+        {
+          id: 2,
+          name: "Mr. Rajesh Verma",
+          specialization: "Academic Counseling",
+          experience: "10 years",
+          rating: 4.8,
+          sessions: 380,
+          qualifications: [
+            "M.Ed in Educational Psychology",
+            "Academic Advisor Certification",
+          ],
+          expertise: [
+            "Study Planning",
+            "Time Management",
+            "Exam Stress",
+            "Learning Strategies",
+          ],
+          availability: [
+            "Tue, Thu: 3:00 PM - 7:00 PM",
+            "Sun: 9:00 AM - 1:00 PM",
+          ],
+          price: "₹399",
+          type: "Paid",
+        },
+        {
+          id: 3,
+          name: "Ms. Anjali Patel",
+          specialization: "Personal Development",
+          experience: "8 years",
+          rating: 4.7,
+          sessions: 320,
+          qualifications: [
+            "M.A. in Counseling Psychology",
+            "Life Coach Certification",
+          ],
+          expertise: [
+            "Personal Growth",
+            "Confidence Building",
+            "Goal Setting",
+            "Motivation",
+          ],
+          availability: ["Mon-Fri: 10:00 AM - 2:00 PM"],
+          price: "₹599",
+          type: "Paid",
+        },
+        {
+          id: 4,
+          name: "Dr. Vikram Singh",
+          specialization: "Mental Health & Wellness",
+          experience: "15 years",
+          rating: 4.9,
+          sessions: 520,
+          qualifications: [
+            "Ph.D. in Clinical Psychology",
+            "Licensed Therapist",
+          ],
+          expertise: [
+            "Stress Management",
+            "Anxiety",
+            "Depression",
+            "Mindfulness",
+          ],
+          availability: [
+            "Mon, Wed: 4:00 PM - 8:00 PM",
+            "Sat: 2:00 PM - 6:00 PM",
+          ],
+          price: "Free",
+          type: "Free",
+        },
+      ];
+
+      const upcomingSessions = [
+        {
+          id: 1,
+          counselor: "Dr. Priya Sharma",
+          date: "November 25, 2024",
+          time: "2:00 PM - 2:45 PM",
+          type: "Video Call",
+          status: "Confirmed",
+        },
+      ];
+
+      const sessionTypes = [
+        {
+          id: 1,
+          name: "Video Call",
+          icon: "📹",
+          duration: "45 minutes",
+          description: "One-on-one video consultation",
+        },
+        {
+          id: 2,
+          name: "Chat Session",
+          icon: "💬",
+          duration: "30 minutes",
+          description: "Real-time text-based counseling",
+        },
+        {
+          id: 3,
+          name: "In-Person",
+          icon: "👤",
+          duration: "60 minutes",
+          description: "Face-to-face counseling on campus",
+        },
+      ];
+
+      const toastEl = document.getElementById("toast");
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.add("show");
+        setTimeout(() => toastEl.classList.remove("show"), 2200);
+      }
+
+      // Hero stat
+      document.getElementById("heroCounselorCount").textContent =
+        counselors.length.toString();
+
+      // Upcoming sessions
+      const upcomingCard = document.getElementById("upcomingCard");
+      const upcomingList = document.getElementById("upcomingList");
+      if (upcomingSessions.length > 0) {
+        upcomingCard.style.display = "block";
+        upcomingSessions.forEach((s) => {
+          const wrap = document.createElement("div");
+          wrap.className = "upcoming-item";
+          wrap.innerHTML = `
+            <div style="flex:1;">
+              <h4 style="font-size:0.95rem;font-weight:600;margin-bottom:0.15rem;">${s.counselor}</h4>
+              <div style="display:flex;flex-wrap:wrap;gap:0.7rem;font-size:0.8rem;color:#6b7280;">
+                <div style="display:flex;align-items:center;gap:0.3rem;">
+                  <span>📅</span><span>${s.date}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.3rem;">
+                  <span>⏰</span><span>${s.time}</span>
+                </div>
+                <span class="badge" style="background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe;">
+                  ${s.type}
+                </span>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.4rem;flex-shrink:0;">
+              <button class="btn btn-sm btn-primary">Join Session</button>
+              <button class="btn btn-sm">Reschedule</button>
+            </div>
+          `;
+          upcomingList.appendChild(wrap);
+        });
+      }
+
+      // Counselors
+      const counselorGrid = document.getElementById("counselorGrid");
+      counselors.forEach((c) => {
+        const card = document.createElement("div");
+        card.className = "counselor-card";
+        const typeBadgeStyle =
+          c.type === "Free"
+            ? "background:#dcfce7;color:#166534;border-color:#bbf7d0;"
+            : "background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe;";
+
+        card.innerHTML = `
+          <div style="display:flex;gap:1rem;margin-bottom:0.9rem;">
+            <div class="counselor-avatar">🤝</div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.6rem;margin-bottom:0.3rem;">
+                <div>
+                  <h3 style="font-size:1rem;font-weight:600;margin-bottom:0.1rem;">${c.name}</h3>
+                  <p class="text-sm text-muted" style="margin-bottom:0.2rem;">${c.specialization}</p>
+                  <span class="badge badge-outline text-xs">${c.experience}</span>
+                </div>
+                <span class="badge text-xs" style="${typeBadgeStyle}">
+                  ${c.type}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="counselor-meta-grid" style="margin-bottom:0.8rem;">
+            <div class="meta-chip">
+              <span class="chip-icon" style="color:#fbbf24;">★</span>
+              <div>
+                <div style="font-size:0.9rem;font-weight:500;">${c.rating}</div>
+                <div class="text-xs text-muted">Rating</div>
+              </div>
+            </div>
+            <div class="meta-chip">
+              <span class="chip-icon" style="color:#7c3aed;">🏆</span>
+              <div>
+                <div style="font-size:0.9rem;font-weight:500;">${c.sessions}</div>
+                <div class="text-xs text-muted">Sessions</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:0.8rem;">
+            <p class="text-sm text-muted" style="margin-bottom:0.25rem;">Qualifications:</p>
+            <div style="display:flex;flex-wrap:wrap;gap:0.35rem;">
+              ${c.qualifications
+                .map(
+                  (q) =>
+                    `<span class="qual-badge">${q}</span>`
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="margin-bottom:0.8rem;">
+            <p class="text-sm text-muted" style="margin-bottom:0.25rem;">Expertise:</p>
+            <div style="display:flex;flex-wrap:wrap;gap:0.35rem;">
+              ${c.expertise
+                .map(
+                  (e) =>
+                    `<span class="expertise-badge">${e}</span>`
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="margin-bottom:0.8rem;">
+            <p class="text-sm text-muted" style="margin-bottom:0.25rem;">Availability:</p>
+            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+              ${c.availability
+                .map(
+                  (slot) =>
+                    `<div class="availability-row">
+                       <span style="font-size:0.8rem;">⏱</span>
+                       <span>${slot}</span>
+                     </div>`
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div class="footer-row">
+            <div>
+              <div style="font-size:1.3rem;font-weight:600;">${c.price}</div>
+              <div class="text-xs text-muted">per session</div>
+            </div>
+            <button class="btn btn-primary btn-sm" data-book-id="${c.id}">
+              Book Session
+            </button>
+          </div>
+        `;
+        counselorGrid.appendChild(card);
+      });
+
+      // Session types
+      const sessionTypeGrid = document.getElementById("sessionTypeGrid");
+      sessionTypes.forEach((t) => {
+        const card = document.createElement("div");
+        card.className = "session-card";
+        card.innerHTML = `
+          <div class="session-icon-box" style="background:#fdf2f8;color:#ec4899;">
+            <span style="font-size:1.3rem;">${t.icon}</span>
+          </div>
+          <h3 style="font-size:1rem;font-weight:600;margin-bottom:0.25rem;">${t.name}</h3>
+          <p class="text-sm text-muted" style="margin-bottom:0.4rem;">${t.description}</p>
+          <span class="badge badge-outline text-xs">
+            ⏱ ${t.duration}
+          </span>
+        `;
+        sessionTypeGrid.appendChild(card);
+      });
+
+      // Handle "Book Session" click
+      counselorGrid.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-book-id]");
+        if (!btn) return;
+        const id = parseInt(btn.getAttribute("data-book-id"), 10);
+        const c = counselors.find((x) => x.id === id);
+        if (c) {
+          showToast("Booking step started for " + c.name);
+        }
+      });
+
+      // Callback form
+      document
+        .getElementById("callbackForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          showToast("Callback request submitted!");
+          e.target.reset();
+        });
+    </script>
+    <script src="include-html.js"></script>
+  </body>
+</html>
