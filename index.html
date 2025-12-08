@@ -263,14 +263,17 @@
       gap: 0.5rem;
     }
 
-    .footer-links a {
+  .footer-links a {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--primary);         
+  text-decoration: none;
 }
 
 .footer-links a:hover {
-  color: var(--accent);
+  color: var(--accent);          
+  text-decoration: underline;    
 }
+
 
 
     /* Antigravity Animation Styles */
@@ -467,12 +470,7 @@
           <p id="authSubtitle" class="feature-muted">Sign in to access your dashboard</p>
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs" id="userTabs">
-          <button class="tab-trigger active" data-role="student">Student</button>
-          <button class="tab-trigger" data-role="teacher">Teacher</button>
-          <button class="tab-trigger" data-role="admin">Admin</button>
-        </div>
+       
 
         <!-- Form -->
         <form id="authForm">
@@ -552,7 +550,7 @@
           <div class="footer-heading">Company</div>
           <ul class="footer-links">
             <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="#">Contact Us</a></li>
             <li><a href="#">Careers</a></li>
           </ul>
         </div>
@@ -572,272 +570,290 @@
     </div>
   </footer>
 
-  <!-- 🔥 Firebase + App Logic -->
   <script type="module">
-    // ==== Firebase imports ====
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc
-    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  // ==== Firebase imports ====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // ==== TODO: apna config yaha daalo (Firebase console -> Project settings -> Web app -> Config) ====
-   const firebaseConfig = {
-  apiKey: "AIzaSyDvDvbSz8jyiygz8i_PLXBaeHJXeoI1CXg",
-  authDomain: "sameermorwal-560f4.firebaseapp.com",
-  projectId: "sameermorwal-560f4",
-  storageBucket: "sameermorwal-560f4.firebasestorage.app",
-  messagingSenderId: "935385594990",
-  appId: "1:935385594990:web:5ffa3c3f95a890e4253a7f",
-  measurementId: "G-S9PQZK5DLL"
-};
+  // ==== Firebase config ====
+  const firebaseConfig = {
+    apiKey: "AIzaSyDvDvbSz8jyiygz8i_PLXBaeHJXeoI1CXg",
+    authDomain: "sameermorwal-560f4.firebaseapp.com",
+    projectId: "sameermorwal-560f4",
+    storageBucket: "sameermorwal-560f4.firebasestorage.app",
+    messagingSenderId: "935385594990",
+    appId: "1:935385594990:web:5ffa3c3f95a890e4253a7f",
+    measurementId: "G-S9PQZK5DLL"
+  };
 
-    // ==== Firebase init ====
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  // ==== Firebase init ====
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // ==== Theme toggle logic ====
-    const themeToggle = document.getElementById("themeToggle");
-    const themeIcon = document.getElementById("themeIcon");
+  // ==== Theme toggle logic ====
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
 
-    function setTheme(theme) {
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-        themeIcon.textContent = "☀";
-      } else {
-        document.documentElement.classList.remove("dark");
-        themeIcon.textContent = "🌙";
-      }
-      localStorage.setItem("vc_home_theme", theme);
+  function setTheme(theme) {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      themeIcon.textContent = "☀";
+    } else {
+      document.documentElement.classList.remove("dark");
+      themeIcon.textContent = "🌙";
     }
+    localStorage.setItem("vc_home_theme", theme);
+  }
 
-    const initialTheme = localStorage.getItem("vc_home_theme") || "light";
-    setTheme(initialTheme);
+  const initialTheme = localStorage.getItem("vc_home_theme") || "light";
+  setTheme(initialTheme);
 
-    if (themeToggle) {
-      themeToggle.addEventListener("click", () => {
-        const isDark = document.documentElement.classList.contains("dark");
-        setTheme(isDark ? "light" : "dark");
-      });
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setTheme(isDark ? "light" : "dark");
+    });
+  }
+
+  // ==== Scroll to auth ====
+  const scrollBtn = document.getElementById("scrollGetStarted");
+  const heroGetStarted = document.getElementById("heroGetStarted");
+
+  function scrollToAuth() {
+    const el = document.getElementById("auth-section");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  }
+
+  if (scrollBtn) scrollBtn.addEventListener("click", scrollToAuth);
+  if (heroGetStarted) heroGetStarted.addEventListener("click", scrollToAuth);
+
+  // ==== Auth UI Logic ====
+  let authMode = "login";
+  let userType = "student";
+
+  const authTitle = document.getElementById("authTitle");
+  const authSubtitle = document.getElementById("authSubtitle");
+  const fieldName = document.getElementById("fieldName");
+  const fieldStudentId = document.getElementById("fieldStudentId");
+  const fieldTeacherId = document.getElementById("fieldTeacherId");
+  const fieldAdminKey = document.getElementById("fieldAdminKey");
+  const fieldConfirmPassword = document.getElementById("fieldConfirmPassword");
+  const authSubmitBtn = document.getElementById("authSubmitBtn");
+  const authToggleLink = document.getElementById("authToggleLink");
+  const authToggleText = document.getElementById("authToggleText");
+
+  function updateAuthUI() {
+    if (authMode === "login") {
+      authTitle.textContent = "Welcome Back";
+      authSubtitle.textContent = "Sign in to access your dashboard";
+      fieldName.style.display = "none";
+      fieldConfirmPassword.style.display = "none";
+      fieldStudentId.style.display = "none";
+      fieldTeacherId.style.display = "none";
+      fieldAdminKey.style.display = "none";
+      authSubmitBtn.textContent = "Sign In";
+      authToggleText.textContent = "Don't have an account? ";
+      authToggleLink.textContent = "Sign up";
+    } else {
+      authTitle.textContent = "Create Account";
+      authSubtitle.textContent = "Join VIDYA-CUE today";
+      fieldName.style.display = "block";
+      fieldConfirmPassword.style.display = "block";
+      fieldStudentId.style.display = userType === "student" ? "block" : "none";
+      fieldTeacherId.style.display = userType === "teacher" ? "block" : "none";
+      fieldAdminKey.style.display = userType === "admin" ? "block" : "none";
+      authSubmitBtn.textContent = "Create Account";
+      authToggleText.textContent = "Already have an account? ";
+      authToggleLink.textContent = "Sign in";
     }
+  }
 
-    // ==== Scroll to auth ====
-    const scrollBtn = document.getElementById("scrollGetStarted");
-    const heroGetStarted = document.getElementById("heroGetStarted");
+  authToggleLink.addEventListener("click", () => {
+    authMode = authMode === "login" ? "signup" : "login";
+    updateAuthUI();
+  });
 
-    function scrollToAuth() {
-      const el = document.getElementById("auth-section");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
+  // ==== Tabs ====
+  const tabButtons = document.querySelectorAll(".tab-trigger");
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      userType = btn.dataset.role;
 
-    if (scrollBtn) scrollBtn.addEventListener("click", scrollToAuth);
-    if (heroGetStarted) heroGetStarted.addEventListener("click", scrollToAuth);
+      tabButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
 
-    // ==== Auth UI Logic ====
-    let authMode = "login";
-    let userType = "student";
-
-    const authTitle = document.getElementById("authTitle");
-    const authSubtitle = document.getElementById("authSubtitle");
-    const fieldName = document.getElementById("fieldName");
-    const fieldStudentId = document.getElementById("fieldStudentId");
-    const fieldTeacherId = document.getElementById("fieldTeacherId");
-    const fieldAdminKey = document.getElementById("fieldAdminKey");
-    const fieldConfirmPassword = document.getElementById("fieldConfirmPassword");
-    const authSubmitBtn = document.getElementById("authSubmitBtn");
-    const authToggleLink = document.getElementById("authToggleLink");
-    const authToggleText = document.getElementById("authToggleText");
-
-    function updateAuthUI() {
-      if (authMode === "login") {
-        authTitle.textContent = "Welcome Back";
-        authSubtitle.textContent = "Sign in to access your dashboard";
-        fieldName.style.display = "none";
-        fieldConfirmPassword.style.display = "none";
-        fieldStudentId.style.display = "none";
-        fieldTeacherId.style.display = "none";
-        fieldAdminKey.style.display = "none";
-        authSubmitBtn.textContent = "Sign In";
-        authToggleText.textContent = "Don't have an account? ";
-        authToggleLink.textContent = "Sign up";
-      } else {
-        authTitle.textContent = "Create Account";
-        authSubtitle.textContent = "Join VIDYA-CUE today";
-        fieldName.style.display = "block";
-        fieldConfirmPassword.style.display = "block";
+      if (authMode === "signup") {
         fieldStudentId.style.display = userType === "student" ? "block" : "none";
         fieldTeacherId.style.display = userType === "teacher" ? "block" : "none";
         fieldAdminKey.style.display = userType === "admin" ? "block" : "none";
-        authSubmitBtn.textContent = "Create Account";
-        authToggleText.textContent = "Already have an account? ";
-        authToggleLink.textContent = "Sign in";
+      }
+    });
+  });
+
+  // ==== Auth Form Submit (Firebase) ====
+  const authForm = document.getElementById("authForm");
+
+  authForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const confirmInput = document.getElementById("confirmPassword");
+    const studentIdInput = document.getElementById("studentId");
+    const teacherIdInput = document.getElementById("teacherId");
+    const adminKeyInput = document.getElementById("adminKey");
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    if (authMode === "signup") {
+      if (password !== confirmInput.value) {
+        alert("Passwords do not match!");
+        return;
       }
     }
 
-    authToggleLink.addEventListener("click", () => {
-      authMode = authMode === "login" ? "signup" : "login";
-      updateAuthUI();
-    });
-
-    // ==== Tabs ====
-    const tabButtons = document.querySelectorAll(".tab-trigger");
-    tabButtons.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        userType = btn.dataset.role;
-
-        tabButtons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        if (authMode === "signup") {
-          fieldStudentId.style.display = userType === "student" ? "block" : "none";
-          fieldTeacherId.style.display = userType === "teacher" ? "block" : "none";
-          fieldAdminKey.style.display = userType === "admin" ? "block" : "none";
-        }
-      });
-    });
-
-    // ==== Auth Form Submit (Firebase) ====
-    const authForm = document.getElementById("authForm");
-
-    authForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const nameInput = document.getElementById("name");
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
-      const confirmInput = document.getElementById("confirmPassword");
-      const studentIdInput = document.getElementById("studentId");
-      const teacherIdInput = document.getElementById("teacherId");
-      const adminKeyInput = document.getElementById("adminKey");
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      if (!email || !password) {
-        alert("Please fill all required fields.");
-        return;
-      }
+    try {
+      let userCredential;
 
       if (authMode === "signup") {
-        if (password !== confirmInput.value) {
-          alert("Passwords do not match!");
-          return;
+        // 🔹 Sign up user
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+        const user = userCredential.user;
+        const name =
+          nameInput.value.trim() ||
+          userType.charAt(0).toUpperCase() + userType.slice(1) + " User";
+
+        // Optional IDs
+        const studentId = studentIdInput?.value.trim() || null;
+        const teacherId = teacherIdInput?.value.trim() || null;
+        const adminKey = adminKeyInput?.value.trim() || null;
+
+        // 🔹 Save extra data to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          name,
+          email: user.email,
+          type: userType,   // yahi role hai: "student" / "teacher" / "admin"
+          studentId,
+          teacherId,
+          adminKey,
+          createdAt: new Date().toISOString()
+        });
+
+        alert("Account created successfully!");
+
+        const payload = {
+          uid: user.uid,
+          type: userType,
+          name,
+          email: user.email
+        };
+        localStorage.setItem("vc_user", JSON.stringify(payload));
+
+        // Redirect based on role
+        if (payload.type === "student") {
+          window.location.href = "studentprofile.html";
+        } else if (payload.type === "teacher") {
+          window.location.href = "Teacherdashboard.html";
+        } else if (payload.type === "admin") {
+          window.location.href = "admin.html";
         }
-      }
 
-      try {
-        let userCredential;
+      } else {
+        // 🔹 Login
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-        if (authMode === "signup") {
-          // 🔹 Sign up user
-          userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // Default role = currently selected tab (fallback)
+        let role = userType;
+        let name = userType.charAt(0).toUpperCase() + userType.slice(1) + " User";
 
-          const user = userCredential.user;
-          const name =
-            nameInput.value.trim() ||
-            userType.charAt(0).toUpperCase() + userType.slice(1) + " User";
+        // 🔹 Firestore se actual role + name lene ki koshish
+        try {
+          const userDocRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userDocRef);
 
-          // Optional IDs
-          const studentId = studentIdInput?.value.trim() || null;
-          const teacherId = teacherIdInput?.value.trim() || null;
-          const adminKey = adminKeyInput?.value.trim() || null;
-
-          // 🔹 Save extra data to Firestore
-          await setDoc(doc(db, "users", user.uid), {
-            name,
-            email: user.email,
-            type: userType,
-            studentId,
-            teacherId,
-            adminKey,
-            createdAt: new Date().toISOString()
-          });
-
-          alert("Account created successfully!");
-
-          const payload = {
-            uid: user.uid,
-            type: userType,
-            name,
-            email: user.email
-          };
-          localStorage.setItem("vc_user", JSON.stringify(payload));
-
-          // Redirect based on role
-          if (payload.type === "student") {
-            window.location.href = "studentprofile.html";
-          } else if (payload.type === "teacher") {
-            window.location.href = "Teacherdashboard.html";
-          } else if (payload.type === "admin") {
-            window.location.href = "admin.html";
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            role = data.type || data.role || role;
+            name = data.name || name;
           }
+        } catch (err) {
+          console.error("Error fetching user document:", err);
+        }
 
+        const payload = {
+          uid: user.uid,
+          type: role,
+          name,
+          email: user.email
+        };
+        localStorage.setItem("vc_user", JSON.stringify(payload));
+
+        alert("Signed in successfully!");
+
+        // 🔹 Role-based redirect (Firestore ka role use hoga)
+        if (role === "student") {
+          window.location.href = "studentprofile.html";
+        } else if (role === "teacher") {
+          window.location.href = "Teacherdashboard.html";
+        } else if (role === "admin") {
+          window.location.href = "admin.html";
         } else {
-          // 🔹 Login
-          userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-
-          // Just frontend role based on selected tab for now
-          const name =
-            userType.charAt(0).toUpperCase() + userType.slice(1) + " User";
-
-          const payload = {
-            uid: user.uid,
-            type: userType,
-            name,
-            email: user.email
-          };
-          localStorage.setItem("vc_user", JSON.stringify(payload));
-
-          alert("Signed in successfully!");
-
-          // Redirect based on role
-          if (payload.type === "student") {
-            window.location.href = "studentprofile.html";
-          } else if (payload.type === "teacher") {
-            window.location.href = "Teacherdashboard.html";
-          } else if (payload.type === "admin") {
-            window.location.href = "admin.html";
-          }
+          // fallback
+          window.location.href = "studentprofile.html";
         }
-      } catch (error) {
-        console.error(error);
-        let msg = "Authentication failed";
-
-        if (error.code === "auth/email-already-in-use") {
-          msg = "This email is already in use.";
-        } else if (error.code === "auth/invalid-email") {
-          msg = "Invalid email address.";
-        } else if (error.code === "auth/weak-password") {
-          msg = "Password should be at least 6 characters.";
-        } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-          msg = "Incorrect email or password.";
-        }
-
-        alert(msg);
       }
-    });
+    } catch (error) {
+      console.error(error);
+      let msg = "Authentication failed";
 
-    // Optional: already logged in user
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // future: auto redirect or show different UI
-        // console.log("Already logged in:", user.email);
+      if (error.code === "auth/email-already-in-use") {
+        msg = "This email is already in use.";
+      } else if (error.code === "auth/invalid-email") {
+        msg = "Invalid email address.";
+      } else if (error.code === "auth/weak-password") {
+        msg = "Password should be at least 6 characters.";
+      } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+        msg = "Incorrect email or password.";
       }
-    });
 
-    // Init UI
-    updateAuthUI();
-  </script>
+      alert(msg);
+    }
+  });
+
+  // Optional: already logged in user
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // future: auto redirect or show different UI
+      // console.log("Already logged in:", user.email);
+    }
+  });
+
+  // Init UI
+  updateAuthUI();
+</script>
+
 </body>
 
 </html>
